@@ -12,7 +12,4 @@ class PhysicalState:
         for idx in range(self.n):
             self.statevector = np.kron(self.statevector, state_qubit)
 
-if __name__ == "__main__":
-
-    state = PhysicalState(1)
 

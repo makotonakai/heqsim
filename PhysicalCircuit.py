@@ -35,5 +35,5 @@ class PhysicalCircuit:
 if __name__ == "__main__":
     
     pc = PhysicalCircuit(1)
-    pc.y_(0)
+    pc.py(0)
     print(pc.state)
