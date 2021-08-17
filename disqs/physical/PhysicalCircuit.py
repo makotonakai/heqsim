@@ -1,13 +1,39 @@
 
+from PhysicalGate import *
+from PhysicalState import *
 import numpy as np
-import PhysicalState
+
 
 class PhysicalCircuit:
 
-    def __init__(self,n):
+    def __init__(self, n):
         self.n = n
-        self.state = PhysicalState(self.n).state
+        self.state = PhysicalState(self.n).statevector
 
-    def x(self, idx):
-        xMatrix = np.array([[0,1],[1,0]])
+    def px(self, idx):
+        xmatrix = px_(self.n, idx)
+        self.state = np.dot(xmatrix, self.state)
+
+    def py(self, idx):
+        ymatrix = py_(self.n, idx)
+        self.state = np.dot(ymatrix, self.state)
+
+    def pz(self, idx):
+        zmatrix = pz_(self.n, idx)
+        self.state = np.dot(zmatrix, self.state)
+
+    def ph(self, idx):
+        hmatrix = ph_(self.n, idx)
+        self.state = np.dot(hmatrix, self.state)
+
+    def pcx(self, idx):
+        cxmatrix = ph_(self.n, idx)
+        self.state = np.dot(cxmatrix, self.state)
+
+    
         
+if __name__ == "__main__":
+    
+    pc = PhysicalCircuit(1)
+    pc.y_(0)
+    print(pc.state)
