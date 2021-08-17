@@ -27,13 +27,8 @@ class PhysicalCircuit:
         self.state = np.dot(hmatrix, self.state)
 
     def pcx(self, idx):
-        cxmatrix = ph_(self.n, idx)
+        cxmatrix = pcx_(self.n, idx)
         self.state = np.dot(cxmatrix, self.state)
 
-    
-        
-if __name__ == "__main__":
-    
-    pc = PhysicalCircuit(1)
-    pc.py(0)
-    print(pc.state)
+    def measure(self, idx):
+        pass
