@@ -6,7 +6,7 @@ matrix = 1
 
 def x_(n, idx):
 
-    global matrix
+    matrix = 1
     X = np.array([[0,1],[1,0]])
     for i in range(n):
         if i == idx:
@@ -18,7 +18,7 @@ def x_(n, idx):
 
 def y_(n, idx):
 
-    global matrix
+    matrix = 1
     Y = np.array([[0,-1j],[1j,0]])
     for i in range(n):
         if i == idx:
@@ -30,7 +30,7 @@ def y_(n, idx):
 
 def z_(n, idx):
 
-    global matrix
+    matrix = 1
     Z = np.array([[1,0],[0,-1]])
     for i in range(n):
         if i == idx:
@@ -42,7 +42,7 @@ def z_(n, idx):
 
 def h_(n, idx):
 
-    global matrix
+    matrix = 1
     H = np.array([[1,1],[1,-1]])/np.sqrt(2)
     for i in range(n):
         if i == idx:

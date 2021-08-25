@@ -3,53 +3,53 @@ import numpy as np
 
 
 I = np.eye(2)
-matrix = 1
+
 
 def px_(n, idx):
 
-    global matrix
+    matrix = 1
     X = np.array([[0,1],[1,0]])
     for i in range(n):
         if i == idx:
-            matrix = np.kron(X, matrix)
+            matrix = np.kron(matrix, X)
         else:
-            matrix = np.kron(I, matrix)
+            matrix = np.kron(matrix, I)
 
     return matrix
 
 def py_(n, idx):
 
-    global matrix
+    matrix = 1
     Y = np.array([[0,-1j],[1j,0]])
     for i in range(n):
         if i == idx:
-            matrix = np.kron(Y, matrix)
+            matrix = np.kron(matrix, Y)
         else:
-            matrix = np.kron(I, matrix)
+            matrix = np.kron(matrix, I)
 
     return matrix
 
 def pz_(n, idx):
 
-    global matrix
+    matrix = 1
     Z = np.array([[1,0],[0,-1]])
     for i in range(n):
         if i == idx:
-            matrix = np.kron(Z, matrix)
+            matrix = np.kron(matrix, Z)
         else:
-            matrix = np.kron(I, matrix)
+            matrix = np.kron(matrix, I)
 
     return matrix
 
 def ph_(n, idx):
 
-    global matrix
-    H = np.array([[1,1],[1,-1]])/np.sqrt(2)
+    matrix = 1
+    H = np.array([[1/np.sqrt(2),1/np.sqrt(2)],[1/np.sqrt(2),-1/np.sqrt(2)]])
     for i in range(n):
         if i == idx:
-            matrix = np.kron(H, matrix)
+            matrix = np.kron(matrix, H)
         else:
-            matrix = np.kron(I, matrix)
+            matrix = np.kron(matrix, I)
 
     return matrix
 
@@ -74,4 +74,3 @@ def pcx_(n, control_idx, target_idx):
         cx[control_][target_] = 1
 
     return cx
-

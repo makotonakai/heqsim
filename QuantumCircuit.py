@@ -28,10 +28,5 @@ class QuantumCircuit:
     def cx(self, idx):
         cxmatrix = cx_(self.n, idx)
         self.state = np.dot(cxmatrix, self.state)
-
         
-if __name__ == "__main__":
-    
-    pc = PhysicalCircuit(1)
-    pc.py(0)
-    print(pc.state)
+
