@@ -49,7 +49,6 @@ class PhysicalCircuit:
                 measure_prob[1] += 1
         measure_prob = [num/sum(measure_prob) for num in measure_prob]
         measure_result = np.random.choice(range(2), 1, p=measure_prob)[0]
-        print(measure_result)
 
         # 状態ベクトルを更新
         statevector_dict = {}
@@ -58,13 +57,20 @@ class PhysicalCircuit:
 
         new_statevector_dict = {}
         for state in list(statevector_dict.keys()):
-            if state[idx] == measure_result:
-                new_statevector_dict[state] = statevector_dict[state]
-        print(statevector_dict)
+            if state[idx] == str(measure_result):
+                state_list = list(state)
+                del state_list[idx]
+                new_state = "".join(state_list)
 
+                if 1 in statevector_dict.values():
+                    new_statevector_dict[new_state] = statevector_dict[state]
+                else:
+                    new_statevector_dict[new_state] = statevector_dict[state]*np.sqrt(2)
+        
+        return measure_result
 
 if __name__ == "__main__":
 
-    pc = PhysicalCircuit(2)
-    pc.pcx(1,0)
+    pc = PhysicalCircuit(3)
+    pc.ph(0)
     pc.measure(0)
