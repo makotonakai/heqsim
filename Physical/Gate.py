@@ -1,9 +1,7 @@
 
 import numpy as np
 
-
 I = np.eye(2)
-
 
 def px_(n, idx):
 

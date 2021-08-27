@@ -1,6 +1,6 @@
 
-from PhysicalGate import *
-from PhysicalState import *
+from .Gate import *
+from .State import *
 import numpy as np
 
 
@@ -68,9 +68,3 @@ class PhysicalCircuit:
                     new_statevector_dict[new_state] = statevector_dict[state]*np.sqrt(2)
         
         return measure_result
-
-if __name__ == "__main__":
-
-    pc = PhysicalCircuit(3)
-    pc.ph(0)
-    pc.measure(0)
