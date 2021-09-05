@@ -1,7 +1,7 @@
 import configparser
 import sys
 import os
-from Processor import Processor
+from Device.Processor import Processor
 
 class Cluster:
     def __init__(self):
