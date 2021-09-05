@@ -1,10 +1,8 @@
+from Physical.Circuit import PhysicalCircuit
 import sys
 import os
 
-sys.path.append('../')
-from Physical.Circuit import PhysicalCircuit
-
-class Processor:
+class PhysicalProcessor:
 
     def __init__(self, QubitNumber=2, OneQubitGateTime=0.1, TwoQubitGateTime=0.2):
         self.QubitNumber = QubitNumber

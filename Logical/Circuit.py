@@ -4,7 +4,7 @@ import numpy as np
 import sys
 import os
 
-from Device.Cluster import Cluster
+from Device.Cluster import QCluster
 
 class QuantumCircuit:
 
@@ -12,7 +12,7 @@ class QuantumCircuit:
         self.n = n
         self.state = QuantumState(self.n).statevector
         self.cxgraph = {str(idx):[] for idx in range(self.n)}
-        self.cluster = Cluster()
+        self.cluster = QCluster()
 
     def x(self, idx):
         xmatrix = x_(self.n, idx)

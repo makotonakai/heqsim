@@ -1,2 +1,4 @@
 from . import *
-from Physical import *
+import sys
+import os
+sys.path.append('../Physical')
