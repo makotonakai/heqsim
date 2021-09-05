@@ -1,8 +1,6 @@
 import numpy as np
 
-
 I = np.eye(2)
-matrix = 1
 
 def x_(n, idx):
 
@@ -10,9 +8,9 @@ def x_(n, idx):
     X = np.array([[0,1],[1,0]])
     for i in range(n):
         if i == idx:
-            matrix = np.kron(X, matrix)
+            matrix = np.kron(matrix, X)
         else:
-            matrix = np.kron(I, matrix)
+            matrix = np.kron(matrix, I)
 
     return matrix
 
@@ -22,9 +20,9 @@ def y_(n, idx):
     Y = np.array([[0,-1j],[1j,0]])
     for i in range(n):
         if i == idx:
-            matrix = np.kron(Y, matrix)
+            matrix = np.kron(matrix, Y)
         else:
-            matrix = np.kron(I, matrix)
+            matrix = np.kron(matrix, I)
 
     return matrix
 
@@ -34,9 +32,9 @@ def z_(n, idx):
     Z = np.array([[1,0],[0,-1]])
     for i in range(n):
         if i == idx:
-            matrix = np.kron(Z, matrix)
+            matrix = np.kron(matrix, Z)
         else:
-            matrix = np.kron(I, matrix)
+            matrix = np.kron(matrix, I)
 
     return matrix
 
@@ -46,9 +44,9 @@ def h_(n, idx):
     H = np.array([[1,1],[1,-1]])/np.sqrt(2)
     for i in range(n):
         if i == idx:
-            matrix = np.kron(H, matrix)
+            matrix = np.kron(matrix, H)
         else:
-            matrix = np.kron(I, matrix)
+            matrix = np.kron(matrix, I)
 
     return matrix
 

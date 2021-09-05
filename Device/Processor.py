@@ -1,8 +1,6 @@
 import sys
 import os
-
-sys.path.append(os.path.abspath(".."))
-from Physical.Circuit import *
+from Physical.Circuit import PhysicalCircuit
 
 class Processor:
 
@@ -13,6 +11,3 @@ class Processor:
         self.IndexList = []
         self.GateList = []
         self.pc = PhysicalCircuit(self.QubitNumber)
-
-p = Processor()
-print(p.QubitNumber)

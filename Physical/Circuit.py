@@ -1,6 +1,6 @@
 
 from .Gate import *
-from .State import *
+from .State import PhysicalState
 import numpy as np
 
 
