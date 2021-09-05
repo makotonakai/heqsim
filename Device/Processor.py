@@ -1,5 +1,7 @@
 import sys
 import os
+
+sys.path.append('../')
 from Physical.Circuit import PhysicalCircuit
 
 class Processor:

@@ -1,6 +1,8 @@
 import configparser
 import sys
 import os
+
+sys.path.append('../')
 from Device.Processor import Processor
 
 class Cluster:
@@ -14,6 +16,7 @@ class Cluster:
         config.read('config.ini', encoding='utf-8')
         for DeviceName in config.sections():
             NewProcessor = Processor()
+            print("New processor added")
             NewProcessor.QubitNumber = int(config[DeviceName]["QubitNumber"])
             NewProcessor.OneQubitGateTime = float(config[DeviceName]["OneQubitGateTime"])
             NewProcessor.TwoQubitGateTime = float(config[DeviceName]["TwoQubitGateTime"])
@@ -21,4 +24,4 @@ class Cluster:
 
 if __name__ == "__main__":
 
-    print(sys.path)
+    c = Cluster()

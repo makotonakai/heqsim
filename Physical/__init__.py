@@ -1,1 +1,1 @@
-from Physical import *
+from . import *

@@ -1,2 +1,2 @@
-from Device import *
-
+from . import *
+from Physical import *
