@@ -1,5 +1,8 @@
 from Logical.Circuit import QuantumCircuit
 
-qc = QuantumCircuit(6)
-index_list = qc.allocate_index()
-print(index_list)
+qc = QuantumCircuit(4)
+qc.allocate_index()
+cluster = qc.cluster
+for processor in cluster.processor_list:
+    name = processor.device_name
+    print("{}:{}".format(name, cluster.index_dict[name]))

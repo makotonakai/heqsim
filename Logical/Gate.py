@@ -2,73 +2,10 @@ import numpy as np
 
 I = np.eye(2)
 
-def x_(n, idx):
+class QuantumGate:
+    def __init__(self, name, index, target_index=None):
+        self.name = name
+        self.index = index
+        self.target_index = target_index
 
-    matrix = 1
-    X = np.array([[0,1],[1,0]])
-    for i in range(n):
-        if i == idx:
-            matrix = np.kron(matrix, X)
-        else:
-            matrix = np.kron(matrix, I)
-
-    return matrix
-
-def y_(n, idx):
-
-    matrix = 1
-    Y = np.array([[0,-1j],[1j,0]])
-    for i in range(n):
-        if i == idx:
-            matrix = np.kron(matrix, Y)
-        else:
-            matrix = np.kron(matrix, I)
-
-    return matrix
-
-def z_(n, idx):
-
-    matrix = 1
-    Z = np.array([[1,0],[0,-1]])
-    for i in range(n):
-        if i == idx:
-            matrix = np.kron(matrix, Z)
-        else:
-            matrix = np.kron(matrix, I)
-
-    return matrix
-
-def h_(n, idx):
-
-    matrix = 1
-    H = np.array([[1,1],[1,-1]])/np.sqrt(2)
-    for i in range(n):
-        if i == idx:
-            matrix = np.kron(matrix, H)
-        else:
-            matrix = np.kron(matrix, I)
-
-    return matrix
-
-def cx_(n, control_idx, target_idx):
-
-    cx = np.zeros((2**n, 2**n))
-    control_bin_list = [format(num, 'b').zfill(n) for num in range(2**n)]
-    target_bin_list = []
-    for control_bin in control_bin_list:
-        target_bin = list(control_bin)
-        if control_bin[control_idx] == '1':
-            if target_bin[target_idx] == '0':
-                target_bin[target_idx] = '1'
-            else:
-                target_bin[target_idx] = '0'
-        target_bin = "".join(target_bin)
-        target_bin_list.append(target_bin)
-
-    for idx in range(2**n):
-        control_ = int(control_bin_list[idx], 2)
-        target_ = int(target_bin_list[idx], 2)
-        cx[control_][target_] = 1
-
-    return cx
 

@@ -31,7 +31,6 @@ class PhysicalCircuit:
         self.state = np.dot(cxmatrix, self.state)
 
     def measure(self, idx):
-
         # 確率
         prob = [prob_amp**2 for prob_amp in self.state]
 

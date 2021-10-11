@@ -12,9 +12,9 @@ class QuantumCircuit:
         self.qubit_number = qubit_number
         self.cluster = QuantumCluster()
         self.index_dict = self.cluster.index_dict
-        self.gate_list = []
         self.gate_dict = self.cluster.gate_dict
         self.cxgraph = self.cluster.cxgraph
+        self.gate_list = []
 
     def x(self, idx):
         self.gate_list.append(["X", idx])
@@ -75,7 +75,7 @@ class QuantumCircuit:
                 first_end_list.append([first, end])
                 first = end
                 if first == self.qubit_number:
-                    break
+                    first_end_list.append([first, self.qubit_number])
             # 各デバイスのインデックスを決定
             index_list = [num for num in range(self.qubit_number)]
             for first_end in first_end_list:
@@ -90,9 +90,16 @@ class QuantumCircuit:
                 cluster.index_dict[processor.device_name] = answer_list[index]
             return answer_list
 
+    def get_device_name(self, index):
+        for name in list(self.index_dict.keys()):
+            if index in self.index_dict[name]:
+                return name
+            else:
+                continue
 
     def allocate_gate(self):
-        pass
+        for gate in self.gate_list:
+
 
     def get_new_state(self):
         cluster = QuantumCluster()
