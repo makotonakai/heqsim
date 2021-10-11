@@ -1,7 +1,5 @@
 from Logical.Circuit import QuantumCircuit
 
-qc = QuantumCircuit(2)
-qc.cx(0,1)
-state = qc.get_new_state()
-print(state)
-
+qc = QuantumCircuit(6)
+index_list = qc.allocate_index()
+print(index_list)

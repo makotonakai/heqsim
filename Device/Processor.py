@@ -3,7 +3,7 @@ import sys
 import os
 
 class QuantumProcessor:
-
+    
     def __init__(self, device_name, qubit_number, single_qubit_gate_time, two_qubit_gate_time):
         self.device_name = device_name
         self.qubit_number = qubit_number

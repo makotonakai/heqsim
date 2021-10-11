@@ -10,29 +10,26 @@ class QuantumCircuit:
 
     def __init__(self, qubit_number):
         self.qubit_number = qubit_number
-        self.state = QuantumState(self.qubit_number).statevector
         self.cluster = QuantumCluster()
-        self.cxgraph = {str(idx):[] for idx in range(self.qubit_number)}
+        self.index_dict = self.cluster.index_dict
+        self.gate_list = []
+        self.gate_dict = self.cluster.gate_dict
+        self.cxgraph = self.cluster.cxgraph
 
     def x(self, idx):
-        xmatrix = x_(self.qubit_number, idx)
-        self.state = np.dot(xmatrix, self.state)
+        self.gate_list.append(["X", idx])
 
     def y(self, idx):
-        ymatrix = y_(self.qubit_number, idx)
-        self.state = np.dot(ymatrix, self.state)
+        self.gate_list.append(["Y", idx])
 
     def z(self, idx):
-        zmatrix = z_(self.qubit_number, idx)
-        self.state = np.dot(zmatrix, self.state)
+        self.gate_list.append(["Z", idx])
 
     def h(self, idx):
-        hmatrix = h_(self.qubit_number, idx)
-        self.state = np.dot(hmatrix, self.state)
+        self.gate_list.append(["H", idx])
 
     def cx(self, control_idx, target_idx):
-        cxmatrix = cx_(self.qubit_number, control_idx, target_idx)
-        self.state = np.dot(cxmatrix, self.state)
+        self.gate_list.append(["CX", control_idx, target_idx])
         self.cxgraph[str(control_idx)].append(str(target_idx))
         self.cxgraph[str(target_idx)].append(str(control_idx))
     
@@ -56,23 +53,43 @@ class QuantumCircuit:
             self.cxgraph[node].remove(second_qubit_index)
             if node != new_qubit_index:
                 self.cxgraph[node].append(new_qubit_index)
-
         del self.cxgraph[second_qubit_index]
+
         return new_qubit_index
 
-    def get_qubit_dict(self):
-        processor_list = self.cluster.processor_list
-        qubit_dict = {processor.device_name: processor.qubit_number for processor in processor_list}
-        return qubit_dict
-
     def allocate_index(self):
-        qubit_list = self.get_qubit_dict()
-        print(qubit_list)
-        # if self.qubit_number >= max(qubit_list):
-        #     print("Allocate")
-        # else:
-        #     print("The whole quantum circuit can't be allocated on the whole cluster")
-        #     print("Please add more qubits to at least one of the quantum processors")
+        qubit_num_list= [processor.qubit_number for processor in self.cluster.processor_list]
+        answer_list = []
+        if self.qubit_number > sum(qubit_num_list):
+            print("The whole cluster needs more qubits or processors")
+        else:
+            first_end_list = []
+            # 各デバイスのインデックスの個数を決定
+            first = 0
+            end = 0
+            for num in qubit_num_list:
+                if end > self.qubit_number:
+                    end = self.qubit_number
+                else:
+                    end = first+num
+                first_end_list.append([first, end])
+                first = end
+                if first == self.qubit_number:
+                    break
+            # 各デバイスのインデックスを決定
+            index_list = [num for num in range(self.qubit_number)]
+            for first_end in first_end_list:
+                [first, end] = first_end
+                index = index_list[first:end]
+                answer_list.append(index)
+
+            # 各デバイスにインデックスを分配
+            cluster = self.cluster
+            for index in range(len(cluster.processor_list)):
+                processor = cluster.processor_list[index]
+                cluster.index_dict[processor.device_name] = answer_list[index]
+            return answer_list
+
 
     def allocate_gate(self):
         pass
