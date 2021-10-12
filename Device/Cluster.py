@@ -9,7 +9,6 @@ class QuantumCluster:
         self.qubit_number = 0
         self.processor_list = []
         self.setup()
-        self.sort_processor()
         
         self.index_dict = {processor.device_name:[] for processor in self.processor_list}
         self.gate_dict = {processor.device_name:[] for processor in self.processor_list}
@@ -32,9 +31,8 @@ class QuantumCluster:
         for processor in self.processor_list:
             self.qubit_number += processor.qubit_number
 
-    def sort_processor(self):
         self.processor_list.sort(key=lambda processor:processor.single_qubit_gate_time)
-        
+             
 
     def remote_cnot(self, first_processor_index, second_processor_index, first_qubit_index, second_qubit_index):
         first_processor = self.processor_list[first_processor_index]
