@@ -1,4 +1,4 @@
-from Logical.Gate import *
+from Logical.Gate import QuantumGate
 from Logical.State import QuantumState
 import numpy as np
 import sys
@@ -17,21 +17,26 @@ class QuantumCircuit:
         self.gate_list = []
 
     def x(self, idx):
-        self.gate_list.append(["X", idx])
+        self.gate_list.append(QuantumGate("X", idx))
 
     def y(self, idx):
-        self.gate_list.append(["Y", idx])
-
+        self.gate_list.append(QuantumGate("Y", idx))
+        
     def z(self, idx):
-        self.gate_list.append(["Z", idx])
+        self.gate_list.append(QuantumGate("Z", idx))
 
     def h(self, idx):
-        self.gate_list.append(["H", idx])
+        self.gate_list.append(QuantumGate("H", idx))
 
     def cx(self, control_idx, target_idx):
-        self.gate_list.append(["CX", control_idx, target_idx])
+        self.gate_list.append(QuantumGate("CX", control_idx, target_idx))
         self.cxgraph[str(control_idx)].append(str(target_idx))
         self.cxgraph[str(target_idx)].append(str(control_idx))
+
+    def get_new_state(self):
+        cluster = QuantumCluster()
+        new_state = cluster.add_qubit()
+        return new_state
     
     def qubit_contract(self, first_qubit_index, second_qubit_index):
         first_qubit_index = str(first_qubit_index)
@@ -76,6 +81,7 @@ class QuantumCircuit:
                 first = end
                 if first == self.qubit_number:
                     first_end_list.append([first, self.qubit_number])
+
             # 各デバイスのインデックスを決定
             index_list = [num for num in range(self.qubit_number)]
             for first_end in first_end_list:
@@ -91,20 +97,24 @@ class QuantumCircuit:
             return answer_list
 
     def get_device_name(self, index):
+        device_name = None
         for name in list(self.index_dict.keys()):
             if index in self.index_dict[name]:
-                return name
+                device_name = name
+                break
             else:
                 continue
+        return device_name
 
     def allocate_gate(self):
         for gate in self.gate_list:
+            name = self.get_device_name(gate.index)
+            self.gate_dict[name].append(gate)
 
+    def execute(self):
+        self.allocate_index()
+        self.allocate_gate()
 
-    def get_new_state(self):
-        cluster = QuantumCluster()
-        new_state = cluster.add_qubit()
-        return new_state
 
 
     

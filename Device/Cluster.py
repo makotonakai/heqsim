@@ -6,13 +6,15 @@ import os
 class QuantumCluster:
 
     def __init__(self):
-        self.processor_list = []
         self.qubit_number = 0
+        self.processor_list = []
+        self.setup()
+        self.sort_processor()
+        
         self.index_dict = {processor.device_name:[] for processor in self.processor_list}
         self.gate_dict = {processor.device_name:[] for processor in self.processor_list}
         self.cxgraph = {str(idx):[] for idx in range(self.qubit_number)}
-        self.setup()
-        self.sort_processor()
+        
 
     def setup(self):
         path = os.path.dirname(os.path.realpath(__file__))
