@@ -114,6 +114,7 @@ class QuantumCircuit:
     def execute(self):
         self.allocate_index()
         self.allocate_gate()
+        self.cluster.run_circuit()
 
 
 
