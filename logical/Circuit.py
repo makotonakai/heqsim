@@ -96,6 +96,7 @@ class QuantumCircuit:
                 processor = cluster.processor_list[index]
                 device_name = ray.get(processor.get_device_name.remote())
                 cluster.index_dict[device_name] = answer_list[index]
+            print(answer_list)
             return answer_list
 
     def get_device_name(self, index):
@@ -112,6 +113,7 @@ class QuantumCircuit:
         for gate in self.gate_list:
             name = self.get_device_name(gate.index)
             self.gate_dict[name].append(gate)
+        print(self.gate_list)
 
     def execute(self):
         self.allocate_index()

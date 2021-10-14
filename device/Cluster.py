@@ -1,4 +1,4 @@
-from .processor import QuantumProcessor
+from physical.processor import QuantumProcessor
 from logical.gate import QuantumGate
 import configparser
 import ray
@@ -54,11 +54,7 @@ class QuantumCluster:
                 elif gate.name == "CNOT":
                     processor.cx.remote(gate.index, gate.target_index)
             state = ray.get(processor.get_state.remote())
-            # self.state_list.append(state)
             print("Device Name:{} state:{}".format(device_name, state))
-        
-        # for state in self.state_list:
-        #     print(state)
 
 
     def remote_cnot(self, first_processor_index, second_processor_index, first_qubit_index, second_qubit_index):
