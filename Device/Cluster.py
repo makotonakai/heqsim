@@ -1,5 +1,5 @@
-from .Processor import QuantumProcessor
-from Logical.Gate import QuantumGate
+from .processor import QuantumProcessor
+from logical.gate import QuantumGate
 import configparser
 import ray
 import sys

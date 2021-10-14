@@ -1,4 +1,4 @@
 from . import *
 import sys
 import os
-sys.path.append('../Physical')
+sys.path.append('../physical')

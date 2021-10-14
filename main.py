@@ -1,4 +1,4 @@
-from Logical.Circuit import QuantumCircuit
+from logical.circuit import QuantumCircuit
 
 qc = QuantumCircuit(4)
 

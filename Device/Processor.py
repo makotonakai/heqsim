@@ -1,4 +1,4 @@
-from Physical.Circuit import PhysicalCircuit
+from physical.circuit import PhysicalCircuit
 import ray
 import sys
 import os
@@ -13,7 +13,7 @@ class QuantumProcessor(object):
         self.two_qubit_gate_time = 0
         self.index_list = []
         self.gate_lists = []
-        self.pc = PhysicalCircuit(self.qubit_number)
+        self.pc = physicalCircuit(self.qubit_number)
 
     def set_device_name(self, device_name):
         self.device_name = device_name

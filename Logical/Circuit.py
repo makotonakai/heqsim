@@ -1,10 +1,10 @@
-from Logical.Gate import QuantumGate
-from Logical.State import QuantumState
+from logical.gate import QuantumGate
+from logical.state import QuantumState
 import numpy as np
 import sys
 import os
 
-from Device.Cluster import QuantumCluster
+from device.cluster import QuantumCluster
 
 class QuantumCircuit:
 

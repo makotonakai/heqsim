@@ -1,3 +1,3 @@
-from .Logical import *
-from .Device import *
-from .Physical import *
+from .logical import *
+from .device import *
+from .physical import *
