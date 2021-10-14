@@ -1,6 +1,7 @@
 from logical.gate import QuantumGate
 from logical.state import QuantumState
 import numpy as np
+import ray
 import sys
 import os
 
@@ -63,7 +64,7 @@ class QuantumCircuit:
         return new_qubit_index
 
     def allocate_index(self):
-        qubit_num_list= [processor.qubit_number for processor in self.cluster.processor_list]
+        qubit_num_list= [ray.get(processor.get_qubit_number.remote()) for processor in self.cluster.processor_list]
         answer_list = []
         if self.qubit_number > sum(qubit_num_list):
             print("The whole cluster needs more qubits or processors")
@@ -93,7 +94,8 @@ class QuantumCircuit:
             cluster = self.cluster
             for index in range(len(cluster.processor_list)):
                 processor = cluster.processor_list[index]
-                cluster.index_dict[processor.device_name] = answer_list[index]
+                device_name = ray.get(processor.get_device_name.remote())
+                cluster.index_dict[device_name] = answer_list[index]
             return answer_list
 
     def get_device_name(self, index):

@@ -8,13 +8,13 @@ import os
 class QuantumCluster:
 
     def __init__(self):
-        self.qubit_number = 0
-        self.processor_list = []
-        self.setup()
-        
-        self.index_dict = {processor.device_name:[] for processor in self.processor_list}
-        self.gate_dict = {processor.device_name:[] for processor in self.processor_list}
+        self.total_qubit_number = 0
+        self.processor_list = [] 
+        self.index_dict = {}
+        self.gate_dict = {}
+        self.cxgraph = {}
         self.state_list = []
+        self.setup()
 
     def setup(self):
         path = os.path.dirname(os.path.realpath(__file__))
@@ -28,39 +28,42 @@ class QuantumCluster:
             single_qubit_gate_time = float(config[device_name]["single_qubit_gate_time"])
             two_qubit_gate_time = float(config[device_name]["two_qubit_gate_time"])
 
-            new_processor.set_device_name(device_name).remote()
-            new_processor.set_qubit_number(qubit_number).remote()
-            new_processor.set_single_qubit_gate_time(single_qubit_gate_time).remote()
-            new_processor.set_two_qubit_gate_time(two_qubit_gate_time).remote()
-            
+            new_processor.set_device_name.remote(device_name)
+            new_processor.set_qubit_number.remote(qubit_number)
+            new_processor.set_single_qubit_gate_time.remote(single_qubit_gate_time)
+            new_processor.set_two_qubit_gate_time.remote(two_qubit_gate_time)
             self.processor_list.append(new_processor) 
 
+            self.index_dict[device_name] = []
+            self.gate_dict[device_name] = []
+
         for processor in self.processor_list:
+            qubit_number = ray.get(processor.get_qubit_number.remote())
+            self.total_qubit_number += qubit_number
 
-            self.qubit_number += processor.qubit_number
-
-        self.processor_list.sort(key=lambda processor:processor.single_qubit_gate_time)
+        self.processor_list.sort(key=lambda processor:ray.get(processor.get_qubit_number.remote()))
 
     def run_circuit(self):
-
         for processor in self.processor_list:
-            gate_list = self.gate_dict[processor.name]
+            device_name = ray.get(processor.get_device_name.remote())
+            gate_list = self.gate_dict[device_name]
             for gate in gate_list:
                 if gate.name == "X":
-                    processor.pc.x(gate.index).remote()
+                    processor.x.remote(gate.index)
                 elif gate.name == "Y":
-                    processor.pc.y(gate.index).remote()
+                    processor.y.remote(gate.index)
                 elif gate.name == "Z":
-                    processor.pc.z(gate.index).remote()
+                    processor.z.remote(gate.index)
                 elif gate.name == "H":
-                    processor.pc.h(gate.index).remote()
+                    processor.h.remote(gate.index)
                 elif gate.name == "CNOT":
-                    processor.pc.cx(gate.index, gate.target_index).remote()
-            state = ray.get(processor.pc.state)
-            self.state_list.append(state)
+                    processor.cx.remote(gate.index, gate.target_index)
+            state = ray.get(processor.get_state.remote())
+            # self.state_list.append(state)
+            print("Device Name:{} state:{}".format(device_name, state))
         
-        for state in self.state_list:
-            print(state)
+        # for state in self.state_list:
+        #     print(state)
 
 
     def remote_cnot(self, first_processor_index, second_processor_index, first_qubit_index, second_qubit_index):

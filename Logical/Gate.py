@@ -1,7 +1,5 @@
 import numpy as np
 
-I = np.eye(2)
-
 class QuantumGate:
     def __init__(self, name, index, target_index=None):
         self.name = name

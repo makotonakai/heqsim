@@ -6,14 +6,14 @@ import os
 @ray.remote
 class QuantumProcessor(object):
     
-    def __init__(self, device_name, qubit_number, single_qubit_gate_time, two_qubit_gate_time):
-        self.device_name = "device"
+    def __init__(self):
+        self.device_name = None
         self.qubit_number = 0
         self.single_qubit_gate_time = 0
         self.two_qubit_gate_time = 0
         self.index_list = []
         self.gate_lists = []
-        self.pc = physicalCircuit(self.qubit_number)
+        self.pc = PhysicalCircuit(self.qubit_number)
 
     def set_device_name(self, device_name):
         self.device_name = device_name
@@ -26,6 +26,12 @@ class QuantumProcessor(object):
 
     def set_two_qubit_gate_time(self, two_qubit_gate_time):
         self.two_qubit_gate_time = two_qubit_gate_time
+
+    def get_device_name(self):
+        return self.device_name
+
+    def get_qubit_number(self):
+        return self.qubit_number
 
     def get_state(self):
         return self.pc.state
