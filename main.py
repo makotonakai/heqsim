@@ -1,9 +1,12 @@
 from logical.circuit import QuantumCircuit
 
-qc = QuantumCircuit(4)
+n = 2
+qc = QuantumCircuit(n)
 
-for i in range(4):
-    qc.x(i)
+qc.x(0)
+qc.x(1)
+# for i in range(n):
+#     qc.x(i)
 
 qc.execute()
 

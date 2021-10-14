@@ -9,11 +9,9 @@ class QuantumProcessor(object):
     def __init__(self):
         self.device_name = None
         self.qubit_number = 0
-        self.single_qubit_gate_time = 0
-        self.two_qubit_gate_time = 0
         self.index_list = []
         self.gate_lists = []
-        self.pc = PhysicalCircuit(self.qubit_number)
+        self.pc = None
 
     def set_device_name(self, device_name):
         self.device_name = device_name
@@ -21,11 +19,8 @@ class QuantumProcessor(object):
     def set_qubit_number(self, qubit_number):
         self.qubit_number = qubit_number
 
-    def set_single_qubit_gate_time(self, single_qubit_gate_time):
-        self.single_qubit_gate_time = single_qubit_gate_time
-
-    def set_two_qubit_gate_time(self, two_qubit_gate_time):
-        self.two_qubit_gate_time = two_qubit_gate_time
+    def set_quantum_circuit(self):
+        self.pc = PhysicalCircuit(self.qubit_number)
 
     def get_device_name(self):
         return self.device_name
