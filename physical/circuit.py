@@ -8,7 +8,7 @@ class PhysicalCircuit:
 
     def __init__(self, n):
         self.qubit_number = n
-        self.state = PhysicalState(self.qubit_number).statevector
+        self.state = PhysicalState(self.qubit_number).get_statevector()
 
     def px(self, idx):
         xmatrix = px_(self.qubit_number, idx)
