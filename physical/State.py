@@ -12,4 +12,7 @@ class PhysicalState:
         for idx in range(self.qubit_number):
             self.statevector = np.kron(self.statevector, state_qubit)
 
+    def get_statevector(self):
+        return self.statevector
+
 
