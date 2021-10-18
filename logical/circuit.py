@@ -11,10 +11,6 @@ class QuantumCircuit:
     def __init__(self, qubit_num):
         self.qubit_num = qubit_num
         self.cluster = QuantumCluster()
-        self.index_dict = self.cluster.index_dict
-        self.gate_dict = self.cluster.gate_dict
-        self.cxgraph = self.cluster.cxgraph
-        self.gate_list = []
 
     def x(self, idx):
         self.gate_list.append(QuantumGate("X", idx))
@@ -62,67 +58,7 @@ class QuantumCircuit:
 
         return new_qubit_index
 
-    def allocate_index(self):
-        qubit_num_on_each_device = [ray.get(processor.get_qubit_nummote()) for processor in self.cluster.processor_list]
-        if self.qubit_numsum(qubit_num_on_each_device):
-            print("The whole cluster needs more qubits or processors")
-        else:
-            
-            qubit_num_on_circuit = self.qubit_num
-
-            # 各デバイスのインデックスの個数を決定
-            qubit_index_range_lists = []
-            current_qubit_index = 0
-            last_qubit_index = 0
-            for device_index in range(len(qubit_num_on_each_device)):
-                qubit_num_on_this_device = qubit_num_on_each_device[device_index]
-                if qubit_num_on_this_device >=qubit_num_on_circuit:
-                    last_qubit_index += qubit_num_on_circuit
-                    qubit_index_list = [current_qubit_index, last_qubit_index]
-                    qubit_index_range_lists.append(qubit_index_list)
-                    break
-                else:
-                    last_qubit_index += qubit_num_on_this_device
-                    qubit_num_on_circuit -= qubit_num_on_this_device
-                    qubit_index_list = [current_qubit_index, last_qubit_index]
-                    qubit_index_range_lists.append(qubit_index_list)
-                    current_qubit_index = last_qubit_index
-
-            qubit_index_lists = []
-            for qubit_index_range in qubit_index_range_lists:
-                [first, end] = qubit_index_range
-                qubit_index_list = [num for num in range(self.qubit_numfirst:end]
-                qubit_index_lists.append(qubit_index_list)
-
-            # 各デバイスにインデックスを分配
-            cluster = self.cluster
-            for index in range(len(qubit_index_lists)):
-                processor = cluster.processor_list[index]
-                device_name = ray.get(processor.get_device_name.remote())
-                cluster.index_dict[device_name] = qubit_index_lists[index]
-            print(qubit_index_lists)
-            return qubit_index_lists
-
-    def get_device_name(self, index):
-        device_name = None
-        for name in list(self.index_dict.keys()):
-            if index in self.index_dict[name]:
-                device_name = name
-                break
-            else:
-                continue
-        return device_name
-
-    def allocate_gate(self):
-        for gate in self.gate_list:
-            name = self.get_device_name(gate.index)
-            self.gate_dict[name].append(gate)
-        print(self.gate_list)
-
-    def execute(self):
-        self.allocate_index()
-        # self.allocate_gate()
-        # self.cluster.run_circuit()
+    
 
 
 
