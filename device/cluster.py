@@ -30,9 +30,6 @@ class QuantumCluster:
 
     
 
-    def remote_cnot(self, first_processor_index, second_processor_index, first_qubit_index, second_qubit_index):
-        first_processor = self.processor_list[first_processor_index]
-        second_processor = self.processor_list[second_processor_index]
-
+    
 
     
