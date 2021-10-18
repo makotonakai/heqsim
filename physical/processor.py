@@ -8,7 +8,7 @@ class QuantumProcessor(object):
     
     def __init__(self):
         self.device_name = None
-        self.qubit_number = 0
+        self.qubit_num = 0
         self.index_list = []
         self.gate_lists = []
         self.pc = None
@@ -16,17 +16,17 @@ class QuantumProcessor(object):
     def set_device_name(self, device_name):
         self.device_name = device_name
 
-    def set_qubit_number(self, qubit_number):
-        self.qubit_number = qubit_number
+    def set_qubit_num(self, qubit_num):
+        self.qubit_num = qubit_num
 
     def set_quantum_circuit(self):
-        self.pc = PhysicalCircuit(self.qubit_number)
+        self.pc = PhysicalCircuit(self.qubit_num)
 
     def get_device_name(self):
         return self.device_name
 
-    def get_qubit_number(self):
-        return self.qubit_number
+    def get_qubit_num(self):
+        return self.qubit_num
 
     def get_state(self):
         return self.pc.state
@@ -47,7 +47,7 @@ class QuantumProcessor(object):
         self.pc.pcx(control_idx, target_idx)
 
     def add_new_zero(self, num, new_index):
-        string = bin(num)[2:].zfill(self.qubit_number)
+        string = bin(num)[2:].zfill(self.qubit_num)
         string_list = list(string)
         string_list.insert(new_index, '0')
         new_string = "".join(string_list)
@@ -59,7 +59,7 @@ class QuantumProcessor(object):
             new_idx = self.add_new_zero(idx, new_index)
             state_dict[new_idx] = self.pc.state[idx]
 
-        new_state = [0 for idx in range(2**(self.qubit_number+1))]
+        new_state = [0 for idx in range(2**(self.qubit_num+1))]
         for key in list(state_dict.keys()):
             new_idx = int(key, 2)
             new_state[new_idx] = state_dict[key]

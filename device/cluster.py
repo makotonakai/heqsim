@@ -8,7 +8,7 @@ import os
 class QuantumCluster:
 
     def __init__(self):
-        self.total_qubit_number = 0
+        self.total_qubit_num0
         self.processor_list = [] 
         self.index_dict = {}
         self.gate_dict = {}
@@ -24,10 +24,10 @@ class QuantumCluster:
 
         for device_name in config.sections():
             new_processor = QuantumProcessor.remote()
-            qubit_number = int(config[device_name]["qubit_number"])
+            qubit_numint(config[device_name]["qubit_numnum
 
             new_processor.set_device_name.remote(device_name)
-            new_processor.set_qubit_number.remote(qubit_number)
+            new_processor.set_qubit_nummote(qubit_numnum
             new_processor.set_quantum_circuit.remote()
             self.processor_list.append(new_processor) 
 
@@ -35,8 +35,8 @@ class QuantumCluster:
             self.gate_dict[device_name] = []
 
         for processor in self.processor_list:
-            qubit_number = ray.get(processor.get_qubit_number.remote())
-            self.total_qubit_number += qubit_number
+            qubit_numray.get(processor.get_qubit_numnume())
+            self.total_qubit_num qubit_numnum
 
     def run_circuit(self):
         for processor in self.processor_list:

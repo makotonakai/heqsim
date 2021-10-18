@@ -7,27 +7,27 @@ import numpy as np
 class PhysicalCircuit:
 
     def __init__(self, n):
-        self.qubit_number = n
-        self.state = PhysicalState(self.qubit_number).get_statevector()
+        self.qubit_num = n
+        self.state = PhysicalState(self.qubit_num).get_statevector()
 
     def px(self, idx):
-        xmatrix = px_(self.qubit_number, idx)
+        xmatrix = px_(self.qubit_num, idx)
         self.state = np.dot(xmatrix, self.state)
 
     def py(self, idx):
-        ymatrix = py_(self.qubit_number, idx)
+        ymatrix = py_(self.qubit_num, idx)
         self.state = np.dot(ymatrix, self.state)
 
     def pz(self, idx):
-        zmatrix = pz_(self.qubit_number, idx)
+        zmatrix = pz_(self.qubit_num, idx)
         self.state = np.dot(zmatrix, self.state)
 
     def ph(self, idx):
-        hmatrix = ph_(self.qubit_number, idx)
+        hmatrix = ph_(self.qubit_num, idx)
         self.state = np.dot(hmatrix, self.state)
 
     def pcx(self, control_idx, target_idx):
-        cxmatrix = pcx_(self.qubit_number, control_idx, target_idx)
+        cxmatrix = pcx_(self.qubit_num, control_idx, target_idx)
         self.state = np.dot(cxmatrix, self.state)
 
     def measure(self, idx):
@@ -37,7 +37,7 @@ class PhysicalCircuit:
         # 状態と確率
         prob_dict = {}
         for state in range(len(prob)):
-            prob_dict[format(state, 'b').zfill(self.qubit_number)] = prob[state]
+            prob_dict[format(state, 'b').zfill(self.qubit_num)] = prob[state]
 
         # 測定確率を計算
         measure_prob = [0, 0]
@@ -52,7 +52,7 @@ class PhysicalCircuit:
         # 状態ベクトルを更新
         state_dict = {}
         for state in range(len(prob)):
-            state_dict[format(state, 'b').zfill(self.qubit_number)] = self.state[state]
+            state_dict[format(state, 'b').zfill(self.qubit_num)] = self.state[state]
 
         new_state_dict = {}
         for state in list(state_dict.keys()):

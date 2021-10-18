@@ -8,8 +8,8 @@ from device.cluster import QuantumCluster
 
 class QuantumCircuit:
 
-    def __init__(self, qubit_number):
-        self.qubit_number = qubit_number
+    def __init__(self, qubit_num
+        self.qubit_numqubit_numnum
         self.cluster = QuantumCluster()
         self.index_dict = self.cluster.index_dict
         self.gate_dict = self.cluster.gate_dict
@@ -63,12 +63,12 @@ class QuantumCircuit:
         return new_qubit_index
 
     def allocate_index(self):
-        qubit_num_on_each_device = [ray.get(processor.get_qubit_number.remote()) for processor in self.cluster.processor_list]
-        if self.qubit_number > sum(qubit_num_on_each_device):
+        qubit_num_on_each_device = [ray.get(processor.get_qubit_nummote()) for processor in self.cluster.processor_list]
+        if self.qubit_numsum(qubit_num_on_each_device):
             print("The whole cluster needs more qubits or processors")
         else:
             
-            qubit_num_on_circuit = self.qubit_number
+            qubit_num_on_circuit = self.qubit_num
 
             # 各デバイスのインデックスの個数を決定
             qubit_index_range_lists = []
@@ -91,7 +91,7 @@ class QuantumCircuit:
             qubit_index_lists = []
             for qubit_index_range in qubit_index_range_lists:
                 [first, end] = qubit_index_range
-                qubit_index_list = [num for num in range(self.qubit_number)][first:end]
+                qubit_index_list = [num for num in range(self.qubit_numfirst:end]
                 qubit_index_lists.append(qubit_index_list)
 
             # 各デバイスにインデックスを分配
