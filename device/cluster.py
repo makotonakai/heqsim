@@ -24,19 +24,15 @@ class QuantumCluster:
 
         for device_name in config.sections():
             new_processor = QuantumProcessor.remote()
-            qubit_numint(config[device_name]["qubit_numnum
+            qubit_numint(config[device_name]["qubit_num"])
 
             new_processor.set_device_name.remote(device_name)
-            new_processor.set_qubit_nummote(qubit_numnum
+            new_processor.set_qubit_nummote(qubit_num)
             new_processor.set_quantum_circuit.remote()
             self.processor_list.append(new_processor) 
 
             self.index_dict[device_name] = []
             self.gate_dict[device_name] = []
-
-        for processor in self.processor_list:
-            qubit_numray.get(processor.get_qubit_numnume())
-            self.total_qubit_num qubit_numnum
 
     def run_circuit(self):
         for processor in self.processor_list:
