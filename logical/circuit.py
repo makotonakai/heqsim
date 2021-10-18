@@ -8,8 +8,8 @@ from device.cluster import QuantumCluster
 
 class QuantumCircuit:
 
-    def __init__(self, qubit_num
-        self.qubit_numqubit_numnum
+    def __init__(self, qubit_num):
+        self.qubit_num = qubit_num
         self.cluster = QuantumCluster()
         self.index_dict = self.cluster.index_dict
         self.gate_dict = self.cluster.gate_dict
