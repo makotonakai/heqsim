@@ -1,3 +1,4 @@
+from logical.circuit import QuantumCircuit
 from physical.circuit import PhysicalCircuit
 import ray
 import sys
@@ -41,5 +42,19 @@ class QuantumProcessor(object):
 
     def cx(self, control_idx, target_idx):
         self.pc.pcx(control_idx, target_idx)
+
+    def execute(self):
+        for gate in gate_list:
+            if gate.name == "X":
+                self.x(gate.idx)
+            elif gate.name == "Y":
+                self.y(gate.idx)
+            elif gate.name == "Z":
+                self.x(gate.idx)
+            elif gate.name == "H":
+                self.h(gate.idx)
+            
+
+
 
     
