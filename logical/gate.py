@@ -1,4 +1,3 @@
-import numpy as np
 
 class QuantumGate:
     def __init__(self, name, index, target_index=None):
