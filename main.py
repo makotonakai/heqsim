@@ -1,10 +1,7 @@
 from logical.circuit import QuantumCircuit
 
-n = 2
+n = 4
 qc = QuantumCircuit(n)
-
-qc.x(0)
-qc.x(1)
-
-qc.execute()
+indices = qc.get_indices()
+print(indices)
 

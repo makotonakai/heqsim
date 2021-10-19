@@ -1,4 +1,3 @@
-from logical.circuit import QuantumCircuit
 from physical.circuit import PhysicalCircuit
 import ray
 import sys

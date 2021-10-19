@@ -3,7 +3,6 @@ from .gate import *
 from .state import PhysicalState
 import numpy as np
 
-
 class PhysicalCircuit:
 
     def __init__(self, n):
