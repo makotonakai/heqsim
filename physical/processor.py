@@ -16,6 +16,9 @@ class QuantumProcessor(object):
     def get_gates(self):
         return self.gates
 
+    def get_qubit_num(self):
+        return self.qubit_num
+
     def set_name(self, new_name):
         self.name = new_name
 

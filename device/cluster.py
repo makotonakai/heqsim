@@ -52,6 +52,9 @@ class QuantumCluster:
     def get_name(self, processor):
         return ray.get(processor.get_name.remote())
 
+    def get_qubit_num(self, processor):
+        return ray.get(processor.get_qubit_num.remote())
+
     def get_gates(self, processor):
         return ray.get(processor.get_gates.remote())
 

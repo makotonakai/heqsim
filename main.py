@@ -1,10 +1,10 @@
 from logical.circuit import QuantumCircuit
 
-qn = 3
+qn = 2
 qc = QuantumCircuit(qn)
-qc.x(0)
-qc.x(1)
+qc.h(0)
+
 
 qc.execute()
-state_list = qc.result()
-print(state_list)
+state = qc.result()
+print(state)
