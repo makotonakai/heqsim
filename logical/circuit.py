@@ -30,17 +30,21 @@ class QuantumCircuit:
 
     def allocate_indices(self):
         self.index_allocator.execute()
+
+    def get_indices(self):
         index_dict = self.index_allocator.get_result()
         return index_dict
 
     def allocate_gates(self):
-        index_dict = self.allocate_indices()
+        index_dict = self.get_indices()
+        print(index_dict)
         self.gate_allocator.execute(index_dict)
 
     def run_cluster(self):
         self.cluster.execute()
 
     def execute(self):
+        self.allocate_indices()
         self.allocate_gates()
         self.run_cluster()
 
@@ -56,6 +60,8 @@ class QuantumCircuit:
             each_state = self.state(processor)
             state_list.append(each_state)
         return state_list
+
+
 
     
     

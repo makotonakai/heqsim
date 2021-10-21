@@ -37,8 +37,3 @@ class GateAllocator:
             for gate in gates:
                 gate.index = processor_indices.index(gate.index)
             self.set_gates(processor, gates)
-
-        for processor in self.processors():
-            gates = self.gates(processor)
-            for gate in gates:
-                print("Name:{} Index:{}".format(gate.name, gate.index))
