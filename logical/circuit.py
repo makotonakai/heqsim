@@ -27,7 +27,7 @@ class QuantumCircuit:
         self.gate_list.append(QuantumGate("H", idx))
 
     def cx(self, control_idx, target_idx):
-        self.gate_list.append(QuantumGate("CX", control_idx, target_idx))
+        self.gate_list.append(QuantumGate("CNOT", control_idx, target_idx))
 
     def allocate_indices(self):
         self.index_allocator.execute()

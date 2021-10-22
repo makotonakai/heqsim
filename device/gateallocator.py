@@ -36,4 +36,6 @@ class GateAllocator:
             gates = self.processor_gates()[processor_name]
             for gate in gates:
                 gate.index = processor_indices.index(gate.index)
+                if gate.target_index is not None:
+                    gate.target_index = processor_indices.index(gate.target_index)
             self.set_gates(processor, gates)

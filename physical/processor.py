@@ -56,6 +56,8 @@ class QuantumProcessor(object):
                 self.z(gate.index)
             elif gate.name == "H":
                 self.h(gate.index)
+            elif gate.name == "CNOT":
+                self.cx(gate.index, gate.target_index)
 
     def get_state(self):
         return self.pc.state
