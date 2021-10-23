@@ -8,3 +8,4 @@ qc.cx(0,2)
 qc.execute()
 state = qc.result()
 print(state)
+

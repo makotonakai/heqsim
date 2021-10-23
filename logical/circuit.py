@@ -63,6 +63,14 @@ class QuantumCircuit:
     def state_str(self, num, digit):
         return bin(num)[2:].zfill(digit)
 
+    def shrink_state_dir(self, state_dir, qubit_num_used):
+        new_state_dir = {self.state_str(state, qubit_num_used):1 for state in range(2**qubit_num_used)}
+        qubit_num = len(list(state_dir.keys())[0])
+        for state in list(new_state_dir.keys()):
+            new_state_dir[state] = state_dir[state+'0'*(qubit_num-qubit_num_used)]
+        return new_state_dir
+
+
     def is_part_of_state(self, indices, state_str, target_state_str):
         total_state_str_shrinked = "".join([target_state_str[index] for index in indices])
         return state_str == total_state_str_shrinked
@@ -72,8 +80,10 @@ class QuantumCircuit:
         
         for processor in self.processor_list():
             qubit_num = self.qubits(processor)
+            qubit_num_used = len(self.get_indices()[self.name(processor)])
             state = self.state(processor)
             state_dir = {self.state_str(qubit_idx, qubit_num):state[qubit_idx] for qubit_idx in range(2**qubit_num)}
+            state_dir = self.shrink_state_dir(state_dir, qubit_num_used)
 
             processor_name = self.name(processor)
             indices = self.get_indices()[processor_name]
