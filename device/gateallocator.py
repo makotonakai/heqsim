@@ -1,4 +1,3 @@
-from logical.gate import QuantumGate
 
 class GateAllocator:
     def __init__(self, gate_list, cluster):
@@ -37,5 +36,6 @@ class GateAllocator:
             for gate in gates:
                 gate.index = processor_indices.index(gate.index)
                 if gate.target_index is not None:
-                    gate.target_index = processor_indices.index(gate.target_index)
+                    gate.target_index = processor_indices.index(
+                        gate.target_index)
             self.set_gates(processor, gates)

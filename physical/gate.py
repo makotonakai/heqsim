@@ -1,58 +1,58 @@
 
 import numpy as np
 
-I = np.eye(2)
+Imat = np.eye(2)
+
 
 def px_(n, idx):
-
     matrix = 1
-    X = np.array([[0,1],[1,0]])
+    X = np.array([[0, 1], [1, 0]])
     for i in range(n):
         if i == idx:
             matrix = np.kron(matrix, X)
         else:
-            matrix = np.kron(matrix, I)
+            matrix = np.kron(matrix, Imat)
 
     return matrix
 
-def py_(n, idx):
 
+def py_(n, idx):
     matrix = 1
-    Y = np.array([[0,-1j],[1j,0]])
+    Y = np.array([[0, -1j], [1j, 0]])
     for i in range(n):
         if i == idx:
             matrix = np.kron(matrix, Y)
         else:
-            matrix = np.kron(matrix, I)
+            matrix = np.kron(matrix, Imat)
 
     return matrix
 
-def pz_(n, idx):
 
+def pz_(n, idx):
     matrix = 1
-    Z = np.array([[1,0],[0,-1]])
+    Z = np.array([[1, 0], [0, -1]])
     for i in range(n):
         if i == idx:
             matrix = np.kron(matrix, Z)
         else:
-            matrix = np.kron(matrix, I)
+            matrix = np.kron(matrix, Imat)
 
     return matrix
 
-def ph_(n, idx):
 
+def ph_(n, idx):
     matrix = 1
-    H = np.array([[1/np.sqrt(2),1/np.sqrt(2)],[1/np.sqrt(2),-1/np.sqrt(2)]])
+    H = np.array([[1/np.sqrt(2), 1/np.sqrt(2)], [1/np.sqrt(2), -1/np.sqrt(2)]])
     for i in range(n):
         if i == idx:
             matrix = np.kron(matrix, H)
         else:
-            matrix = np.kron(matrix, I)
+            matrix = np.kron(matrix, Imat)
 
     return matrix
 
-def pcx_(n, control_idx, target_idx):
 
+def pcx_(n, control_idx, target_idx):
     cx = np.zeros((2**n, 2**n))
     control_bin_list = [format(num, 'b').zfill(n) for num in range(2**n)]
     target_bin_list = []

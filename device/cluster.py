@@ -1,9 +1,8 @@
 from physical.processor import QuantumProcessor
-from logical.gate import QuantumGate
 import configparser
 import ray
-import sys
 import os
+
 
 class QuantumCluster:
 
@@ -16,7 +15,7 @@ class QuantumCluster:
 
     def setup(self):
         path = os.path.dirname(os.path.realpath(__file__))
-        configdir = '/'.join([path,'config.ini'])
+        configdir = '/'.join([path, 'config.ini'])
         config = configparser.ConfigParser()
         config.read(configdir, encoding="utf-8")
 
@@ -33,7 +32,7 @@ class QuantumCluster:
             self.set_qubit_num(new_processor, qubit_num)
             self.set_quantum_circuit(new_processor)
             self.processor_list.append(new_processor)
-            
+
     def new_processor(self):
         return QuantumProcessor.remote()
 
@@ -67,11 +66,3 @@ class QuantumCluster:
     def execute(self):
         for processor in self.processor_list:
             self.execute_on_each_processor(processor)
-
-
-
-    
-
-    
-
-    

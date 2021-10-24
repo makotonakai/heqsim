@@ -4,7 +4,8 @@ class IndexAllocator:
         self.qubit_num = qubit_num
         self.cluster = cluster
         self.processor_index_dict = self.cluster.processor_index_dict
-        self.allocated_result = {processor:[] for processor in self.processor_names()}
+        self.allocated_result = {processor: []
+                                 for processor in self.processor_names()}
 
     def processor_names(self):
         return list(self.processor_index_dict.keys())
@@ -14,7 +15,8 @@ class IndexAllocator:
 
     def execute(self):
         if self.qubit_num > self.cluster.total_qubit_num:
-            raise Exception("You need to add more qubits to the quantum cluster")
+            raise Exception(
+                "You need to add more qubits to the quantum cluster")
         else:
             for qubit_i in range(self.qubit_num):
                 processor_i = qubit_i % self.processor_num()
@@ -25,8 +27,8 @@ class IndexAllocator:
                     self.processor_index_dict[processor_name] -= 1
                 else:
                     del self.processor_index_dict[processor_name]
-                    processor_i = (qubit_i+1) % self.processor_num()
-                    name = self.processor_names()[processor_i]
+                    processor_i = (qubit_i + 1) % self.processor_num()
+                    processor_name = self.processor_names()[processor_i]
                     self.allocated_result[processor_name].append(qubit_i)
                     self.processor_index_dict[processor_name] -= 1
 

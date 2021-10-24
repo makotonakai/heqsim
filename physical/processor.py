@@ -1,9 +1,10 @@
 from physical.circuit import PhysicalCircuit
 import ray
 
+
 @ray.remote
 class QuantumProcessor(object):
-    
+
     def __init__(self):
         self.name = None
         self.qubit_num = 0
@@ -61,8 +62,22 @@ class QuantumProcessor(object):
 
     def get_state(self):
         return self.pc.state
-            
 
+    def add_new_zero(self, num, new_index):
+        string = bin(num)[2:].zfill(self.qubit_num)
+        string_list = list(string)
+        string_list.insert(new_index, '0')
+        new_string = "".join(string_list)
+        return new_string
 
+    def add_qubit(self, new_index):
+        state_dict = {}
+        for idx in range(len(self.pc.state)):
+            new_idx = self.add_new_zero(idx, new_index)
+            state_dict[new_idx] = self.pc.state[idx]
 
-    
+        new_state = [0 for idx in range(2**(self.qubit_num + 1))]
+        for key in list(state_dict.keys()):
+            new_idx = int(key, 2)
+            new_state[new_idx] = state_dict[key]
+        self.pc.state = new_state

@@ -4,5 +4,3 @@ class QuantumGate:
         self.name = name
         self.index = index
         self.target_index = target_index
-
-
