@@ -4,50 +4,118 @@ import ray
 
 @ray.remote
 class QuantumProcessor(object):
+    """A class of a single quantum processor"""
 
     def __init__(self):
+        """Define a quantum processor
+
+        Attributes:
+            name (str): the name
+            qubit_num (int): the number of qubits
+            gates (list[QuantumGate]): the list of quantum gates
+            pc (QuantumCircuit): the quantum circuit
+
+        """
         self.name = None
         self.qubit_num = 0
         self.gates = []
         self.pc = None
 
     def get_name(self):
+        """Return the processor name
+
+        Returns:
+            str: the name of a quantum processor
+        """
         return self.name
 
     def get_gates(self):
+        """Return the quantum gate list
+
+        Returns:
+            list[QuantumGate]: List of quantum gates
+        """
         return self.gates
 
     def get_qubit_num(self):
+        """Return the number of qubits
+
+        Returns:
+            int: the number of qubits on a quantum processor
+        """
         return self.qubit_num
 
     def set_name(self, new_name):
+        """Give a new name to the quantum processor
+
+        Args:
+            new_name (str): the new name in a quantum processor
+        """
         self.name = new_name
 
     def set_qubit_num(self, qubit_num):
+        """Give the number of qubits to the quantum processor
+
+        Args:
+            qubit_num (int): the number of qubits
+        """
         self.qubit_num = qubit_num
 
     def set_quantum_circuit(self):
+        """Give the quantum circuit to the quantum processor"""
         self.pc = PhysicalCircuit(self.qubit_num)
 
     def set_gates(self, gates):
+        """Give the gate list to the quantum processor
+
+        Args:
+            gates (list[QuantumGate]): the new list of quantum gates
+        """
         self.gates = gates
 
     def x(self, idx):
+        """Apply an X gate
+
+        Args:
+            idx (int): The index of qubit that X gate is applied to
+        """
         self.pc.px(idx)
 
     def y(self, idx):
+        """Apply an Y gate
+
+        Args:
+            idx (int): The index of qubit that Y gate is applied to
+        """
         self.pc.py(idx)
 
     def z(self, idx):
+        """Apply an Z gate
+
+        Args:
+            idx (int): The index of qubit that Z gate is applied to
+        """
         self.pc.pz(idx)
 
     def h(self, idx):
+        """Apply an H gate
+
+        Args:
+            idx (int): The index of qubit that H gate is applied to
+        """
         self.pc.ph(idx)
 
     def cx(self, control_idx, target_idx):
+        """Apply an CNOT gate
+
+        Args:
+            control_idx (int): The index of controlled qubit
+            target_idx (int): The index of target qubit
+        """
         self.pc.pcx(control_idx, target_idx)
 
     def execute(self):
+        """Execute the quantum gates in the given gate list"""
         for gate in self.gates:
             if gate.name == "X":
                 self.x(gate.index)
@@ -61,9 +129,25 @@ class QuantumProcessor(object):
                 self.cx(gate.index, gate.target_index)
 
     def get_state(self):
+        """Retreive the current quantum state
+
+        Returns:
+            np.array: the state vector
+        """
         return self.pc.state
 
     def add_new_zero(self, num, new_index):
+        """Insert zero to arbitrary position of a binary string
+
+        E.g. insert 0 to the 2nd digit of 010 → 0010
+
+        Args:
+            num (int): the number
+            new_index ([type]): the index of a new zero
+
+        Returns:
+            str: the binary string with an additional zero
+        """
         string = bin(num)[2:].zfill(self.qubit_num)
         string_list = list(string)
         string_list.insert(new_index, '0')
@@ -71,6 +155,11 @@ class QuantumProcessor(object):
         return new_string
 
     def add_qubit(self, new_index):
+        """Update the quantum state by adding another qubit
+
+        Args:
+            new_index (int): the index of the new qubit
+        """
         state_dict = {}
         for idx in range(len(self.pc.state)):
             new_idx = self.add_new_zero(idx, new_index)

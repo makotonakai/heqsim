@@ -5,41 +5,74 @@ import numpy as np
 
 
 class PhysicalCircuit:
+    """A class for quantum circuit"""
 
     def __init__(self, n):
+        """Create a quantum circuit on a physical processor
+
+        Args:
+            n (int): number of qubits on a quantum circuit
+        """
         self.qubit_num = n
         self.state = PhysicalState(self.qubit_num).get_statevector()
 
     def px(self, idx):
+        """Applying an X gate
+
+        Args:
+            idx (int): the index of a qubit that users are going to apply this gate
+        """
         xmatrix = px_(self.qubit_num, idx)
         self.state = np.dot(xmatrix, self.state)
 
     def py(self, idx):
+        """Applying an Y gate
+
+        Args:
+            idx (int): the index of a qubit that users are going to apply this gate
+        """
         ymatrix = py_(self.qubit_num, idx)
         self.state = np.dot(ymatrix, self.state)
 
     def pz(self, idx):
+        """Applying an Z gate
+
+        Args:
+            idx (int): the index of a qubit that users are going to apply this gate
+        """
         zmatrix = pz_(self.qubit_num, idx)
         self.state = np.dot(zmatrix, self.state)
 
     def ph(self, idx):
+        """Applying an H gate
+
+        Args:
+            idx (int): the index of a qubit that users are going to apply this gate
+        """
         hmatrix = ph_(self.qubit_num, idx)
         self.state = np.dot(hmatrix, self.state)
 
     def pcx(self, control_idx, target_idx):
+        """Applying a CNOT gate
+
+        Args:
+            idx (int): the index of a qubit that users are going to apply this gate
+        """
         cxmatrix = pcx_(self.qubit_num, control_idx, target_idx)
         self.state = np.dot(cxmatrix, self.state)
 
     def measure(self, idx):
-        # 確率
+        """Measure a qubit
+
+        Args:
+            idx (int): the index of a qubit that users measure
+        """
         prob = [prob_amp**2 for prob_amp in self.state]
 
-        # 状態と確率
         prob_dict = {}
         for state in range(len(prob)):
             prob_dict[format(state, 'b').zfill(self.qubit_num)] = prob[state]
 
-        # 測定確率を計算
         measure_prob = [0, 0]
         for state in list(prob_dict.keys()):
             if state[idx] == "0" and prob_dict[state] > 0:

@@ -5,6 +5,15 @@ Imat = np.eye(2)
 
 
 def px_(n, idx):
+    """Create an X gate
+
+    Args:
+        n (int): number of qubits on a quantum circuit
+        idx (int): the index of a qubit that a gate is applied
+
+    Returns:
+        np.array : the matrix of an X gate
+    """
     matrix = 1
     X = np.array([[0, 1], [1, 0]])
     for i in range(n):
@@ -17,6 +26,15 @@ def px_(n, idx):
 
 
 def py_(n, idx):
+    """Create an Y gate
+
+    Args:
+        n (int): number of qubits on a quantum circuit
+        idx (int): the index of a qubit that a gate is applied
+
+    Returns:
+        np.array : the matrix of an Y gate
+    """
     matrix = 1
     Y = np.array([[0, -1j], [1j, 0]])
     for i in range(n):
@@ -29,6 +47,15 @@ def py_(n, idx):
 
 
 def pz_(n, idx):
+    """Create an Z gate
+
+    Args:
+        n (int): number of qubits on a quantum circuit
+        idx (int): the index of a qubit that a gate is applied
+
+    Returns:
+        np.array : the matrix of an Z gate
+    """
     matrix = 1
     Z = np.array([[1, 0], [0, -1]])
     for i in range(n):
@@ -41,8 +68,18 @@ def pz_(n, idx):
 
 
 def ph_(n, idx):
+    """Create an H gate
+
+    Args:
+        n (int): number of qubits on a quantum circuit
+        idx (int): the index of a qubit that a gate is applied
+
+    Returns:
+        np.array : the matrix of an H gate
+    """
     matrix = 1
-    H = np.array([[1/np.sqrt(2), 1/np.sqrt(2)], [1/np.sqrt(2), -1/np.sqrt(2)]])
+    H = np.array([[1 / np.sqrt(2), 1 / np.sqrt(2)],
+                 [1 / np.sqrt(2), - 1 / np.sqrt(2)]])
     for i in range(n):
         if i == idx:
             matrix = np.kron(matrix, H)
@@ -53,6 +90,16 @@ def ph_(n, idx):
 
 
 def pcx_(n, control_idx, target_idx):
+    """Create an CNOT gate
+
+    Args:
+        n (int): number of qubits on a quantum circuit
+        control_idx (int): the index of a controlled qubit 
+        target_idx (int): the index of a target qubit 
+
+    Returns:
+        np.array : the matrix of an X gate
+    """
     cx = np.zeros((2**n, 2**n))
     control_bin_list = [format(num, 'b').zfill(n) for num in range(2**n)]
     target_bin_list = []
