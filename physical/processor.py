@@ -1,4 +1,5 @@
 from physical.circuit import PhysicalCircuit
+import numpy as np
 import ray
 
 
@@ -170,3 +171,45 @@ class QuantumProcessor(object):
             new_idx = int(key, 2)
             new_state[new_idx] = state_dict[key]
         self.pc.state = new_state
+
+    def measure(self, idx):
+        """Measure a qubit
+        Args:
+            idx (int): the index of a qubit that users measure
+        """
+        # Create a probability list
+        prob = [prob_amp**2 for prob_amp in self.state]
+        prob_dict = {}
+        for state_ in range(len(prob)):
+            prob_dict[format(state_, 'b').zfill(self.qubit_num)] = prob[state_]
+
+        # Get a measured outcome
+        measure_prob = [0, 0]
+        for state_ in list(prob_dict.keys()):
+            if state_[idx] == "0":
+                measure_prob[0] += prob_dict[state_]
+            else:
+                measure_prob[1] += prob_dict[state_]
+        measure_result = np.random.choice(range(2), 1, p=measure_prob)[0]
+
+        # Update a previous state dict (state: probability amplitude)
+        state_dict = {}
+        for state_ in range(len(prob)):
+            index = format(state_, 'b').zfill(self.ubit_num)
+            state_dict[index] = self.state[state_]
+
+        new_state_dict = {}
+        for state_ in list(state_dict.keys()):
+            if state_[idx] == str(measure_result):
+                state_list = list(state_)
+                del state_list[idx]
+                new_state = "".join(state_list)
+                new_state_dict[new_state] = state_dict[state_]
+
+        new_prob = [prob_amp**2 for prob_amp in list(new_state_dict.values())]
+        for state_ in list(new_state_dict.keys()):
+            new_state_dict[state_] *= np.sqrt(1 / sum(new_prob))
+
+        new_state = np.array(list(new_state_dict.values()))
+        self.state = new_state
+        return measure_result

@@ -94,8 +94,8 @@ def pcx_(n, control_idx, target_idx):
 
     Args:
         n (int): number of qubits on a quantum circuit
-        control_idx (int): the index of a controlled qubit 
-        target_idx (int): the index of a target qubit 
+        control_idx (int): the index of a controlled qubit
+        target_idx (int): the index of a target qubit
 
     Returns:
         np.array : the matrix of an X gate
