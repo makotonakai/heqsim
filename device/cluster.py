@@ -21,16 +21,20 @@ class QuantumCluster:
 
         for processor_name in config.sections():
 
+            new_processor = self.new_processor()
+            self.set_name(new_processor, processor_name)
+
             qubit_num = int(config[processor_name]["qubit_num"])
             self.processor_index_dict[processor_name] = qubit_num
             self.total_qubit_num += qubit_num
+            self.set_qubit_num(new_processor, qubit_num)
+
+            time = float(config[processor_name]["qubit_num"])
+            self.set_time(new_processor, time)
 
             self.processor_gate_dict[processor_name] = []
-
-            new_processor = self.new_processor()
-            self.set_name(new_processor, processor_name)
-            self.set_qubit_num(new_processor, qubit_num)
             self.set_quantum_circuit(new_processor)
+
             self.processor_list.append(new_processor)
 
     def new_processor(self):
@@ -41,6 +45,9 @@ class QuantumCluster:
 
     def set_qubit_num(self, processor, new_qubit_num):
         processor.set_qubit_num.remote(new_qubit_num)
+
+    def set_time(self, processor, time):
+        processor.set_time.remote(time)
 
     def set_quantum_circuit(self, processor):
         processor.set_quantum_circuit.remote()
