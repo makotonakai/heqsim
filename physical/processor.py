@@ -1,5 +1,6 @@
 from physical.circuit import PhysicalCircuit
 import numpy as np
+import time
 import ray
 
 
@@ -19,6 +20,7 @@ class QuantumProcessor(object):
         """
         self.name = None
         self.qubit_num = 0
+        self.time = 0
         self.gates = []
         self.pc = None
 
@@ -61,6 +63,14 @@ class QuantumProcessor(object):
             qubit_num (int): the number of qubits
         """
         self.qubit_num = qubit_num
+
+    def set_time(self, time):
+        """Give the time for applying each gate
+
+        Args:
+            time (float): How long it takes to apply single gate
+        """
+        self.time = time
 
     def set_quantum_circuit(self):
         """Give the quantum circuit to the quantum processor"""
@@ -120,14 +130,22 @@ class QuantumProcessor(object):
         for gate in self.gates:
             if gate.name == "X":
                 self.x(gate.index)
+                time.sleep(self.time)
+
             elif gate.name == "Y":
                 self.y(gate.index)
+                time.sleep(self.time)
+
             elif gate.name == "Z":
                 self.z(gate.index)
+                time.sleep(self.time)
             elif gate.name == "H":
                 self.h(gate.index)
+                time.sleep(self.time)
+
             elif gate.name == "CNOT":
                 self.cx(gate.index, gate.target_index)
+                time.sleep(self.time)
 
     def get_state(self):
         """Retreive the current quantum state
