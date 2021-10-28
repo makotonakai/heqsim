@@ -69,8 +69,7 @@ class QuantumCircuit:
             state, qubit_num_used): 1 for state in range(2**qubit_num_used)}
         qubit_num = len(list(state_dir.keys())[0])
         for state in list(new_state_dir.keys()):
-            new_state_dir[state] = state_dir[state
-                                             + '0' * (qubit_num - qubit_num_used)]
+            new_state_dir[state] = state_dir[state + '0' * (qubit_num - qubit_num_used)]
         return new_state_dir
 
     def is_part_of_state(self, indices, state_str, target_state_str):
@@ -79,8 +78,7 @@ class QuantumCircuit:
         return state_str == total_state_str_shrinked
 
     def result(self):
-        total_state_dir = {self.state_str(state, self.qubit_num): 1
-                           for state in range(2**self.qubit_num)}
+        total_state_dir = {self.state_str(state, self.qubit_num): 1 for state in range(2**self.qubit_num)}
 
         for processor in self.processor_list():
             qubit_num = self.qubits(processor)

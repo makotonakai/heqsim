@@ -5,17 +5,17 @@ class QuantumGate:
         self.index = index
         self.target_index = target_index
 
+    def set_index(self, new_index):
+        self.index = new_index
 
-class RemoteCNOT(QuantumGate):
-    def __init__(self, name, index, target_index, id_):
-        super(RemoteCNOT, self).__init__(name, index, target_index)
+    def set_target_index(self, new_index):
+        self.target_index = new_index
 
-        self.id_ = id_
-        self.control_processor = None
-        self.target_processor = None
+    def set_control_processor(self, processor):
+        self.control_processor = processor
 
-    def set_control_processor(self, control_processor):
-        self.control_processor = control_processor
+    def set_target_processor(self, processor):
+        self.target_processor = processor
 
-    def set_target_processor(self, target_processor):
-        self.target_processor = target_processor
+    def set_id(self, id_):
+        self.id = id_

@@ -147,6 +147,9 @@ class QuantumProcessor(object):
                 self.cx(gate.index, gate.target_index)
                 time.sleep(self.time)
 
+            elif gate.name == "RemoteCNOT":
+                print("{} got remote CNOT".format(self.name))
+
     def get_state(self):
         """Retreive the current quantum state
 
