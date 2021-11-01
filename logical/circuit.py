@@ -30,24 +30,24 @@ class QuantumCircuit:
     def cx(self, control_idx, target_idx):
         self.gate_list.append(QuantumGate("CNOT", control_idx, target_idx))
 
-    def allocate_indices(self):
+    def allocate_qubits(self):
         self.index_allocator.execute()
 
-    def get_indices(self):
-        index_dict = self.index_allocator.get_result()
-        return index_dict
+    def get_qubits(self):
+        qubit_dict = self.index_allocator.get_result()
+        return qubit_dict
 
     def allocate_gates(self):
-        index_dict = self.get_indices()
-        self.gate_allocator.execute(index_dict)
+        qubit_dict = self.get_qubits()
+        self.gate_allocator.execute(qubit_dict)
 
     def run_cluster(self):
         self.cluster.execute()
 
     def execute(self):
-        self.allocate_indices()
+        self.allocate_qubits()
         self.allocate_gates()
-        self.run_cluster()
+        # self.run_cluster()
 
     def name(self, processor):
         return self.cluster.get_name(processor)

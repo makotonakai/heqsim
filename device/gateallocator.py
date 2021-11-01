@@ -5,100 +5,118 @@ class GateAllocator:
     def __init__(self, gate_list, cluster):
         self.gate_list = gate_list
         self.cluster = cluster
-        self.processor_gate_dict = self.processor_gates()
 
-    def processor_gates(self):
-        return self.cluster.processor_gate_dict
+        self.set_gate_dict()
+        self.set_name_list()
+        self.set_processor_list()
 
-    def processor_names(self):
-        return self.processor_gate_dict.keys()
+    def set_gate_dict(self):
+        self.gate_dict = self.cluster.gate_dict
 
-    def processors(self):
-        return self.cluster.processor_list
+    def set_name_list(self):
+        self.name_list = list(self.gate_dict.keys())
 
-    def name(self, processor):
+    def set_processor_list(self):
+        self.processor_list = self.cluster.processor_list
+
+    def get_id(self, processor):
+        self.self.cluster.get_id(processor)
+
+    def get_name(self, processor):
         return self.cluster.get_name(processor)
 
-    def gates(self, processor):
+    def get_gates(self, processor):
         return self.cluster.get_gates(processor)
 
-    def set_gates(self, processor, gates):
+    def allocate_gates(self, processor, gates):
         self.cluster.set_gates(processor, gates)
 
-    def execute(self, index_dict):
+    def execute(self, qubit_dict):
 
         remote_cnot_id = 0  # id for each remote CNOT gate
 
         for gate in self.gate_list:
-            for processor in self.processor_names():
+
+            for processor in self.name_list:
 
                 # single qubit gate
                 if gate.target_index is None:
-                    if gate.index in index_dict[processor]:
-                        self.processor_gate_dict[processor].append(gate)
+                    if gate.index in qubit_dict[processor]:
+                        self.gate_dict[processor].append(gate)
 
                 # CNOT gates in the same processor
-                elif gate.index in index_dict[processor] and gate.target_index in index_dict[processor]:
-                    self.processor_gate_dict[processor].append(gate)
+                elif gate.index in qubit_dict[processor] and gate.target_index in qubit_dict[processor]:
+                    self.gate_dict[processor].append(gate)
 
                 # Remote CNOT gates
                 else:
                     # Add remote cnot to the controlled processor
-                    if gate.index in index_dict[processor]:
+                    if gate.index in qubit_dict[processor]:
 
                         [remote_cnot_control, remote_cnot_target] = [QuantumGate("RemoteCNOT", gate.index, gate.target_index) for _ in range(2)]
+
                         remote_cnot_control.set_id(remote_cnot_id)
                         remote_cnot_target.set_id(remote_cnot_id)
 
-                        remote_cnot_control.set_target_index(None)
-                        remote_cnot_control.set_control_processor(processor)
+                        remote_cnot_control.set_role("control")
+                        remote_cnot_target.set_role("target")
 
-                        for the_other_processor in self.processor_names():
+                        remote_cnot_control.set_control_processor(processor)
+                        remote_cnot_target.set_control_processor(processor)
+
+                        for the_other_processor in self.name_list:
 
                             # Add remote cnot to the target processor
-                            if gate.target_index in index_dict[the_other_processor]:
+                            if gate.target_index in qubit_dict[the_other_processor]:
 
-                                remote_cnot_target.set_index(None)
+                                remote_cnot_control.set_target_processor(the_other_processor)
                                 remote_cnot_target.set_target_processor(the_other_processor)
-                                self.processor_gate_dict[the_other_processor].append(remote_cnot_target)
+                                self.gate_dict[the_other_processor].append(remote_cnot_target)
                                 break
 
-                        self.processor_gate_dict[processor].append(remote_cnot_control)
+                        self.gate_dict[processor].append(remote_cnot_control)
+
                         remote_cnot_id += 1
 
         # Allocate gates to each device
-        for processor in self.processors():
-            processor_name = self.name(processor)
-            processor_indices = index_dict[processor_name]
-            gates = self.processor_gate_dict[processor_name]
+        for processor in self.processor_list:
+            processor_name = self.get_name(processor)
+            qubits = qubit_dict[processor_name]
+            gates = self.gate_dict[processor_name]
+
             for gate in gates:
 
                 # Allocate remote CNOT gates
                 if gate.name == "RemoteCNOT":
-                    if gate.index is None:
-                        gate.target_index = processor_indices.index(gate.target_index)
-                    elif gate.target_index is None:
-                        gate.index = processor_indices.index(gate.index)
+                    control_indices = qubit_dict[gate.control_processor]
+                    target_indices = qubit_dict[gate.target_processor]
+                    gate.index = control_indices.index(gate.index)
+                    gate.target_index = target_indices.index(gate.target_index)
 
                 # Allocate other gates (gates on a local processor)
                 else:
-                    gate.index = processor_indices.index(gate.index)
+                    gate.index = qubits.index(gate.index)
                     if gate.target_index is not None:
-                        gate.target_index = processor_indices.index(gate.target_index)
-            self.set_gates(processor, gates)
+                        gate.target_index = qubits.index(gate.target_index)
 
-        # for processor in list(self.cluster.processor_gate_dict.keys()):
-        #     gates = self.cluster.processor_gate_dict[processor]
+            self.allocate_gates(processor, gates)
+
+        # for processor in list(self.cluster.gate_dict.keys()):
+
+        #     gates = self.cluster.gate_dict[processor]
+
         #     for gate in gates:
         #         print()
         #         print("Name:", gate.name)
-        #         if gate.name == "RemoteCNOT":
+        #         if gate.name == "CNOT":
+        #             print("Control index:", gate.index)
+        #             print("Target index:", gate.target_index)
+        #         elif gate.name == "RemoteCNOT":
         #             print("ID:", gate.id)
-        #             if gate.index is not None:
-        #                 print("Control index:", gate.index)
-        #             if gate.target_index is not None:
-        #                 print("Target index:", gate.target_index)
-        #             if hasattr(gate, 'control_processor'):
-        #                 print("Control processor:", gate.control_processor)
-        #             if hasattr(gate, 'target_processor'):
-        #                 print("Target processor:", gate.target_processor)
+        #             print("Role", gate.role)
+        #             print("Control index:", gate.index)
+        #             print("Target index:", gate.target_index)
+        #             print("Control processor:", gate.control_processor)
+        #             print("Target processor:", gate.target_processor)
+        #         else:
+        #             print("Index:", gate.index)

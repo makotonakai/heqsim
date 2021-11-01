@@ -8,7 +8,7 @@ import ray
 class QuantumProcessor(object):
     """A class of a single quantum processor"""
 
-    def __init__(self):
+    def __init__(self, detail):
         """Define a quantum processor
 
         Attributes:
@@ -18,11 +18,24 @@ class QuantumProcessor(object):
             pc (QuantumCircuit): the quantum circuit
 
         """
-        self.name = None
-        self.qubit_num = 0
-        self.time = 0
+        self.id = detail["id"]
+        self.name = detail["name"]
+        self.qubit_num = detail["qubit_num"]
+        self.execution_time = detail["execution_time"]
         self.gates = []
-        self.pc = None
+        self.cluster = None
+        self.pc = detail["physical_circuit"]
+
+        self.is_waiting = False
+        self.is_synchronized = False
+
+    def get_id(self):
+        """Return the processor id
+
+        Returns:
+            str: the name of a quantum processor
+        """
+        return self.id
 
     def get_name(self):
         """Return the processor name
@@ -48,33 +61,37 @@ class QuantumProcessor(object):
         """
         return self.qubit_num
 
-    def set_name(self, new_name):
-        """Give a new name to the quantum processor
+    def get_state(self):
+        """Retreive the current quantum state
+
+        Returns:
+            np.array: the state vector
+        """
+        return self.pc.state
+
+    def get_processor(self, processor_name):
+        """Retreive the processor
 
         Args:
-            new_name (str): the new name in a quantum processor
+            processor_name (str): the name of a quantum processor
+
+        Returns:
+            QuantumProcessor: A quantum processor with the given name
         """
-        self.name = new_name
+        processor = None
+        for processor_ in self.cluster:
+            if ray.get(processor_.get_name.remote()) == processor_name:
+                processor = processor_
+                break
+        return processor
 
-    def set_qubit_num(self, qubit_num):
-        """Give the number of qubits to the quantum processor
-
-        Args:
-            qubit_num (int): the number of qubits
-        """
-        self.qubit_num = qubit_num
-
-    def set_time(self, time):
+    def set_cluster(self, cluster):
         """Give the time for applying each gate
 
         Args:
-            time (float): How long it takes to apply single gate
+            cluster (list(QuantumProcessor)): List of quantum processors
         """
-        self.time = time
-
-    def set_quantum_circuit(self):
-        """Give the quantum circuit to the quantum processor"""
-        self.pc = PhysicalCircuit(self.qubit_num)
+        self.cluster = cluster
 
     def set_gates(self, gates):
         """Give the gate list to the quantum processor
@@ -128,36 +145,49 @@ class QuantumProcessor(object):
     def execute(self):
         """Execute the quantum gates in the given gate list"""
         for gate in self.gates:
+
             if gate.name == "X":
+
                 self.x(gate.index)
-                time.sleep(self.time)
+                time.sleep(self.execution_time)
 
             elif gate.name == "Y":
+
                 self.y(gate.index)
-                time.sleep(self.time)
+                time.sleep(self.execution_time)
 
             elif gate.name == "Z":
+
                 self.z(gate.index)
-                time.sleep(self.time)
+                time.sleep(self.execution_time)
+
             elif gate.name == "H":
+
                 self.h(gate.index)
-                time.sleep(self.time)
+                time.sleep(self.execution_time)
 
             elif gate.name == "CNOT":
+
                 self.cx(gate.index, gate.target_index)
-                time.sleep(self.time)
+                time.sleep(self.execution_time)
 
             elif gate.name == "RemoteCNOT":
-                print("{} got remote CNOT".format(self.name))
-                time.sleep(self.time)
 
-    def get_state(self):
-        """Retreive the current quantum state
+                self.is_waiting = True
 
-        Returns:
-            np.array: the state vector
-        """
-        return self.pc.state
+                if gate.role == "control":
+
+                    the_other_processor = self.get_processor(gate.target_name)
+
+                    while not the_other_processor.is_waiting:
+                        self.ask_waiting(the_other_processor)
+
+                elif gate.role == "target":
+
+                    the_other_processor = self.get_processor(gate.control_name)
+
+                    while not the_other_processor.is_waiting:
+                        self.ask_waiting(the_other_processor)
 
     def add_new_zero(self, num, new_index):
         """Insert zero to arbitrary position of a binary string
@@ -235,3 +265,9 @@ class QuantumProcessor(object):
         new_state = np.array(list(new_state_dict.values()))
         self.state = new_state
         return measure_result
+
+    def ask_waiting(self, processor):
+
+        if processor.is_waiting:
+            self.is_synchronized = True
+            print("{} is now synced with {}".format(self.name, processor.name))
