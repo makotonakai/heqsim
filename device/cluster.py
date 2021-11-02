@@ -13,29 +13,31 @@ class QuantumCluster:
         self.setup()
 
     def setup(self):
+
         path = os.path.dirname(os.path.realpath(__file__))
         configdir = '/'.join([path, 'config.ini'])
         config = configparser.ConfigParser()
         config.read(configdir, encoding="utf-8")
 
+        sections = config.sections()
         id_ = 0
-        for processor_name in config.sections():
 
-            qubit_num = int(config[processor_name]["qubit_num"])
-            execution_time = float(config[processor_name]["time"])
+        for section in sections:
+
+            qubit_num = int(config[section]["qubit_num"])
+            execution_time = float(config[section]["time"])
             physical_circuit = PhysicalCircuit(qubit_num)
 
             detail = {"id": id_,
-                      "name": processor_name,
                       "qubit_num": qubit_num,
                       "execution_time": execution_time,
                       "physical_circuit": physical_circuit
                       }
 
-            new_processor = QuantumProcessor.remote(detail)
-            self.processor_list.append(new_processor)
+            processor = QuantumProcessor.remote(detail)
+            self.processor_list.append(processor)
 
-            self.gate_dict[processor_name] = []
+            self.gate_dict[processor] = []
             id_ += 1
 
         for processor in self.processor_list:

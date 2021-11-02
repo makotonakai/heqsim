@@ -19,7 +19,6 @@ class QuantumProcessor(object):
 
         """
         self.id = detail["id"]
-        self.name = detail["name"]
         self.qubit_num = detail["qubit_num"]
         self.execution_time = detail["execution_time"]
         self.gates = []
@@ -36,14 +35,6 @@ class QuantumProcessor(object):
             str: the name of a quantum processor
         """
         return self.id
-
-    def get_name(self):
-        """Return the processor name
-
-        Returns:
-            str: the name of a quantum processor
-        """
-        return self.name
 
     def get_gates(self):
         """Return the quantum gate list
@@ -68,22 +59,6 @@ class QuantumProcessor(object):
             np.array: the state vector
         """
         return self.pc.state
-
-    def get_processor(self, processor_name):
-        """Retreive the processor
-
-        Args:
-            processor_name (str): the name of a quantum processor
-
-        Returns:
-            QuantumProcessor: A quantum processor with the given name
-        """
-        processor = None
-        for processor_ in self.cluster:
-            if ray.get(processor_.get_name.remote()) == processor_name:
-                processor = processor_
-                break
-        return processor
 
     def set_cluster(self, cluster):
         """Give the time for applying each gate
@@ -173,21 +148,12 @@ class QuantumProcessor(object):
 
             elif gate.name == "RemoteCNOT":
 
-                self.is_waiting = True
-
                 if gate.role == "control":
-
-                    the_other_processor = self.get_processor(gate.target_name)
-
-                    while not the_other_processor.is_waiting:
-                        self.ask_waiting(the_other_processor)
-
-                elif gate.role == "target":
-
-                    the_other_processor = self.get_processor(gate.control_name)
-
-                    while not the_other_processor.is_waiting:
-                        self.ask_waiting(the_other_processor)
+                    print("{} is trying to be synchronized with {}".format(
+                        gate.control_processor, gate.target_processor))
+                else:
+                    print("{} is trying to be synchronized with {}".format(
+                        gate.target_processor, gate.control_processor))
 
     def add_new_zero(self, num, new_index):
         """Insert zero to arbitrary position of a binary string

@@ -7,23 +7,16 @@ class GateAllocator:
         self.cluster = cluster
 
         self.set_gate_dict()
-        self.set_name_list()
         self.set_processor_list()
 
     def set_gate_dict(self):
         self.gate_dict = self.cluster.gate_dict
-
-    def set_name_list(self):
-        self.name_list = list(self.gate_dict.keys())
 
     def set_processor_list(self):
         self.processor_list = self.cluster.processor_list
 
     def get_id(self, processor):
         self.self.cluster.get_id(processor)
-
-    def get_name(self, processor):
-        return self.cluster.get_name(processor)
 
     def get_gates(self, processor):
         return self.cluster.get_gates(processor)
@@ -37,7 +30,7 @@ class GateAllocator:
 
         for gate in self.gate_list:
 
-            for processor in self.name_list:
+            for processor in self.processor_list:
 
                 # single qubit gate
                 if gate.target_index is None:
@@ -64,7 +57,7 @@ class GateAllocator:
                         remote_cnot_control.set_control_processor(processor)
                         remote_cnot_target.set_control_processor(processor)
 
-                        for the_other_processor in self.name_list:
+                        for the_other_processor in self.processor_list:
 
                             # Add remote cnot to the target processor
                             if gate.target_index in qubit_dict[the_other_processor]:
@@ -80,9 +73,8 @@ class GateAllocator:
 
         # Allocate gates to each device
         for processor in self.processor_list:
-            processor_name = self.get_name(processor)
-            qubits = qubit_dict[processor_name]
-            gates = self.gate_dict[processor_name]
+            qubits = qubit_dict[processor]
+            gates = self.gate_dict[processor]
 
             for gate in gates:
 
@@ -101,12 +93,13 @@ class GateAllocator:
 
             self.allocate_gates(processor, gates)
 
-        # for processor in list(self.cluster.gate_dict.keys()):
+        # for processor in self.processor_list:
 
+        #     import ray
         #     gates = self.cluster.gate_dict[processor]
-
         #     for gate in gates:
         #         print()
+        #         print("Processor:", ray.get(processor.get_id.remote()))
         #         print("Name:", gate.name)
         #         if gate.name == "CNOT":
         #             print("Control index:", gate.index)
@@ -116,7 +109,7 @@ class GateAllocator:
         #             print("Role", gate.role)
         #             print("Control index:", gate.index)
         #             print("Target index:", gate.target_index)
-        #             print("Control processor:", gate.control_processor)
-        #             print("Target processor:", gate.target_processor)
+        #             print("Control processor:", ray.get(gate.control_processor.get_id.remote()))
+        #             print("Target processor:", ray.get(gate.target_processor.get_id.remote()))
         #         else:
         #             print("Index:", gate.index)

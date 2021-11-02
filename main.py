@@ -1,11 +1,11 @@
 from logical.circuit import QuantumCircuit
 
-qn = 2
+qn = 3
 qc = QuantumCircuit(qn)
 
 qc.x(0)
-qc.cx(0, 1)
+qc.cx(0, 2)
 
 qc.execute()
-# result = qc.result()
-# print(result)
+result = qc.result()
+print(result)
