@@ -1,4 +1,6 @@
 from physical.circuit import PhysicalCircuit
+from device.connection import Connection
+from device.waiter import Waiter
 import numpy as np
 import time
 import ray
@@ -25,8 +27,8 @@ class QuantumProcessor(object):
         self.cluster = None
         self.pc = detail["physical_circuit"]
 
-        self.is_waiting = False
-        self.is_synchronized = False
+        self.conn = Connection(self.cluster)
+        self.is_paired = False
 
     def get_id(self):
         """Return the processor id
@@ -60,6 +62,9 @@ class QuantumProcessor(object):
         """
         return self.pc.state
 
+    def put_message(self, message):
+        self.message.append(message)
+
     def set_cluster(self, cluster):
         """Give the time for applying each gate
 
@@ -76,6 +81,9 @@ class QuantumProcessor(object):
         """
         self.gates = gates
 
+    def wait(self):
+        time.sleep(self.execution_time)
+
     def x(self, idx):
         """Apply an X gate
 
@@ -83,6 +91,7 @@ class QuantumProcessor(object):
             idx (int): The index of qubit that X gate is applied to
         """
         self.pc.px(idx)
+        self.wait()
 
     def y(self, idx):
         """Apply an Y gate
@@ -91,6 +100,7 @@ class QuantumProcessor(object):
             idx (int): The index of qubit that Y gate is applied to
         """
         self.pc.py(idx)
+        self.wait()
 
     def z(self, idx):
         """Apply an Z gate
@@ -99,6 +109,7 @@ class QuantumProcessor(object):
             idx (int): The index of qubit that Z gate is applied to
         """
         self.pc.pz(idx)
+        self.wait()
 
     def h(self, idx):
         """Apply an H gate
@@ -107,6 +118,7 @@ class QuantumProcessor(object):
             idx (int): The index of qubit that H gate is applied to
         """
         self.pc.ph(idx)
+        self.wait()
 
     def cx(self, control_idx, target_idx):
         """Apply an CNOT gate
@@ -116,44 +128,29 @@ class QuantumProcessor(object):
             target_idx (int): The index of target qubit
         """
         self.pc.pcx(control_idx, target_idx)
+        self.wait()
 
     def execute(self):
         """Execute the quantum gates in the given gate list"""
         for gate in self.gates:
 
             if gate.name == "X":
-
                 self.x(gate.index)
-                time.sleep(self.execution_time)
 
             elif gate.name == "Y":
-
                 self.y(gate.index)
-                time.sleep(self.execution_time)
 
             elif gate.name == "Z":
-
                 self.z(gate.index)
-                time.sleep(self.execution_time)
 
             elif gate.name == "H":
-
                 self.h(gate.index)
-                time.sleep(self.execution_time)
 
             elif gate.name == "CNOT":
-
                 self.cx(gate.index, gate.target_index)
-                time.sleep(self.execution_time)
 
             elif gate.name == "RemoteCNOT":
-
-                if gate.role == "control":
-                    print("{} is trying to be synchronized with {}".format(
-                        gate.control_processor, gate.target_processor))
-                else:
-                    print("{} is trying to be synchronized with {}".format(
-                        gate.target_processor, gate.control_processor))
+                print("{} is ready".format(self.id))
 
     def add_new_zero(self, num, new_index):
         """Insert zero to arbitrary position of a binary string

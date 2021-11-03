@@ -9,10 +9,10 @@ class IndexAllocator:
         self.set_allocated_result()
 
     def set_qubit_dict(self):
-        self.qubit_dict = {processor: self.get_qubit_num(processor) for processor in self.processor_list}
+        self.qubit_dict = {self.get_id(processor): self.get_qubit_num(processor) for processor in self.processor_list}
 
     def set_allocated_result(self):
-        self.allocated_result = {processor: [] for processor in self.processor_list}
+        self.allocated_result = {self.get_id(processor): [] for processor in self.processor_list}
 
     def get_id(self, processor):
         return self.cluster.get_id(processor)
@@ -31,17 +31,15 @@ class IndexAllocator:
 
         for qubit_i in range(self.qubit_num):
             processor_i = qubit_i % len(self.processor_list)
-            processor = self.get_processor(processor_i)
-            qubits = self.qubit_dict[processor]
+            qubits = self.qubit_dict[processor_i]
             if qubits != 0:
-                self.allocated_result[processor].append(qubit_i)
-                self.qubit_dict[processor] -= 1
+                self.allocated_result[processor_i].append(qubit_i)
+                self.qubit_dict[processor_i] -= 1
             else:
-                del self.qubit_dict[processor]
+                del self.qubit_dict[processor_i]
                 processor_i = (qubit_i + 1) % len(self.processor_list)
-                processor = self.get_processor(processor_i)
-                self.allocated_result[processor].append(qubit_i)
-                self.qubit_dict[processor] -= 1
+                self.allocated_result[processor_i].append(qubit_i)
+                self.qubit_dict[processor_i] -= 1
 
     def get_result(self):
         return self.allocated_result

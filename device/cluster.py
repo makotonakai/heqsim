@@ -1,6 +1,7 @@
 from physical.processor import QuantumProcessor
 from physical.circuit import PhysicalCircuit
 import configparser
+import time
 import ray
 import os
 
@@ -12,6 +13,8 @@ class QuantumCluster:
         self.gate_dict = {}
         self.setup()
 
+        self.state_list = []
+
     def setup(self):
 
         path = os.path.dirname(os.path.realpath(__file__))
@@ -22,10 +25,10 @@ class QuantumCluster:
         sections = config.sections()
         id_ = 0
 
-        for section in sections:
+        for processor_ in sections:
 
-            qubit_num = int(config[section]["qubit_num"])
-            execution_time = float(config[section]["time"])
+            qubit_num = int(config[processor_]["qubit_num"])
+            execution_time = float(config[processor_]["time"])
             physical_circuit = PhysicalCircuit(qubit_num)
 
             detail = {"id": id_,
@@ -37,7 +40,7 @@ class QuantumCluster:
             processor = QuantumProcessor.remote(detail)
             self.processor_list.append(processor)
 
-            self.gate_dict[processor] = []
+            self.gate_dict[id_] = []
             id_ += 1
 
         for processor in self.processor_list:
@@ -67,9 +70,9 @@ class QuantumCluster:
     def get_state(self, processor):
         return ray.get(processor.get_state.remote())
 
-    def execute_on_each_processor(self, processor):
-        processor.execute.remote()
-
     def execute(self):
-        for processor in self.processor_list:
-            self.execute_on_each_processor(processor)
+        start = time.time()
+        result = ray.get([processor.execute.remote() for processor in self.processor_list])
+        end = time.time()
+        print("time:", end - start)
+        self.state_list = ray.get([processor.get_state.remote() for processor in self.processor_list])

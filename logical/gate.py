@@ -11,8 +11,8 @@ class QuantumGate:
     def set_role(self, role):
         self.role = role
 
-    def set_control_processor(self, processor):
-        self.control_processor = processor
+    def set_control_id(self, id_):
+        self.control_id = id_
 
-    def set_target_processor(self, processor):
-        self.target_processor = processor
+    def set_target_id(self, id_):
+        self.target_id = id_
