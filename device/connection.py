@@ -17,9 +17,6 @@ class Connection:
         message = self.message_link.get()
         return message
 
-    def has_ack(self):
-        return not self.ack_link.empty
-
     def send_ack(self, ack):
         self.ack_link.put(ack)
 
