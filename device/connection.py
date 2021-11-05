@@ -1,5 +1,4 @@
 from ray.util.queue import Queue
-import ray
 
 
 class Connection:
