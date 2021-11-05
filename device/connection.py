@@ -1,5 +1,4 @@
 from ray.util.queue import Queue
-import asyncio
 import ray
 
 

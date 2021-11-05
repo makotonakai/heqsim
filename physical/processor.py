@@ -1,6 +1,5 @@
 from physical.circuit import PhysicalCircuit
 from device.connection import Connection
-import asyncio
 import numpy as np
 import time
 import ray
