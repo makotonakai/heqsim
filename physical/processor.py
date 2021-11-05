@@ -1,6 +1,6 @@
 from physical.circuit import PhysicalCircuit
 from device.connection import Connection
-from device.waiter import Waiter
+import asyncio
 import numpy as np
 import time
 import ray
@@ -23,12 +23,11 @@ class QuantumProcessor(object):
         self.id = detail["id"]
         self.qubit_num = detail["qubit_num"]
         self.execution_time = detail["execution_time"]
-        self.gates = []
-        self.cluster = None
         self.pc = detail["physical_circuit"]
+        self.gates = []
 
-        self.conn = Connection(self.cluster)
-        self.is_paired = False
+        self.cluster = None
+        self.connection_list = []
 
     def get_id(self):
         """Return the processor id
@@ -62,8 +61,13 @@ class QuantumProcessor(object):
         """
         return self.pc.state
 
-    def put_message(self, message):
-        self.message.append(message)
+    def set_gates(self, gates):
+        """Give the gate list to the quantum processor
+
+        Args:
+            gates (list[QuantumGate]): the new list of quantum gates
+        """
+        self.gates = gates
 
     def set_cluster(self, cluster):
         """Give the time for applying each gate
@@ -73,13 +77,13 @@ class QuantumProcessor(object):
         """
         self.cluster = cluster
 
-    def set_gates(self, gates):
-        """Give the gate list to the quantum processor
+    def set_connection_list(self, connection_list):
+        """Give the time for applying each gate
 
         Args:
-            gates (list[QuantumGate]): the new list of quantum gates
+            cluster (list(QuantumProcessor)): List of quantum processors
         """
-        self.gates = gates
+        self.connection_list = connection_list
 
     def wait(self):
         time.sleep(self.execution_time)
@@ -150,7 +154,13 @@ class QuantumProcessor(object):
                 self.cx(gate.index, gate.target_index)
 
             elif gate.name == "RemoteCNOT":
-                print("{} is ready".format(self.id))
+                conn = self.connection_list[gate.id]
+                try:
+                    conn.send_message(gate.id)
+                    ack = conn.get_ack()
+                except ray.util.queue.Full:
+                    message = conn.get_message()
+                    conn.send_ack("ack")
 
     def add_new_zero(self, num, new_index):
         """Insert zero to arbitrary position of a binary string
@@ -228,9 +238,3 @@ class QuantumProcessor(object):
         new_state = np.array(list(new_state_dict.values()))
         self.state = new_state
         return measure_result
-
-    def ask_waiting(self, processor):
-
-        if processor.is_waiting:
-            self.is_synchronized = True
-            print("{} is now synced with {}".format(self.name, processor.name))

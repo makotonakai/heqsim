@@ -71,7 +71,6 @@ class GateAllocator:
                                 break
 
                         self.gate_dict[control_id].append(remote_cnot_control)
-
                         remote_cnot_id += 1
 
         # Allocate gates to each device
@@ -89,6 +88,7 @@ class GateAllocator:
                     target_indices = qubit_dict[gate.target_id]
                     gate.index = control_indices.index(gate.index)
                     gate.target_index = target_indices.index(gate.target_index)
+                    self.cluster.remote_cnot_list.append(gate)
 
                 # Allocate other gates (gates on a local processor)
                 else:
