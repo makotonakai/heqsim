@@ -87,54 +87,54 @@ class QuantumProcessor(object):
     def wait(self):
         time.sleep(self.execution_time)
 
-    def x(self, idx):
+    def x(self, index):
         """Apply an X gate
 
         Args:
-            idx (int): The index of qubit that X gate is applied to
+            index (int): The index of qubit that X gate is applied to
         """
-        self.pc.px(idx)
+        self.pc.px(index)
         self.wait()
 
-    def y(self, idx):
+    def y(self, index):
         """Apply an Y gate
 
         Args:
-            idx (int): The index of qubit that Y gate is applied to
+            index (int): The index of qubit that Y gate is applied to
         """
-        self.pc.py(idx)
+        self.pc.py(index)
         self.wait()
 
-    def z(self, idx):
+    def z(self, index):
         """Apply an Z gate
 
         Args:
-            idx (int): The index of qubit that Z gate is applied to
+            index (int): The index of qubit that Z gate is applied to
         """
-        self.pc.pz(idx)
+        self.pc.pz(index)
         self.wait()
 
-    def h(self, idx):
+    def h(self, index):
         """Apply an H gate
 
         Args:
-            idx (int): The index of qubit that H gate is applied to
+            index (int): The index of qubit that H gate is applied to
         """
-        self.pc.ph(idx)
+        self.pc.ph(index)
         self.wait()
 
-    def cx(self, control_idx, target_idx):
+    def cx(self, control_index, target_index):
         """Apply an CNOT gate
 
         Args:
-            control_idx (int): The index of controlled qubit
-            target_idx (int): The index of target qubit
+            control_index (int): The index of controlled qubit
+            target_index (int): The index of target qubit
         """
-        self.pc.pcx(control_idx, target_idx)
+        self.pc.pcx(control_index, target_index)
         self.wait()
 
-    def measure(self, idx):
-        measurement_result = self.pc.measure(idx)
+    def measure(self, index):
+        measurement_result = self.pc.measure(index)
         self.wait()
         return measurement_result
 

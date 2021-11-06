@@ -16,23 +16,23 @@ class QuantumCircuit:
         self.set_gate_allocator()
         self.set_processor_list()
 
-    def x(self, idx):
-        self.gate_list.append(QuantumGate("X", idx))
+    def x(self, index):
+        self.gate_list.append(QuantumGate("X", index))
 
-    def y(self, idx):
-        self.gate_list.append(QuantumGate("Y", idx))
+    def y(self, index):
+        self.gate_list.append(QuantumGate("Y", index))
 
-    def z(self, idx):
-        self.gate_list.append(QuantumGate("Z", idx))
+    def z(self, index):
+        self.gate_list.append(QuantumGate("Z", index))
 
-    def h(self, idx):
-        self.gate_list.append(QuantumGate("H", idx))
+    def h(self, index):
+        self.gate_list.append(QuantumGate("H", index))
 
-    def cx(self, control_idx, target_idx):
-        self.gate_list.append(QuantumGate("CNOT", control_idx, target_idx))
+    def cx(self, control_index, target_index):
+        self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
 
-    def measure(self, idx):
-        self.gate_list.append(QuantumGate("Measure", idx))
+    def measure(self, index):
+        self.gate_list.append(QuantumGate("Measure", index))
 
     def set_processor_list(self):
         self.processor_list = self.cluster.processor_list
@@ -92,7 +92,7 @@ class QuantumCircuit:
             qubit_list = qubit_dict[processor]
             qubit_num_used = len(qubit_list)
             state = self.state(processor)
-            state_dir = {self.state_str(qubit_idx, qubit_num): state[qubit_idx] for qubit_idx in range(2**qubit_num)}
+            state_dir = {self.state_str(qubit_index, qubit_num): state[qubit_index] for qubit_index in range(2**qubit_num)}
             state_dir = self.shrink_state_dir(state_dir, qubit_num_used)
 
             total_states = list(total_state_dir.keys())

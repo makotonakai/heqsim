@@ -18,7 +18,7 @@ class PhysicalState:
     def build_state(self):
         """Create the initial statevector of the given number of qubits"""
         state_qubit = np.array([1, 0])
-        for idx in range(self.qubit_num):
+        for index in range(self.qubit_num):
             self.statevector = np.kron(self.statevector, state_qubit)
 
     def get_statevector(self):

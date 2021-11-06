@@ -16,56 +16,56 @@ class PhysicalCircuit:
         self.qubit_num = n
         self.state = PhysicalState(self.qubit_num).get_statevector()
 
-    def px(self, idx):
+    def px(self, index):
         """Applying an X gate
 
         Args:
-            idx (int): the index of a qubit that users are going to apply this gate
+            index (int): the index of a qubit that users are going to apply this gate
         """
-        xmatrix = px_(self.qubit_num, idx)
+        xmatrix = px_(self.qubit_num, index)
         self.state = np.dot(xmatrix, self.state)
 
-    def py(self, idx):
+    def py(self, index):
         """Applying an Y gate
 
         Args:
-            idx (int): the index of a qubit that users are going to apply this gate
+            index (int): the index of a qubit that users are going to apply this gate
         """
-        ymatrix = py_(self.qubit_num, idx)
+        ymatrix = py_(self.qubit_num, index)
         self.state = np.dot(ymatrix, self.state)
 
-    def pz(self, idx):
+    def pz(self, index):
         """Applying an Z gate
 
         Args:
-            idx (int): the index of a qubit that users are going to apply this gate
+            index (int): the index of a qubit that users are going to apply this gate
         """
-        zmatrix = pz_(self.qubit_num, idx)
+        zmatrix = pz_(self.qubit_num, index)
         self.state = np.dot(zmatrix, self.state)
 
-    def ph(self, idx):
+    def ph(self, index):
         """Applying an H gate
 
         Args:
-            idx (int): the index of a qubit that users are going to apply this gate
+            index (int): the index of a qubit that users are going to apply this gate
         """
-        hmatrix = ph_(self.qubit_num, idx)
+        hmatrix = ph_(self.qubit_num, index)
         self.state = np.dot(hmatrix, self.state)
 
-    def pcx(self, control_idx, target_idx):
+    def pcx(self, control_index, target_index):
         """Applying a CNOT gate
 
         Args:
-            idx (int): the index of a qubit that users are going to apply this gate
+            index (int): the index of a qubit that users are going to apply this gate
         """
-        cxmatrix = pcx_(self.qubit_num, control_idx, target_idx)
+        cxmatrix = pcx_(self.qubit_num, control_index, target_index)
         self.state = np.dot(cxmatrix, self.state)
 
-    def measure(self, idx):
+    def measure(self, index):
         """Measure a qubit
 
         Args:
-            idx (int): the index of a qubit that users measure
+            index (int): the index of a qubit that users measure
         """
 
         # Measurement probability of the measured qubit
@@ -80,7 +80,7 @@ class PhysicalCircuit:
 
         # Calculate measurement probability of the measured qubit
         for key in list(state_dict.keys()):
-            if key[idx] == "0":
+            if key[index] == "0":
                 measure_prob["0"] += state_dict[key]**2
             else:
                 measure_prob["1"] += state_dict[key]**2
@@ -92,9 +92,9 @@ class PhysicalCircuit:
         new_state_dict = {}
         for num in range(len(self.state)):
             comp_basis = bin(num)[2:].zfill(qubit_num)
-            if comp_basis[idx] == str(measure_result):
+            if comp_basis[index] == str(measure_result):
                 comp_basis_list = list(comp_basis)
-                del comp_basis_list[idx]
+                del comp_basis_list[index]
                 new_comp_basis = "".join(comp_basis_list)
                 new_state_dict[new_comp_basis] = self.state[num]
 
