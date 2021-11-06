@@ -1,4 +1,4 @@
-from logical.circuit import QuantumCircuit
+from disqs.logical.circuit import QuantumCircuit
 
 qn = 2
 qc = QuantumCircuit(qn)

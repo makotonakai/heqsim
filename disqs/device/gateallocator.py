@@ -1,4 +1,4 @@
-from logical.gate import QuantumGate
+from disqs.logical.gate import QuantumGate
 
 
 class GateAllocator:

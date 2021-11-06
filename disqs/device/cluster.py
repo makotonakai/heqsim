@@ -1,6 +1,6 @@
-from physical.processor import QuantumProcessor
-from physical.circuit import PhysicalCircuit
-from device.connection import Connection
+from disqs.physical.processor import QuantumProcessor
+from disqs.physical.circuit import PhysicalCircuit
+from disqs.device.connection import Connection
 import configparser
 import time
 import ray

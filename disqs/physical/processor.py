@@ -1,5 +1,5 @@
-from physical.circuit import PhysicalCircuit
-from device.connection import Connection
+from disqs.physical.circuit import PhysicalCircuit
+from disqs.device.connection import Connection
 import numpy as np
 import time
 import ray
@@ -162,9 +162,11 @@ class QuantumProcessor(object):
                 try:
                     connection.send_message(gate.id)
                     ack = connection.get_ack()
+                    print(ack)
                 except ray.util.queue.Full:
                     message = connection.get_message()
                     connection.send_ack("ack")
+                    print(message)
 
             elif gate.name == "Measure":
                 measurement_result = self.measure(gate.index)
