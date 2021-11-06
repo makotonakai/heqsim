@@ -1,6 +1,6 @@
 
-from .gate import px_, py_, pz_, ph_, pcx_
-from .state import PhysicalState
+from physical.gate import px_, py_, pz_, ph_, pcx_
+from physical.state import PhysicalState
 import numpy as np
 
 

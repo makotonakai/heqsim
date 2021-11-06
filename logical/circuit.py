@@ -1,4 +1,4 @@
-from .gate import QuantumGate
+from logical.gate import QuantumGate
 from device.cluster import QuantumCluster
 from device.indexallocator import IndexAllocator
 from device.gateallocator import GateAllocator
