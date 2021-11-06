@@ -1,5 +1,5 @@
-__pycache__/
-logical/__pycache__/
-device/__pycache__/
-physical/__pycache__/
+disqs/__pycache__/
+disqs/logical/__pycache__/
+disqs/device/__pycache__/
+disqs/physical/__pycache__/
 .DS_store
