@@ -31,6 +31,9 @@ class QuantumCircuit:
     def cx(self, control_idx, target_idx):
         self.gate_list.append(QuantumGate("CNOT", control_idx, target_idx))
 
+    def measure(self, idx):
+        self.gate_list.append(QuantumGate("Measure", idx))
+
     def set_processor_list(self):
         self.processor_list = self.cluster.processor_list
 

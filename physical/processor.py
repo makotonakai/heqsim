@@ -133,6 +133,11 @@ class QuantumProcessor(object):
         self.pc.pcx(control_idx, target_idx)
         self.wait()
 
+    def measure(self, idx):
+        measurement_result = self.pc.measure(idx)
+        self.wait()
+        return measurement_result
+
     def execute(self):
         """Execute the quantum gates in the given gate list"""
         for gate in self.gates:
@@ -153,87 +158,13 @@ class QuantumProcessor(object):
                 self.cx(gate.index, gate.target_index)
 
             elif gate.name == "RemoteCNOT":
-                conn = self.connection_list[gate.id]
+                connection = self.connection_list[gate.id]
                 try:
-                    conn.send_message(gate.id)
-                    ack = conn.get_ack()
+                    connection.send_message(gate.id)
+                    ack = connection.get_ack()
                 except ray.util.queue.Full:
-                    message = conn.get_message()
-                    conn.send_ack("ack")
+                    message = connection.get_message()
+                    connection.send_ack("ack")
 
-    def add_new_zero(self, num, new_index):
-        """Insert zero to arbitrary position of a binary string
-
-        E.g. insert 0 to the 2nd digit of 010 → 0010
-
-        Args:
-            num (int): the number
-            new_index ([type]): the index of a new zero
-
-        Returns:
-            str: the binary string with an additional zero
-        """
-        string = bin(num)[2:].zfill(self.qubit_num)
-        string_list = list(string)
-        string_list.insert(new_index, '0')
-        new_string = "".join(string_list)
-        return new_string
-
-    def add_qubit(self, new_index):
-        """Update the quantum state by adding another qubit
-
-        Args:
-            new_index (int): the index of the new qubit
-        """
-        state_dict = {}
-        for idx in range(len(self.pc.state)):
-            new_idx = self.add_new_zero(idx, new_index)
-            state_dict[new_idx] = self.pc.state[idx]
-
-        new_state = [0 for idx in range(2**(self.qubit_num + 1))]
-        for key in list(state_dict.keys()):
-            new_idx = int(key, 2)
-            new_state[new_idx] = state_dict[key]
-        self.pc.state = new_state
-
-    def measure(self, idx):
-        """Measure a qubit
-        Args:
-            idx (int): the index of a qubit that users measure
-        """
-        # Create a probability list
-        prob = [prob_amp**2 for prob_amp in self.state]
-        prob_dict = {}
-        for state_ in range(len(prob)):
-            prob_dict[format(state_, 'b').zfill(self.qubit_num)] = prob[state_]
-
-        # Get a measured outcome
-        measure_prob = [0, 0]
-        for state_ in list(prob_dict.keys()):
-            if state_[idx] == "0":
-                measure_prob[0] += prob_dict[state_]
-            else:
-                measure_prob[1] += prob_dict[state_]
-        measure_result = np.random.choice(range(2), 1, p=measure_prob)[0]
-
-        # Update a previous state dict (state: probability amplitude)
-        state_dict = {}
-        for state_ in range(len(prob)):
-            index = format(state_, 'b').zfill(self.ubit_num)
-            state_dict[index] = self.state[state_]
-
-        new_state_dict = {}
-        for state_ in list(state_dict.keys()):
-            if state_[idx] == str(measure_result):
-                state_list = list(state_)
-                del state_list[idx]
-                new_state = "".join(state_list)
-                new_state_dict[new_state] = state_dict[state_]
-
-        new_prob = [prob_amp**2 for prob_amp in list(new_state_dict.values())]
-        for state_ in list(new_state_dict.keys()):
-            new_state_dict[state_] *= np.sqrt(1 / sum(new_prob))
-
-        new_state = np.array(list(new_state_dict.values()))
-        self.state = new_state
-        return measure_result
+            elif gate.name == "Measure":
+                measurement_result = self.measure(gate.index)
