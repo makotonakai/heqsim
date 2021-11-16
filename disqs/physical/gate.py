@@ -1,121 +1,122 @@
-
+from disqs.physical.basicgate import px, py, pz, ph, pcnot
 import numpy as np
+import time
 
-Imat = np.eye(2)
+
+def apply_px(state, index):
+    state_vector = state.vector
+    qubit_num = state.qubit_num
+    matrix = px(qubit_num, index)
+    state.vector = np.dot(matrix, state_vector)
 
 
-def px_(n, index):
-    """Create an X gate
+def apply_py(state, index):
+    state_vector = state.vector
+    qubit_num = state.qubit_num
+    matrix = py(qubit_num, index)
+    state.vector = np.dot(matrix, state_vector)
 
+
+def apply_pz(state, index):
+    state_vector = state.vector
+    qubit_num = state.qubit_num
+    matrix = py(qubit_num, index)
+    state.vector = np.dot(matrix, state_vector)
+
+
+def apply_ph(state, index):
+    state_vector = state.vector
+    qubit_num = state.qubit_num
+    matrix = ph(qubit_num, index)
+    state.vector = np.dot(matrix, state_vector)
+
+
+def apply_pcnot(state, control_index, target_index):
+    state_vector = state.vector
+    qubit_num = state.qubit_num
+    matrix = pcnot(qubit_num, control_index, target_index)
+    state.vector = np.dot(matrix, state_vector)
+
+
+def x(state, index, sleep_time, lock):
+    lock.acquire()
+    apply_px(state, index)
+    lock.release()
+    time.sleep(sleep_time)
+
+
+def y(state, index, sleep_time, lock):
+    lock.acquire()
+    apply_py(state, index)
+    lock.release()
+    time.sleep(sleep_time)
+
+
+def z(state, index, sleep_time, lock):
+    lock.acquire()
+    apply_pz(state, index)
+    lock.release()
+    time.sleep(sleep_time)
+
+
+def h(state, index, sleep_time, lock):
+    lock.acquire()
+    apply_ph(state, index)
+    lock.release()
+    time.sleep(sleep_time)
+
+
+def cnot(state, control_index, target_index, sleep_time, lock):
+    lock.acquire()
+    apply_pcnot(state, control_index, target_index)
+    lock.release()
+    time.sleep(sleep_time)
+
+
+def measure(state, index, sleep_time, lock):
+    """Measure a qubit
     Args:
-        n (int): number of qubits on a quantum circuit
-        index (int): the index of a qubit that a gate is applied
-
-    Returns:
-        np.array : the matrix of an X gate
+        index (int): the index of a qubit that users measure
     """
-    matrix = 1
-    X = np.array([[0, 1], [1, 0]])
-    for i in range(n):
-        if i == index:
-            matrix = np.kron(matrix, X)
+
+    # Measurement probability of the measured qubit
+    measure_prob = {"0": 0, "1": 0}
+
+    # Pairs of state & its probability amplitude
+    state_dict = {}
+    for num in range(len(state.vector)):
+        comp_basis = bin(num)[2:].zfill(state.qubit_num)
+        state_dict[comp_basis] = state.vector[num]
+
+    # Calculate measurement probability of the measured qubit
+    for key in list(state_dict.keys()):
+        if key[index] == "0":
+            measure_prob["0"] += state_dict[key]**2
         else:
-            matrix = np.kron(matrix, Imat)
+            measure_prob["1"] += state_dict[key]**2
 
-    return matrix
+    # Perform measurement
+    measure_result = np.random.choice(2, 1, p=list(measure_prob.values()))[0]
 
+    # Pairs of each of the updated states & its probability amplitude
+    new_state_dict = {}
+    for num in range(len(state.vector)):
+        comp_basis = bin(num)[2:].zfill(state.qubit_num)
+        if comp_basis[index] == str(measure_result):
+            comp_basis_list = list(comp_basis)
+            del comp_basis_list[index]
+            new_comp_basis = "".join(comp_basis_list)
+            new_state_dict[new_comp_basis] = state.vector[num]
 
-def py_(n, index):
-    """Create an Y gate
+    # Update each of the probability amplitudes
+    prob_list = []
+    for key in list(new_state_dict.keys()):
+        prob = new_state_dict[key]**2
+        prob_list.append(prob)
 
-    Args:
-        n (int): number of qubits on a quantum circuit
-        index (int): the index of a qubit that a gate is applied
+    for key in list(new_state_dict.keys()):
+        new_state_dict[key] *= np.sqrt(1 / sum(prob_list))
 
-    Returns:
-        np.array : the matrix of an Y gate
-    """
-    matrix = 1
-    Y = np.array([[0, -1j], [1j, 0]])
-    for i in range(n):
-        if i == index:
-            matrix = np.kron(matrix, Y)
-        else:
-            matrix = np.kron(matrix, Imat)
-
-    return matrix
-
-
-def pz_(n, index):
-    """Create an Z gate
-
-    Args:
-        n (int): number of qubits on a quantum circuit
-        index (int): the index of a qubit that a gate is applied
-
-    Returns:
-        np.array : the matrix of an Z gate
-    """
-    matrix = 1
-    Z = np.array([[1, 0], [0, -1]])
-    for i in range(n):
-        if i == index:
-            matrix = np.kron(matrix, Z)
-        else:
-            matrix = np.kron(matrix, Imat)
-
-    return matrix
-
-
-def ph_(n, index):
-    """Create an H gate
-
-    Args:
-        n (int): number of qubits on a quantum circuit
-        index (int): the index of a qubit that a gate is applied
-
-    Returns:
-        np.array : the matrix of an H gate
-    """
-    matrix = 1
-    H = np.array([[1 / np.sqrt(2), 1 / np.sqrt(2)],
-                 [1 / np.sqrt(2), - 1 / np.sqrt(2)]])
-    for i in range(n):
-        if i == index:
-            matrix = np.kron(matrix, H)
-        else:
-            matrix = np.kron(matrix, Imat)
-
-    return matrix
-
-
-def pcx_(n, control_index, target_index):
-    """Create an CNOT gate
-
-    Args:
-        n (int): number of qubits on a quantum circuit
-        control_index (int): the index of a controlled qubit
-        target_index (int): the index of a target qubit
-
-    Returns:
-        np.array : the matrix of an X gate
-    """
-    cx = np.zeros((2**n, 2**n))
-    control_bin_list = [format(num, 'b').zfill(n) for num in range(2**n)]
-    target_bin_list = []
-    for control_bin in control_bin_list:
-        target_bin = list(control_bin)
-        if control_bin[control_index] == '1':
-            if target_bin[target_index] == '0':
-                target_bin[target_index] = '1'
-            else:
-                target_bin[target_index] = '0'
-        target_bin = "".join(target_bin)
-        target_bin_list.append(target_bin)
-
-    for index in range(2**n):
-        control_ = int(control_bin_list[index], 2)
-        target_ = int(target_bin_list[index], 2)
-        cx[control_][target_] = 1
-
-    return cx
+    state.vector = np.array(list(new_state_dict.values()))
+    state.qubit_num -= 1
+    return measure_result

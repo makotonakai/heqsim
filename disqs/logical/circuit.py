@@ -55,7 +55,7 @@ class QuantumCircuit:
         self.gate_allocator.execute(qubit_dict)
 
     def run_cluster(self):
-        self.cluster.execute()
+        self.cluster.run()
 
     def execute(self):
         self.allocate_qubits()
@@ -68,40 +68,5 @@ class QuantumCircuit:
     def qubits(self, processor):
         return self.cluster.get_qubit_num(processor)
 
-    def state_str(self, num, digit):
-        return bin(num)[2:].zfill(digit)
-
-    def shrink_state_dir(self, state_dir, qubit_num_used):
-        new_state_dir = {self.state_str(state, qubit_num_used):
-                         1 for state in range(2**qubit_num_used)}
-        qubit_num = len(list(state_dir.keys())[0])
-        for state in list(new_state_dir.keys()):
-            new_state_dir[state] = state_dir[state + '0' * (qubit_num - qubit_num_used)]
-        return new_state_dir
-
-    def is_part_of_state(self, indices, state_str, target_state_str):
-        total_state_str_shrinked = "".join([target_state_str[index] for index in indices])
-        return state_str == total_state_str_shrinked
-
     def result(self):
-        total_state_dir = {self.state_str(state, self.qubit_num): 1 for state in range(2**self.qubit_num)}
-
-        for processor in self.processor_list:
-            qubit_num = self.qubits(processor)
-            qubit_dict = self.get_qubit_dict()
-            qubit_list = qubit_dict[processor]
-            qubit_num_used = len(qubit_list)
-            state = self.state(processor)
-            state_dir = {self.state_str(qubit_index, qubit_num): state[qubit_index] for qubit_index in range(2**qubit_num)}
-            state_dir = self.shrink_state_dir(state_dir, qubit_num_used)
-
-            total_states = list(total_state_dir.keys())
-            states = list(state_dir.keys())
-
-            for total_state in total_states:
-                for each_state in states:
-                    if self.is_part_of_state(qubit_list, each_state, total_state):
-                        total_state_dir[total_state] *= state_dir[each_state]
-
-        total_state = np.array(list(total_state_dir.values()))
-        return total_state
+        return self.cluster.state.vector

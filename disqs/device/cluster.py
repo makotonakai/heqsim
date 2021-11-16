@@ -1,9 +1,9 @@
 from disqs.physical.processor import QuantumProcessor
-from disqs.physical.circuit import PhysicalCircuit
+from disqs.physical.state import QuantumState
 from disqs.device.connection import Connection
+import threading
 import configparser
 import time
-import ray
 import os
 
 
@@ -11,8 +11,11 @@ class QuantumCluster:
 
     def __init__(self):
         self.processor_list = []
+        self.index_dict = {}
         self.gate_dict = {}
-        self.remote_cnot_list = []
+        self.remote_cnot_num = 0
+
+        self.total_qubit_num = 0
         self.setup()
 
     def setup(self):
@@ -29,58 +32,68 @@ class QuantumCluster:
 
             qubit_num = int(config[processor_]["qubit_num"])
             execution_time = float(config[processor_]["time"])
-            physical_circuit = PhysicalCircuit(qubit_num)
 
-            detail = {"id": id_,
-                      "qubit_num": qubit_num,
-                      "execution_time": execution_time,
-                      "physical_circuit": physical_circuit
-                      }
+            detail = {
+                "id": id_,
+                "qubit_num": qubit_num,
+                "execution_time": execution_time}
 
-            processor = QuantumProcessor.remote(detail)
+            processor = QuantumProcessor(detail)
             self.processor_list.append(processor)
+
+            self.total_qubit_num += qubit_num
 
             self.gate_dict[id_] = []
             id_ += 1
 
-        for processor in self.processor_list:
-            processor.set_cluster.remote(self.processor_list)
-
-    def set_cluster(self, processor, cluster):
-        processor.set_cluster.remote(cluster)
-
-    def set_gates(self, processor, gates):
-        processor.set_gates.remote(gates)
-
-    def set_connection_list(self, processor):
-        processor.set_connection_list.remote(self.connection_list)
-
-    def create_connection_list(self):
-        self.connection_list = []
-        for remote_cnot_id in range(len(self.remote_cnot_list)):
-            if remote_cnot_id % 2 == 0:
-                connection = Connection()
-                self.connection_list.append(connection)
+        self.set_quantum_state()
 
     def get_id(self, processor):
-        return ray.get(processor.get_id.remote())
-
-    def get_name(self, processor):
-        return ray.get(processor.get_name.remote())
+        return processor.id
 
     def get_qubit_num(self, processor):
-        return ray.get(processor.get_qubit_num.remote())
+        return processor.qubit_num
 
-    def get_gates(self, processor):
-        return ray.get(processor.get_gates.remote())
+    def set_quantum_state(self):
+        self.state = QuantumState(self.total_qubit_num)
 
-    def get_state(self, processor):
-        return ray.get(processor.get_state.remote())
+    def set_index_dict(self, index_dict):
+        self.index_dict = index_dict
 
-    def execute(self):
-        self.create_connection_list()
+    def set_connection_list(self, connection_list):
+        self.connection_list = connection_list
+
+    def set_remote_cnot_num(self, remote_cnot_num):
+        self.remote_cnot_num = remote_cnot_num
+
+    def set_index_list_to_processor(self, processor, index_list):
+        processor.index_list = index_list
+
+    def set_gate_list_to_processor(self, processor, gate_list):
+        processor.gate_list = gate_list
+
+    def set_quantum_state_to_processor(self, processor, state):
+        processor.state = state
+
+    def set_lock_to_processor(self, processor, lock):
+        processor.lock = lock
+
+    def set_connection_list_to_processor(self, processor, connection_list):
+        processor.connection_list = connection_list
+
+    def run(self):
+
+        lock = threading.Lock()
+        connection_list = [Connection() for _ in range(self.remote_cnot_num)]
+
         for processor in self.processor_list:
-            self.set_connection_list(processor)
+            self.set_gate_list_to_processor(processor, self.gate_dict[processor.id])
+            self.set_quantum_state_to_processor(processor, self.state)
+            self.set_lock_to_processor(processor, lock)
+            self.set_connection_list_to_processor(processor, connection_list)
 
-        result = ray.get([processor.execute.remote() for processor in self.processor_list])
-        # self.state_list = ray.get([processor.get_state.remote() for processor in self.processor_list])
+        for processor in self.processor_list:
+            processor.start()
+
+        for processor in self.processor_list:
+            processor.join()

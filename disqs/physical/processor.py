@@ -1,172 +1,82 @@
-from disqs.physical.circuit import PhysicalCircuit
+from disqs.physical.state import QuantumState
+from disqs.physical.gate import x, y, z, h, cnot, measure
 from disqs.device.connection import Connection
+from threading import Thread
 import numpy as np
+import queue
 import time
-import ray
 
 
-@ray.remote
-class QuantumProcessor(object):
-    """A class of a single quantum processor"""
-
+class QuantumProcessor(Thread):
     def __init__(self, detail):
-        """Define a quantum processor
-
-        Attributes:
-            name (str): the name
-            qubit_num (int): the number of qubits
-            gates (list[QuantumGate]): the list of quantum gates
-            pc (QuantumCircuit): the quantum circuit
-
-        """
+        Thread.__init__(self)
         self.id = detail["id"]
         self.qubit_num = detail["qubit_num"]
         self.execution_time = detail["execution_time"]
-        self.pc = detail["physical_circuit"]
-        self.gates = []
 
-        self.cluster = None
-        self.connection_list = []
+        self.state = None
+        self.lock = None
+        self.index_list = None
+        self.gate_list = None
+        self.connection_list = None
 
-    def get_id(self):
-        """Return the processor id
+    def run(self):
 
-        Returns:
-            str: the name of a quantum processor
-        """
-        return self.id
-
-    def get_gates(self):
-        """Return the quantum gate list
-
-        Returns:
-            list[QuantumGate]: List of quantum gates
-        """
-        return self.gates
-
-    def get_qubit_num(self):
-        """Return the number of qubits
-
-        Returns:
-            int: the number of qubits on a quantum processor
-        """
-        return self.qubit_num
-
-    def get_state(self):
-        """Retreive the current quantum state
-
-        Returns:
-            np.array: the state vector
-        """
-        return self.pc.state
-
-    def set_gates(self, gates):
-        """Give the gate list to the quantum processor
-
-        Args:
-            gates (list[QuantumGate]): the new list of quantum gates
-        """
-        self.gates = gates
-
-    def set_cluster(self, cluster):
-        """Give the time for applying each gate
-
-        Args:
-            cluster (list(QuantumProcessor)): List of quantum processors
-        """
-        self.cluster = cluster
-
-    def set_connection_list(self, connection_list):
-        """Give the time for applying each gate
-
-        Args:
-            cluster (list(QuantumProcessor)): List of quantum processors
-        """
-        self.connection_list = connection_list
-
-    def wait(self):
-        time.sleep(self.execution_time)
-
-    def x(self, index):
-        """Apply an X gate
-
-        Args:
-            index (int): The index of qubit that X gate is applied to
-        """
-        self.pc.px(index)
-        self.wait()
-
-    def y(self, index):
-        """Apply an Y gate
-
-        Args:
-            index (int): The index of qubit that Y gate is applied to
-        """
-        self.pc.py(index)
-        self.wait()
-
-    def z(self, index):
-        """Apply an Z gate
-
-        Args:
-            index (int): The index of qubit that Z gate is applied to
-        """
-        self.pc.pz(index)
-        self.wait()
-
-    def h(self, index):
-        """Apply an H gate
-
-        Args:
-            index (int): The index of qubit that H gate is applied to
-        """
-        self.pc.ph(index)
-        self.wait()
-
-    def cx(self, control_index, target_index):
-        """Apply an CNOT gate
-
-        Args:
-            control_index (int): The index of controlled qubit
-            target_index (int): The index of target qubit
-        """
-        self.pc.pcx(control_index, target_index)
-        self.wait()
-
-    def measure(self, index):
-        measurement_result = self.pc.measure(index)
-        self.wait()
-        return measurement_result
-
-    def execute(self):
-        """Execute the quantum gates in the given gate list"""
-        for gate in self.gates:
+        for gate in self.gate_list:
 
             if gate.name == "X":
-                self.x(gate.index)
+                x(self.state, gate.index, self.execution_time, self.lock)
 
             elif gate.name == "Y":
-                self.y(gate.index)
+                y(self.state, gate.index, self.execution_time, self.lock)
 
             elif gate.name == "Z":
-                self.z(gate.index)
+                z(self.state, gate.index, self.execution_time, self.lock)
 
             elif gate.name == "H":
-                self.h(gate.index)
+                h(self.state, gate.index, self.execution_time, self.lock)
 
             elif gate.name == "CNOT":
-                self.cx(gate.index, gate.target_index)
+                cnot(self.state, gate.index, self.execution_time, self.lock)
 
             elif gate.name == "RemoteCNOT":
+
                 connection = self.connection_list[gate.id]
                 try:
-                    connection.send_message(gate.id)
+                    connection.send_request(gate.id)
                     ack = connection.get_ack()
-                    print(ack)
-                except ray.util.queue.Full:
-                    message = connection.get_message()
+                except queue.Full:
+                    request = connection.get_request()
                     connection.send_ack("ack")
-                    print(message)
 
-            elif gate.name == "Measure":
-                measurement_result = self.measure(gate.index)
+                if gate.role == "control":
+
+                    bell_pair = QuantumState(2)
+                    h(bell_pair, 0, 0, self.lock)
+                    cnot(bell_pair, 0, 1, 0, self.lock)
+
+                    self.lock.acquire()
+                    self.state.add_state(bell_pair)
+                    self.lock.release()
+
+                    cnot(self.state, gate.index, self.state.qubit_num - 2, self.execution_time, self.lock)
+                    measure_result = measure(self.state, self.state.qubit_num - 2, self.execution_time, self.lock)
+                    connection.send_message(measure_result)
+                    ack = connection.get_ack()
+
+                    measure_result = connection.get_message()
+                    if measure_result == 1:
+                        z(self.state, gate.index, self.execution_time, self.lock)
+
+                elif gate.role == "target":
+
+                    measure_result = connection.get_message()
+                    connection.send_ack("ack")
+
+                    if measure_result == 1:
+                        x(self.state, self.state.qubit_num - 1, self.execution_time, self.lock)
+
+                    cnot(self.state, self.state.qubit_num - 1, gate.target_index, self.execution_time, self.lock)
+                    h(self.state, self.state.qubit_num - 1, self.execution_time, self.lock)
+                    measure_result = measure(self.state, self.state.qubit_num - 1, self.execution_time, self.lock)
+                    connection.send_message(measure_result)
