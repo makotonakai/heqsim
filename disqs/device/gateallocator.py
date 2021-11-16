@@ -78,28 +78,3 @@ class GateAllocator:
 
         self.set_remote_cnot_num_to_cluster(remote_cnot_id)
         self.cluster.gate_dict = self.gate_dict
-
-        # # Allocate gates to each device
-        # for processor in self.processor_list:
-
-        #     processor_id = self.get_id(processor)
-        #     qubits = qubit_dict[processor_id]
-        #     gates = self.gate_dict[processor_id]
-
-        #     for gate in gates:
-
-        #         # Allocate remote CNOT gates
-        #         if gate.name == "RemoteCNOT":
-        #             control_indices = qubit_dict[gate.control_id]
-        #             target_indices = qubit_dict[gate.target_id]
-        #             gate.index = control_indices.index(gate.index)
-        #             gate.target_index = target_indices.index(gate.target_index)
-        #             self.cluster.remote_cnot_list.append(gate)
-
-        #         # Allocate other gates (gates on a local processor)
-        #         else:
-        #             gate.index = qubits.index(gate.index)
-        #             if gate.target_index is not None:
-        #                 gate.target_index = qubits.index(gate.target_index)
-
-        # self.allocate_gates(processor, gates)
