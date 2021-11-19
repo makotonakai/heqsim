@@ -1,5 +1,5 @@
 from disqs.physical.state import QuantumState
-from disqs.physical.gate import x, y, z, h, cnot, measure
+from disqs.physical.gate import x, y, z, h, cnot, measure, measure_
 from disqs.device.connection import Connection
 from threading import Thread
 import numpy as np
@@ -37,7 +37,7 @@ class QuantumProcessor(Thread):
                 h(self.state, gate.index, self.execution_time, self.lock)
 
             elif gate.name == "CNOT":
-                cnot(self.state, gate.index, self.execution_time, self.lock)
+                cnot(self.state, gate.index, gate.target_index, self.execution_time, self.lock)
 
             elif gate.name == "RemoteCNOT":
 
@@ -47,7 +47,7 @@ class QuantumProcessor(Thread):
                     ack = connection.get_ack()
                 except queue.Full:
                     request = connection.get_request()
-                    connection.send_ack("ack")
+                    connection.send_ack()
 
                 if gate.role == "control":
 
@@ -60,23 +60,22 @@ class QuantumProcessor(Thread):
                     self.lock.release()
 
                     cnot(self.state, gate.index, self.state.qubit_num - 2, self.execution_time, self.lock)
-                    measure_result = measure(self.state, self.state.qubit_num - 2, self.execution_time, self.lock)
-                    connection.send_message(measure_result)
-                    ack = connection.get_ack()
 
-                    measure_result = connection.get_message()
-                    if measure_result == 1:
-                        z(self.state, gate.index, self.execution_time, self.lock)
+                    first_bit = measure(self.state, self.state.qubit_num - 2, self.lock)
+                    connection.send_control_message(first_bit)
+
+                    second_bit = connection.get_target_message()
+                    if second_bit == 1:
+                        z(self.state, gate.target_index, self.execution_time, self.lock)
 
                 elif gate.role == "target":
 
-                    measure_result = connection.get_message()
-                    connection.send_ack("ack")
-
-                    if measure_result == 1:
+                    first_bit = connection.get_control_message()
+                    if first_bit == 1:
                         x(self.state, self.state.qubit_num - 1, self.execution_time, self.lock)
 
                     cnot(self.state, self.state.qubit_num - 1, gate.target_index, self.execution_time, self.lock)
                     h(self.state, self.state.qubit_num - 1, self.execution_time, self.lock)
-                    measure_result = measure(self.state, self.state.qubit_num - 1, self.execution_time, self.lock)
-                    connection.send_message(measure_result)
+
+                    second_bit = measure(self.state, self.state.qubit_num - 1, self.lock)
+                    connection.send_target_message(second_bit)

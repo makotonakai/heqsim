@@ -20,7 +20,7 @@ def apply_py(state, index):
 def apply_pz(state, index):
     state_vector = state.vector
     qubit_num = state.qubit_num
-    matrix = py(qubit_num, index)
+    matrix = pz(qubit_num, index)
     state.vector = np.dot(matrix, state_vector)
 
 
@@ -73,12 +73,11 @@ def cnot(state, control_index, target_index, sleep_time, lock):
     time.sleep(sleep_time)
 
 
-def measure(state, index, sleep_time, lock):
+def measure(state, index, lock):
     """Measure a qubit
     Args:
         index (int): the index of a qubit that users measure
     """
-
     # Measurement probability of the measured qubit
     measure_prob = {"0": 0, "1": 0}
 
@@ -118,5 +117,45 @@ def measure(state, index, sleep_time, lock):
         new_state_dict[key] *= np.sqrt(1 / sum(prob_list))
 
     state.vector = np.array(list(new_state_dict.values()))
+    state.qubit_num -= 1
+
+    return measure_result
+
+
+def measure＿(state, index, lock):
+    """Measure a qubit
+    Args:
+        index (int): the index of a qubit that users measure
+    """
+    # Measurement probability of the measured qubit
+    measure_prob = {"0": 0, "1": 0}
+
+    # Pairs of state & its probability amplitude
+    state_dict = {}
+    for num in range(len(state.vector)):
+        comp_basis = bin(num)[2:].zfill(state.qubit_num)
+        state_dict[comp_basis] = state.vector[num]
+
+    for key in list(state_dict.keys()):
+        if key[index] == "0":
+            measure_prob["0"] += state_dict[key]**2
+        else:
+            measure_prob["1"] += state_dict[key]**2
+
+    measure_result = np.random.choice(2, 1, p=list(measure_prob.values()))[0]
+
+    new_state_dict = {}
+    for key in list(state_dict.keys()):
+        if key[index] == str(measure_result):
+            key_list = list(key)
+            del key_list[index]
+            new_key = "".join(key_list)
+            new_state_dict[new_key] = state_dict[key]
+
+    prob_sum = sum([prob_amp**2 for prob_amp in new_state_dict.values()])
+    for key in list(new_state_dict.keys()):
+        new_state_dict[key] *= np.sqrt(1 / prob_sum)
+
+    state.vector = list(new_state_dict.values())
     state.qubit_num -= 1
     return measure_result
