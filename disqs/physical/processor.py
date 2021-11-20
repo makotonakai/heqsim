@@ -7,7 +7,7 @@ import queue
 import time
 
 
-class QuantumProcessor(Thread):
+class PhysicalProcessor(Thread):
     def __init__(self, detail):
         Thread.__init__(self)
         self.id = detail["id"]

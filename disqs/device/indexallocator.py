@@ -3,27 +3,15 @@ class IndexAllocator:
     def __init__(self, qubit_num, cluster):
         self.qubit_num = qubit_num
         self.cluster = cluster
-        self.processor_list = self.cluster.processor_list
-
-        self.set_qubit_dict()
-        self.set_index_dict()
-
-    def set_qubit_dict(self):
-        self.qubit_dict = {self.get_id(processor): self.get_qubit_num(processor) for processor in self.processor_list}
-
-    def set_index_dict(self):
-        self.index_dict = {self.get_id(processor): [] for processor in self.processor_list}
 
     def set_index_dict_to_cluster(self):
         self.cluster.set_index_dict(self.index_dict)
 
-    def get_id(self, processor):
-        return self.cluster.get_id(processor)
+    def execute(self, network):
 
-    def get_qubit_num(self, processor):
-        return self.cluster.get_qubit_num(processor)
-
-    def execute(self):
+        self.processor_list = network.processor_list()
+        self.qubit_dict = {processor.id: processor.qubit_num for processor in self.processor_list}
+        self.index_dict = {processor.id: [] for processor in self.processor_list}
 
         for qubit_i in range(self.qubit_num):
             processor_i = qubit_i % len(self.processor_list)

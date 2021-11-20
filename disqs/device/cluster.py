@@ -1,4 +1,4 @@
-from disqs.physical.processor import QuantumProcessor
+from disqs.physical.processor import PhysicalProcessor
 from disqs.physical.state import QuantumState
 from disqs.device.connection import Connection
 import threading
@@ -38,7 +38,7 @@ class QuantumCluster:
                 "qubit_num": qubit_num,
                 "execution_time": execution_time}
 
-            processor = QuantumProcessor(detail)
+            processor = PhysicalProcessor(detail)
             self.processor_list.append(processor)
 
             self.total_qubit_num += qubit_num
