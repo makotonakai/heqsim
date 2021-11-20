@@ -6,28 +6,16 @@ class GateAllocator:
         self.gate_list = gate_list
         self.cluster = cluster
 
-        self.set_gate_dict()
-        self.set_processor_list()
-
-    def set_gate_dict(self):
-        self.gate_dict = self.cluster.gate_dict
-
-    def set_processor_list(self):
-        self.processor_list = self.cluster.processor_list
-
     def set_remote_cnot_num_to_cluster(self, num):
         self.cluster.set_remote_cnot_num(num)
 
-    def get_id(self, processor):
-        return self.cluster.get_id(processor)
+    def set_gate_dict_to_cluster(self, gate_dict):
+        self.cluster.set_gate_dict(gate_dict)
 
-    def get_gates(self, processor):
-        return self.cluster.get_gates(processor)
+    def execute(self, qubit_dict, network):
 
-    def allocate_gates(self, processor, gates):
-        self.cluster.set_gates(processor, gates)
-
-    def execute(self, qubit_dict):
+        self.processor_list = network.processor_list()
+        self.gate_dict = {processor.id: [] for processor in self.processor_list}
 
         remote_cnot_id = 0  # id for each remote CNOT gate
 
@@ -35,7 +23,8 @@ class GateAllocator:
 
             for processor in self.processor_list:
 
-                processor_id = self.get_id(processor)
+                processor_id = processor.id
+
                 # single qubit gate
                 if gate.target_index is None:
                     if gate.index in qubit_dict[processor_id]:
@@ -65,9 +54,8 @@ class GateAllocator:
                         for the_other_processor in self.processor_list:
 
                             # Add remote cnot to the target processor
-                            target_id = self.get_id(the_other_processor)
+                            target_id = the_other_processor.id
                             if gate.target_index in qubit_dict[target_id]:
-
                                 remote_cnot_control.set_target_id(target_id)
                                 remote_cnot_target.set_target_id(target_id)
                                 self.gate_dict[target_id].append(remote_cnot_target)

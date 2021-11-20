@@ -15,50 +15,14 @@ class QuantumCluster:
         self.gate_dict = {}
         self.remote_cnot_num = 0
 
-        self.total_qubit_num = 0
-        self.setup()
-
-    def setup(self):
-
-        path = os.path.dirname(os.path.realpath(__file__))
-        configdir = '/'.join([path, 'config.ini'])
-        config = configparser.ConfigParser()
-        config.read(configdir, encoding="utf-8")
-
-        sections = config.sections()
-        id_ = 0
-
-        for processor_ in sections:
-
-            qubit_num = int(config[processor_]["qubit_num"])
-            execution_time = float(config[processor_]["time"])
-
-            detail = {
-                "id": id_,
-                "qubit_num": qubit_num,
-                "execution_time": execution_time}
-
-            processor = PhysicalProcessor(detail)
-            self.processor_list.append(processor)
-
-            self.total_qubit_num += qubit_num
-
-            self.gate_dict[id_] = []
-            id_ += 1
-
-        self.set_quantum_state()
-
-    def get_id(self, processor):
-        return processor.id
-
-    def get_qubit_num(self, processor):
-        return processor.qubit_num
-
     def set_quantum_state(self):
         self.state = QuantumState(self.total_qubit_num)
 
     def set_index_dict(self, index_dict):
         self.index_dict = index_dict
+
+    def set_gate_dict(self, gate_dict):
+        self.gate_dict = gate_dict
 
     def set_connection_list(self, connection_list):
         self.connection_list = connection_list
