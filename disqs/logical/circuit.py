@@ -28,7 +28,7 @@ class QuantumCircuit:
     def h(self, index):
         self.gate_list.append(QuantumGate("H", index))
 
-    def cx(self, control_index, target_index):
+    def cnot(self, control_index, target_index):
         self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
 
     def measure(self, index):
