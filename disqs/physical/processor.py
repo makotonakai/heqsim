@@ -1,6 +1,6 @@
 from disqs.physical.state import QuantumState
 from disqs.physical.gate import x, y, z, h, cnot, measure, measure_
-from disqs.device.connection import Connection
+from disqs.device.link import Link
 from threading import Thread
 import numpy as np
 import queue
@@ -8,17 +8,16 @@ import time
 
 
 class PhysicalProcessor(Thread):
-    def __init__(self, detail):
+    def __init__(self, param):
         Thread.__init__(self)
-        self.id = detail["id"]
-        self.qubit_num = detail["qubit_num"]
-        self.execution_time = detail["execution_time"]
+        self.id = param["id"]
+        self.qubit_num = param["qubit_num"]
+        self.execution_time = param["execution_time"]
 
         self.state = None
-        self.lock = None
-        self.index_list = None
         self.gate_list = None
-        self.connection_list = None
+        self.link_list = None
+        self.lock = None
 
     def run(self):
 
@@ -41,7 +40,7 @@ class PhysicalProcessor(Thread):
 
             elif gate.name == "RemoteCNOT":
 
-                connection = self.connection_list[gate.id]
+                connection = self.link_list[gate.id]
                 try:
                     connection.send_request(gate.id)
                     ack = connection.get_ack()

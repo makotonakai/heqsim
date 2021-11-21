@@ -1,6 +1,6 @@
 from disqs.physical.processor import PhysicalProcessor
 from disqs.physical.state import QuantumState
-from disqs.device.connection import Connection
+from disqs.device.link import Link
 import threading
 import configparser
 import time
@@ -10,13 +10,28 @@ import os
 class QuantumCluster:
 
     def __init__(self):
-        self.processor_list = []
         self.index_dict = {}
         self.gate_dict = {}
-        self.remote_cnot_num = 0
+        self.network = None
 
-    def set_quantum_state(self):
-        self.state = QuantumState(self.total_qubit_num)
+    def prepare_physical_processor_list(self):
+        processor_list = self.network.get_processor_list()
+        self.physical_processor_list = []
+        for processor in processor_list:
+            processor_info = processor.get_info()
+            physical_processor = PhysicalProcessor(processor_info)
+            self.physical_processor_list.append(physical_processor)
+
+    def prepare_quantum_state(self):
+        self.total_qubit_num = 0
+        processor_list = self.network.get_processor_list()
+        for processor in processor_list:
+            self.total_qubit_num += processor.qubit_num
+        self.quantum_state = QuantumState(self.total_qubit_num)
+
+    def prepare_link_list(self):
+        link_num = self.network.get_link_num()
+        self.link_list = [Link() for _ in range(link_num)]
 
     def set_index_dict(self, index_dict):
         self.index_dict = index_dict
@@ -24,40 +39,37 @@ class QuantumCluster:
     def set_gate_dict(self, gate_dict):
         self.gate_dict = gate_dict
 
-    def set_connection_list(self, connection_list):
-        self.connection_list = connection_list
-
-    def set_remote_cnot_num(self, remote_cnot_num):
-        self.remote_cnot_num = remote_cnot_num
-
-    def set_index_list_to_processor(self, processor, index_list):
-        processor.index_list = index_list
-
-    def set_gate_list_to_processor(self, processor, gate_list):
-        processor.gate_list = gate_list
+    def set_network(self, network):
+        self.network = network
 
     def set_quantum_state_to_processor(self, processor, state):
         processor.state = state
 
+    def set_gate_list_to_processor(self, processor, gate_list):
+        processor.gate_list = gate_list
+
+    def set_link_list_to_processor(self, processor, link_list):
+        processor.link_list = link_list
+
     def set_lock_to_processor(self, processor, lock):
         processor.lock = lock
 
-    def set_connection_list_to_processor(self, processor, connection_list):
-        processor.connection_list = connection_list
-
     def run(self):
 
+        self.prepare_physical_processor_list()
+        self.prepare_quantum_state()
+        self.prepare_link_list()
+
         lock = threading.Lock()
-        connection_list = [Connection() for _ in range(self.remote_cnot_num)]
 
-        for processor in self.processor_list:
+        for processor in self.physical_processor_list:
+            self.set_quantum_state_to_processor(processor, self.quantum_state)
             self.set_gate_list_to_processor(processor, self.gate_dict[processor.id])
-            self.set_quantum_state_to_processor(processor, self.state)
+            self.set_link_list_to_processor(processor, self.link_list)
             self.set_lock_to_processor(processor, lock)
-            self.set_connection_list_to_processor(processor, connection_list)
 
-        for processor in self.processor_list:
+        for processor in self.physical_processor_list:
             processor.start()
 
-        for processor in self.processor_list:
+        for processor in self.physical_processor_list:
             processor.join()

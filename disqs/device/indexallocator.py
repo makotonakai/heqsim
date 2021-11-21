@@ -9,7 +9,7 @@ class IndexAllocator:
 
     def execute(self, network):
 
-        self.processor_list = network.processor_list()
+        self.processor_list = network.get_processor_list()
         self.qubit_dict = {processor.id: processor.qubit_num for processor in self.processor_list}
         self.index_dict = {processor.id: [] for processor in self.processor_list}
 

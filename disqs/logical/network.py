@@ -9,8 +9,11 @@ class Network:
     def add_link(self, node1, node2):
         self.graph.add_edge(node1, node2)
 
-    def processor_list(self):
+    def get_processor_list(self):
         return list(self.graph.nodes)
+
+    def get_link_num(self):
+        return self.graph.number_of_edges()
 
     def set_node_id(self):
         for id_ in range(len(self.graph.nodes)):

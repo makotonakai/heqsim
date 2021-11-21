@@ -6,15 +6,12 @@ class GateAllocator:
         self.gate_list = gate_list
         self.cluster = cluster
 
-    def set_remote_cnot_num_to_cluster(self, num):
-        self.cluster.set_remote_cnot_num(num)
-
     def set_gate_dict_to_cluster(self, gate_dict):
         self.cluster.set_gate_dict(gate_dict)
 
     def execute(self, qubit_dict, network):
 
-        self.processor_list = network.processor_list()
+        self.processor_list = network.get_processor_list()
         self.gate_dict = {processor.id: [] for processor in self.processor_list}
 
         remote_cnot_id = 0  # id for each remote CNOT gate
@@ -64,5 +61,4 @@ class GateAllocator:
                         self.gate_dict[control_id].append(remote_cnot_control)
                         remote_cnot_id += 1
 
-        self.set_remote_cnot_num_to_cluster(remote_cnot_id)
-        self.cluster.gate_dict = self.gate_dict
+        self.set_gate_dict_to_cluster(self.gate_dict)

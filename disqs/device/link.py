@@ -1,7 +1,7 @@
 from queue import Queue
 
 
-class Connection:
+class Link:
     def __init__(self):
         self.request_link = Queue(maxsize=1)
         self.ack_link = Queue(maxsize=1)

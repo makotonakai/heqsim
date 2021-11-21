@@ -14,7 +14,6 @@ class QuantumCircuit:
         self.cluster = QuantumCluster()
         self.set_index_allocator()
         self.set_gate_allocator()
-        self.set_processor_list()
 
     def x(self, index):
         self.gate_list.append(QuantumGate("X", index))
@@ -33,9 +32,6 @@ class QuantumCircuit:
 
     def measure(self, index):
         self.gate_list.append(QuantumGate("Measure", index))
-
-    def set_processor_list(self):
-        self.processor_list = self.cluster.processor_list
 
     def set_index_allocator(self):
         self.index_allocator = IndexAllocator(self.qubit_num, self.cluster)
@@ -57,17 +53,15 @@ class QuantumCircuit:
     def run_cluster(self):
         self.cluster.run()
 
+    def set_network_to_cluster(self, network):
+        self.cluster.network = network
+
     def execute(self, network=None):
         network.set_node_id()
         self.allocate_qubits(network)
         self.allocate_gates(network)
+        self.set_network_to_cluster(network)
         self.run_cluster()
 
-    def state(self, processor):
-        return self.cluster.get_state(processor)
-
-    def qubits(self, processor):
-        return self.cluster.get_qubit_num(processor)
-
     def result(self):
-        return self.cluster.state.vector
+        return self.cluster.quantum_state.vector

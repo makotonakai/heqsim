@@ -8,3 +8,10 @@ class QuantumProcessor:
 
     def set_id(self, id_):
         self.id = id_
+
+    def get_info(self):
+        info = {"id": self.id,
+                "qubit_num": self.qubit_num,
+                "execution_time": self.execution_time
+                }
+        return info
