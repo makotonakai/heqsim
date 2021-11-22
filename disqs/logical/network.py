@@ -9,8 +9,24 @@ class Network:
     def add_link(self, node1, node2):
         self.graph.add_edge(node1, node2)
 
+    def get_processor(self, id_):
+        processor = None
+        processor_list = self.get_processor_list()
+        for p in processor_list:
+            if p.id == id_:
+                processor = p
+                break
+        return processor
+
     def get_processor_list(self):
         return list(self.graph.nodes)
+
+    def get_link_id(self, source, target):
+        link_list = self.get_link_list()
+        return link_list.index((source, target))
+
+    def get_link_list(self):
+        return list(self.graph.edges)
 
     def get_link_num(self):
         return self.graph.number_of_edges()

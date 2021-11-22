@@ -40,9 +40,9 @@ class PhysicalProcessor(Thread):
 
             elif gate.name == "RemoteCNOT":
 
-                connection = self.link_list[gate.id]
+                connection = self.link_list[gate.link_id]
                 try:
-                    connection.send_request(gate.id)
+                    connection.send_request(gate.link_id)
                     ack = connection.get_ack()
                 except queue.Full:
                     request = connection.get_request()
