@@ -22,8 +22,6 @@ class GateAllocator:
         self.processor_list = network.get_processor_list()
         self.gate_dict = {processor.id: [] for processor in self.processor_list}
 
-        remote_cnot_id = 0  # id for each remote CNOT gate
-
         for gate in self.gate_list:
 
             for processor in self.processor_list:
