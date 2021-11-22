@@ -54,6 +54,7 @@ class GateAllocator:
                         id_path = [processor.id for processor in path]
 
                         index_list = [index_dict[id_][0] for id_ in id_path]
+                        index_list[0] = gate.index
                         index_list[-1] = gate.target_index
 
                         control_target_list = []
