@@ -2,7 +2,6 @@ from disqs.physical.processor import PhysicalProcessor
 from disqs.physical.state import QuantumState
 from disqs.device.link import Link
 import threading
-import configparser
 import time
 import os
 
@@ -55,6 +54,15 @@ class QuantumCluster:
         processor.lock = lock
 
     def run(self):
+
+        # for key in list(self.gate_dict.keys()):
+        #     gate_list = self.gate_dict[key]
+        #     print("Processor ", key)
+        #     for gate in gate_list:
+        #         print("Name: ", gate.name)
+        #         print("Index: ", gate.index)
+        #         print("Target index:", gate.target_index)
+        #         print()
 
         self.prepare_physical_processor_list()
         self.prepare_quantum_state()

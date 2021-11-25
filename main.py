@@ -4,14 +4,16 @@ from disqs.logical.network import Network
 
 p1 = QuantumProcessor(qubit_num=1, execution_time=0.1)
 p2 = QuantumProcessor(qubit_num=1, execution_time=0.2)
+p3 = QuantumProcessor(qubit_num=1, execution_time=0)
 
 network = Network()
 network.add_link(p1, p2)
+network.add_link(p2, p3)
 
-qn = 2
+qn = 3
 qc = QuantumCircuit(qn)
-qc.x(0)
-qc.cnot(0, 1)
+qc.h(0)
+qc.cnot(0, 2)
 
 qc.execute(network=network)
 result = qc.result()

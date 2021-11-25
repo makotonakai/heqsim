@@ -65,7 +65,7 @@ class PhysicalProcessor(Thread):
 
                     second_bit = connection.get_target_message()
                     if second_bit == 1:
-                        z(self.state, gate.target_index, self.execution_time, self.lock)
+                        z(self.state, gate.index, self.execution_time, self.lock)
 
                 elif gate.role == "target":
 
