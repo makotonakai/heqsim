@@ -64,4 +64,11 @@ class QuantumCircuit:
         self.run_cluster()
 
     def result(self):
-        return self.cluster.quantum_state.vector
+        statevector = self.cluster.quantum_state.vector
+        cluster_qubit_num = int(np.log2(len(statevector)))
+        original_state = []
+        for num in range(2**self.qubit_num):
+            index = bin(num)[2:].zfill(self.qubit_num)
+            new_index = int(index + "0" * (cluster_qubit_num - self.qubit_num), 2)
+            original_state.append(statevector[new_index])
+        return original_state

@@ -8,7 +8,7 @@ p2 = QuantumProcessor(qubit_num=2, execution_time=0.2)
 network = Network()
 network.add_link(p1, p2)
 
-qn = 3
+qn = 2
 qc = QuantumCircuit(qn)
 
 qc.x(0)
