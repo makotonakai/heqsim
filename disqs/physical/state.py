@@ -36,3 +36,11 @@ class QuantumState:
             np.array: the statevector
         """
         return self.vector
+
+    def get_qubit_num(self):
+        """return the number of qubits
+
+        Returns:
+            int: the number of qubits
+        """
+        return self.qubit_num

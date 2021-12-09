@@ -15,5 +15,5 @@ qc.x(0)
 qc.cnot(0, 1)
 
 qc.execute(network=network)
-# result = qc.result()
-# print(result)
+result = qc.result()
+print(result)
