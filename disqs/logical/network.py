@@ -23,7 +23,10 @@ class Network:
 
     def get_link_id(self, source, target):
         link_list = self.get_link_list()
-        return link_list.index((source, target))
+        if (source, target) in link_list:
+            return link_list.index((source, target))
+        else:
+            return link_list.index((target, source))
 
     def get_link_list(self):
         return list(self.graph.edges)
