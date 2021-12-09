@@ -39,38 +39,48 @@ def apply_pcnot(state, control_index, target_index):
 
 
 def x(state, index, sleep_time, lock):
-    lock.acquire()
+    if lock is not None:
+        lock.acquire()
     apply_px(state, index)
-    lock.release()
-    time.sleep(sleep_time)
+    if lock is not None:
+        lock.release()
+        time.sleep(sleep_time)
 
 
 def y(state, index, sleep_time, lock):
-    lock.acquire()
+    if lock is not None:
+        lock.acquire()
     apply_py(state, index)
-    lock.release()
-    time.sleep(sleep_time)
+    if lock is not None:
+        lock.release()
+        time.sleep(sleep_time)
 
 
 def z(state, index, sleep_time, lock):
-    lock.acquire()
+    if lock is not None:
+        lock.acquire()
     apply_pz(state, index)
-    lock.release()
-    time.sleep(sleep_time)
+    if lock is not None:
+        lock.release()
+        time.sleep(sleep_time)
 
 
 def h(state, index, sleep_time, lock):
-    lock.acquire()
+    if lock is not None:
+        lock.acquire()
     apply_ph(state, index)
-    lock.release()
-    time.sleep(sleep_time)
+    if lock is not None:
+        lock.release()
+        time.sleep(sleep_time)
 
 
 def cnot(state, control_index, target_index, sleep_time, lock):
-    lock.acquire()
+    if lock is not None:
+        lock.acquire()
     apply_pcnot(state, control_index, target_index)
-    lock.release()
-    time.sleep(sleep_time)
+    if lock is not None:
+        lock.release()
+        time.sleep(sleep_time)
 
 
 def measure(state, index, lock):

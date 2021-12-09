@@ -1,6 +1,7 @@
 from disqs.physical.processor import PhysicalProcessor
 from disqs.physical.state import QuantumState
 from disqs.device.link import Link
+from disqs.device.bellpairmanager import BellPairManager
 import threading
 import time
 import os
@@ -53,28 +54,24 @@ class QuantumCluster:
     def set_lock_to_processor(self, processor, lock):
         processor.lock = lock
 
-    def run(self):
+    def set_remote_cnot_manager_to_processor(self, processor, remote_cnot_manager):
+        processor.remote_cnot_manager = remote_cnot_manager
 
-        # for key in list(self.gate_dict.keys()):
-        #     gate_list = self.gate_dict[key]
-        #     print("Processor ", key)
-        #     for gate in gate_list:
-        #         print("Name: ", gate.name)
-        #         print("Index: ", gate.index)
-        #         print("Target index:", gate.target_index)
-        #         print()
+    def run(self):
 
         self.prepare_physical_processor_list()
         self.prepare_quantum_state()
         self.prepare_link_list()
 
         lock = threading.Lock()
+        remote_cnot_manager = BellPairManager()
 
         for processor in self.physical_processor_list:
             self.set_quantum_state_to_processor(processor, self.quantum_state)
             self.set_gate_list_to_processor(processor, self.gate_dict[processor.id])
             self.set_link_list_to_processor(processor, self.link_list)
             self.set_lock_to_processor(processor, lock)
+            self.set_remote_cnot_manager_to_processor(processor, remote_cnot_manager)
 
         for processor in self.physical_processor_list:
             processor.start()

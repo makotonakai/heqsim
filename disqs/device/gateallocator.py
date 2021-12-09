@@ -6,6 +6,7 @@ class GateAllocator:
     def __init__(self, gate_list, cluster):
         self.gate_list = gate_list
         self.cluster = cluster
+        self.remote_cnot_id = 0
 
     def get_processor_id_from_index_dict(self, index, index_dict):
         processor_id = None
@@ -38,7 +39,9 @@ class GateAllocator:
                     self.gate_dict[processor_id].append(gate)
 
                 # Remote CNOT gates
+
                 else:
+
                     # Add remote cnot to the controlled processor
                     if gate.index in index_dict[processor_id]:
 
@@ -63,6 +66,7 @@ class GateAllocator:
                             control_target_list.append(control_target)
 
                         control_target_list += list(reversed(control_target_list[:-1]))
+
                         for control_target in control_target_list:
 
                             [control, target] = control_target
@@ -76,6 +80,10 @@ class GateAllocator:
 
                             control_processor = network.get_processor(control_id)
                             target_processor = network.get_processor(target_id)
+
+                            remote_cnot_control.set_remote_cnot_id(self.remote_cnot_id)
+                            remote_cnot_target.set_remote_cnot_id(self.remote_cnot_id)
+                            self.remote_cnot_id += 1
 
                             link_id = network.get_link_id(control_processor, target_processor)
                             remote_cnot_control.set_link_id(link_id)
