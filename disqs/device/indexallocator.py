@@ -9,7 +9,7 @@ class IndexAllocator:
     def set_index_dict_to_cluster(self):
         self.cluster.set_index_dict(self.index_dict)
 
-    def execute(self, network, gate_list, mode="optimized"):
+    def execute(self, network, gate_list, allocation_mode="random"):
 
         self.processor_list = network.get_processor_list()
         self.qubit_dict = {processor.id: processor.qubit_num for processor in self.processor_list}
@@ -27,7 +27,7 @@ class IndexAllocator:
                 self.index_dict[processor_i].append(qubit_i)
                 self.qubit_dict[processor_i] -= 1
 
-        if mode == "optimized":
+        if allocation_mode == "optimized":
             opt = AllocationOptimizer(network, gate_list)
             self.index_dict = opt.optimize(self.index_dict)
 

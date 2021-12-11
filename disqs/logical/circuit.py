@@ -48,8 +48,8 @@ class QuantumCircuit:
     def set_gate_allocator(self):
         self.gate_allocator = GateAllocator(self.gate_list, self.cluster)
 
-    def allocate_indices(self, network):
-        self.index_allocator.execute(network, self.gate_list)
+    def allocate_indices(self, network, allocation_mode):
+        self.index_allocator.execute(network, self.gate_list, allocation_mode)
 
     def get_index_dict(self):
         index_dict = self.index_allocator.get_result()
@@ -65,12 +65,12 @@ class QuantumCircuit:
     def set_network_to_cluster(self, network):
         self.cluster.network = network
 
-    def execute(self, network=None):
+    def execute(self, network=None, allocation_mode="random"):
         network.set_node_id()
-        self.allocate_indices(network)
-        # self.allocate_gates(network)
-        # self.set_network_to_cluster(network)
-        # self.run_cluster()
+        self.allocate_indices(network, allocation_mode)
+        self.allocate_gates(network)
+        self.set_network_to_cluster(network)
+        self.run_cluster()
 
     def result(self):
         statevector = self.cluster.quantum_state.vector
