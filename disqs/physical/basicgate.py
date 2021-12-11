@@ -108,3 +108,63 @@ def cnot_(n, control_index, target_index):
         cx[control_][target_] = 1
 
     return cx
+
+
+def rx_(n, index, theta):
+    """Create an RX gate
+    Args:
+        n (int): number of qubits on a quantum circuit
+        index (int): the index of a qubit that a gate is applied
+    Returns:
+        np.array : the matrix of an Z gate
+    """
+    matrix = 1
+    rx = np.array([[np.cos(theta / 2), -1j * np.sin(theta / 2)],
+                  [-1j * np.sin(theta / 2), np.cos(theta / 2)]])
+    for i in range(n):
+        if i == index:
+            matrix = np.kron(matrix, rx)
+        else:
+            matrix = np.kron(matrix, Imat)
+
+    return matrix
+
+
+def ry_(n, index, theta):
+    """Create an RY gate
+    Args:
+        n (int): number of qubits on a quantum circuit
+        index (int): the index of a qubit that a gate is applied
+    Returns:
+        np.array : the matrix of an Z gate
+    """
+    matrix = 1
+    ry = np.array([[np.cos(theta / 2), -np.sin(theta / 2)],
+                  [np.sin(theta / 2), np.cos(theta / 2)]])
+    for i in range(n):
+        if i == index:
+            matrix = np.kron(matrix, ry)
+        else:
+            matrix = np.kron(matrix, Imat)
+
+    return matrix
+
+
+def rz_(n, index, theta):
+    """Create an RZ gate
+    Args:
+        n (int): number of qubits on a quantum circuit
+        index (int): the index of a qubit that a gate is applied
+    Returns:
+        np.array : the matrix of an Z gate
+    """
+    matrix = 1
+    rz = np.array([[np.exp(-1j * theta / 2), 0],
+                  [0, np.exp(1j * theta / 2)]])
+    for i in range(n):
+        if i == index:
+            matrix = np.kron(matrix, rz)
+        else:
+            matrix = np.kron(matrix, Imat)
+
+    return matrix

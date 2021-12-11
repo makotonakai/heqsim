@@ -1,4 +1,4 @@
-from disqs.physical.basicgate import x_, y_, z_, h_, cnot_
+from disqs.physical.basicgate import x_, y_, z_, h_, cnot_, rx_, ry_, rz_
 import numpy as np
 import time
 
@@ -35,6 +35,27 @@ def apply_cnot(state, control_index, target_index):
     state_vector = state.vector
     qubit_num = state.qubit_num
     matrix = cnot_(qubit_num, control_index, target_index)
+    state.vector = np.dot(matrix, state_vector)
+
+
+def apply_rx(state, index, theta):
+    state_vector = state.vector
+    qubit_num = state.qubit_num
+    matrix = rx_(qubit_num, index, theta)
+    state.vector = np.dot(matrix, state_vector)
+
+
+def apply_ry(state, index, theta):
+    state_vector = state.vector
+    qubit_num = state.qubit_num
+    matrix = ry_(qubit_num, index, theta)
+    state.vector = np.dot(matrix, state_vector)
+
+
+def apply_rz(state, index, theta):
+    state_vector = state.vector
+    qubit_num = state.qubit_num
+    matrix = rz_(qubit_num, index, theta)
     state.vector = np.dot(matrix, state_vector)
 
 
@@ -78,6 +99,33 @@ def cnot(state, control_index, target_index, sleep_time, lock):
     if lock is not None:
         lock.acquire()
     apply_cnot(state, control_index, target_index)
+    if lock is not None:
+        lock.release()
+        time.sleep(sleep_time)
+
+
+def rx(state, index, theta, sleep_time, lock):
+    if lock is not None:
+        lock.acquire()
+    apply_rx(state, index, theta)
+    if lock is not None:
+        lock.release()
+        time.sleep(sleep_time)
+
+
+def ry(state, index, theta, sleep_time, lock):
+    if lock is not None:
+        lock.acquire()
+    apply_ry(state, index, theta)
+    if lock is not None:
+        lock.release()
+        time.sleep(sleep_time)
+
+
+def rz(state, index, theta, sleep_time, lock):
+    if lock is not None:
+        lock.acquire()
+    apply_rz(state, index, theta)
     if lock is not None:
         lock.release()
         time.sleep(sleep_time)

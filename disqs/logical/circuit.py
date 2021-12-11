@@ -30,6 +30,15 @@ class QuantumCircuit:
     def cnot(self, control_index, target_index):
         self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
 
+    def rx(self, index, theta):
+        self.gate_list.append(QuantumGate("RX", index, theta=theta))
+
+    def ry(self, index, theta):
+        self.gate_list.append(QuantumGate("RY", index, theta=theta))
+
+    def rz(self, index, theta):
+        self.gate_list.append(QuantumGate("RZ", index, theta=theta))
+
     def measure(self, index):
         self.gate_list.append(QuantumGate("Measure", index))
 

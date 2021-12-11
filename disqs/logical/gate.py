@@ -1,9 +1,10 @@
 
 class QuantumGate:
-    def __init__(self, name, index, target_index=None):
+    def __init__(self, name, index, target_index=None, theta=None):
         self.name = name
         self.index = index
         self.target_index = target_index
+        self.theta = theta
 
     def set_remote_cnot_id(self, remote_cnot_id):
         self.remote_cnot_id = remote_cnot_id
