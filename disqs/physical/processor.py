@@ -83,7 +83,7 @@ class PhysicalProcessor(Thread):
                     self.lock.release()
 
                     # Apply CNOT between the sender and the given bell pair
-                    cnot(self.state, gate.index, self.state.qubit_num - 2, self.execution_time, self.lock)
+                    cnot(self.state, gate.index, qubit_num, self.execution_time, self.lock)
 
                     # Get which qubit to measure
                     control_index = self.remote_cnot_manager.get_control_index(gate.remote_cnot_id)

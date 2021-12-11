@@ -38,3 +38,6 @@ class Network:
         for id_ in range(len(self.graph.nodes)):
             processor = list(self.graph.nodes)[id_]
             processor.set_id(id_)
+
+    def generate_distance_matrix(self):
+        return nx.floyd_warshall_numpy(self.graph)
