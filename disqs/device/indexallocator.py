@@ -29,7 +29,7 @@ class IndexAllocator:
 
         if mode == "optimized":
             opt = AllocationOptimizer(network, gate_list)
-            self.index_dict = opt.execute(self.index_dict)
+            self.index_dict = opt.optimize(self.index_dict)
 
         self.set_index_dict_to_cluster()
 

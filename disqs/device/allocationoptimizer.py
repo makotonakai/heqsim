@@ -64,7 +64,7 @@ class AllocationOptimizer:
         else:
             return math.exp(-(new_eng - cur_eng) / temp)
 
-    def execute(self, Q):
+    def optimize(self, Q):
 
         state = Q
         T = 100
@@ -81,6 +81,5 @@ class AllocationOptimizer:
 
             if self.accept_prob(cur_eng, new_eng, temp) >= random.random():
                 state = new_state
-                print("{}:{}".format(iter_, new_eng))
 
         return state
