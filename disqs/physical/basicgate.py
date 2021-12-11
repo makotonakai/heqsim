@@ -3,7 +3,7 @@ import numpy as np
 Imat = np.eye(2)
 
 
-def px(n, index):
+def x_(n, index):
     """Create an X gate
     Args:
         n (int): number of qubits on a quantum circuit
@@ -22,7 +22,7 @@ def px(n, index):
     return matrix
 
 
-def py(n, index):
+def y_(n, index):
     """Create an Y gate
     Args:
         n (int): number of qubits on a quantum circuit
@@ -41,7 +41,7 @@ def py(n, index):
     return matrix
 
 
-def pz(n, index):
+def z_(n, index):
     """Create an Z gate
     Args:
         n (int): number of qubits on a quantum circuit
@@ -60,7 +60,7 @@ def pz(n, index):
     return matrix
 
 
-def ph(n, index):
+def h_(n, index):
     """Create an H gate
     Args:
         n (int): number of qubits on a quantum circuit
@@ -80,7 +80,7 @@ def ph(n, index):
     return matrix
 
 
-def pcnot(n, control_index, target_index):
+def cnot_(n, control_index, target_index):
     """Create an CNOT gate
     Args:
         n (int): number of qubits on a quantum circuit

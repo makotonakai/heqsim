@@ -1,47 +1,47 @@
-from disqs.physical.basicgate import px, py, pz, ph, pcnot
+from disqs.physical.basicgate import x_, y_, z_, h_, cnot_
 import numpy as np
 import time
 
 
-def apply_px(state, index):
+def apply_x(state, index):
     state_vector = state.vector
     qubit_num = state.qubit_num
-    matrix = px(qubit_num, index)
+    matrix = x_(qubit_num, index)
     state.vector = np.dot(matrix, state_vector)
 
 
-def apply_py(state, index):
+def apply_y(state, index):
     state_vector = state.vector
     qubit_num = state.qubit_num
-    matrix = py(qubit_num, index)
+    matrix = y_(qubit_num, index)
     state.vector = np.dot(matrix, state_vector)
 
 
-def apply_pz(state, index):
+def apply_z(state, index):
     state_vector = state.vector
     qubit_num = state.qubit_num
-    matrix = pz(qubit_num, index)
+    matrix = z_(qubit_num, index)
     state.vector = np.dot(matrix, state_vector)
 
 
-def apply_ph(state, index):
+def apply_h(state, index):
     state_vector = state.vector
     qubit_num = state.qubit_num
-    matrix = ph(qubit_num, index)
+    matrix = h_(qubit_num, index)
     state.vector = np.dot(matrix, state_vector)
 
 
-def apply_pcnot(state, control_index, target_index):
+def apply_cnot(state, control_index, target_index):
     state_vector = state.vector
     qubit_num = state.qubit_num
-    matrix = pcnot(qubit_num, control_index, target_index)
+    matrix = cnot_(qubit_num, control_index, target_index)
     state.vector = np.dot(matrix, state_vector)
 
 
 def x(state, index, sleep_time, lock):
     if lock is not None:
         lock.acquire()
-    apply_px(state, index)
+    apply_x(state, index)
     if lock is not None:
         lock.release()
         time.sleep(sleep_time)
@@ -50,7 +50,7 @@ def x(state, index, sleep_time, lock):
 def y(state, index, sleep_time, lock):
     if lock is not None:
         lock.acquire()
-    apply_py(state, index)
+    apply_y(state, index)
     if lock is not None:
         lock.release()
         time.sleep(sleep_time)
@@ -59,7 +59,7 @@ def y(state, index, sleep_time, lock):
 def z(state, index, sleep_time, lock):
     if lock is not None:
         lock.acquire()
-    apply_pz(state, index)
+    apply_z(state, index)
     if lock is not None:
         lock.release()
         time.sleep(sleep_time)
@@ -68,7 +68,7 @@ def z(state, index, sleep_time, lock):
 def h(state, index, sleep_time, lock):
     if lock is not None:
         lock.acquire()
-    apply_ph(state, index)
+    apply_h(state, index)
     if lock is not None:
         lock.release()
         time.sleep(sleep_time)
@@ -77,7 +77,7 @@ def h(state, index, sleep_time, lock):
 def cnot(state, control_index, target_index, sleep_time, lock):
     if lock is not None:
         lock.acquire()
-    apply_pcnot(state, control_index, target_index)
+    apply_cnot(state, control_index, target_index)
     if lock is not None:
         lock.release()
         time.sleep(sleep_time)
