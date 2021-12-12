@@ -1,5 +1,5 @@
 from disqs.physical.state import QuantumState
-from disqs.physical.gate import x, y, z, h, cnot, measure, rx, ry, rz
+from disqs.physical.gate import x, y, z, h, cnot, measure, rx, ry, rz, phase
 from disqs.device.link import Link
 from threading import Thread
 import numpy as np
@@ -54,6 +54,9 @@ class PhysicalProcessor(Thread):
 
             elif gate.name == "RZ":
                 rz(self.state, gate.index, self.execution_time, self.lock)
+
+            elif gate.name == "PHASE":
+                phase(self.state, gate.index, self.execution_time, self.lock)
 
             # Remote CNOT gate
             elif gate.name == "RemoteCNOT":

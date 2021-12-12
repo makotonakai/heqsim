@@ -36,6 +36,9 @@ class QuantumCircuit:
     def rz(self, index, theta):
         self.gate_list.append(QuantumGate("RZ", index, theta=theta))
 
+    def phase(self, index, theta):
+        self.gate_list.append(QuantumGate("PHASE", index, theta=theta))
+
     def cnot(self, control_index, target_index):
         self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
 

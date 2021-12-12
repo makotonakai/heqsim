@@ -168,3 +168,23 @@ def rz_(n, index, theta):
             matrix = np.kron(matrix, Imat)
 
     return matrix
+
+
+def phase_(n, index, theta):
+    """Create a phase gate
+    Args:
+        n (int): number of qubits on a quantum circuit
+        index (int): the index of a qubit that a gate is applied
+    Returns:
+        np.array : the matrix of an Z gate
+    """
+    matrix = 1
+    rz = np.array([[1, 0],
+                  [0, np.exp(1j * theta)]])
+    for i in range(n):
+        if i == index:
+            matrix = np.kron(matrix, rz)
+        else:
+            matrix = np.kron(matrix, Imat)
+
+    return matrix

@@ -1,4 +1,4 @@
-from disqs.physical.basicgate import x_, y_, z_, h_, cnot_, rx_, ry_, rz_
+from disqs.physical.basicgate import x_, y_, z_, h_, cnot_, rx_, ry_, rz_, phase_
 import numpy as np
 import time
 
@@ -56,6 +56,13 @@ def apply_rz(state, index, theta):
     state_vector = state.vector
     qubit_num = state.qubit_num
     matrix = rz_(qubit_num, index, theta)
+    state.vector = np.dot(matrix, state_vector)
+
+
+def apply_phase(state, index, theta):
+    state_vector = state.vector
+    qubit_num = state.qubit_num
+    matrix = phase_(qubit_num, index, theta)
     state.vector = np.dot(matrix, state_vector)
 
 
@@ -126,6 +133,15 @@ def rz(state, index, theta, sleep_time, lock):
     if lock is not None:
         lock.acquire()
     apply_rz(state, index, theta)
+    if lock is not None:
+        lock.release()
+        time.sleep(sleep_time)
+
+
+def phase(state, index, theta, sleep_time, lock):
+    if lock is not None:
+        lock.acquire()
+    apply_phase(state, index, theta)
     if lock is not None:
         lock.release()
         time.sleep(sleep_time)
