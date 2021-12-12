@@ -47,16 +47,16 @@ class PhysicalProcessor(Thread):
                 cnot(self.state, gate.index, gate.target_index, self.execution_time, self.lock)
 
             elif gate.name == "RX":
-                rx(self.state, gate.index, self.execution_time, self.lock)
+                rx(self.state, gate.index, gate.theta, self.execution_time, self.lock)
 
             elif gate.name == "RY":
-                ry(self.state, gate.index, self.execution_time, self.lock)
+                ry(self.state, gate.index, gate.theta, self.execution_time, self.lock)
 
             elif gate.name == "RZ":
-                rz(self.state, gate.index, self.execution_time, self.lock)
+                rz(self.state, gate.index, gate.theta, self.execution_time, self.lock)
 
             elif gate.name == "PHASE":
-                phase(self.state, gate.index, self.execution_time, self.lock)
+                phase(self.state, gate.index, gate.theta, self.execution_time, self.lock)
 
             # Remote CNOT gate
             elif gate.name == "RemoteCNOT":
