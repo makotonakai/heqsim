@@ -12,6 +12,7 @@ class QuantumCluster:
     def __init__(self):
         self.index_dict = {}
         self.gate_dict = {}
+        self.execution_time = 0
         self.network = None
 
     def prepare_physical_processor_list(self):
@@ -32,6 +33,12 @@ class QuantumCluster:
     def prepare_link_list(self):
         link_num = self.network.get_link_num()
         self.link_list = [Link() for _ in range(link_num)]
+
+    def get_state(self):
+        return self.quantum_state.vector
+
+    def get_execution_time(self):
+        return self.execution_time
 
     def set_index_dict(self, index_dict):
         self.index_dict = index_dict
@@ -73,8 +80,12 @@ class QuantumCluster:
             self.set_lock_to_processor(processor, lock)
             self.set_remote_cnot_manager_to_processor(processor, remote_cnot_manager)
 
+        time_start = time.time()
         for processor in self.physical_processor_list:
             processor.start()
 
         for processor in self.physical_processor_list:
             processor.join()
+        time_end = time.time()
+
+        self.execution_time = time_end - time_start

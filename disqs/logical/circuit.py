@@ -100,7 +100,7 @@ class QuantumCircuit:
         self.run_cluster()
 
     def result(self):
-        statevector = self.cluster.quantum_state.vector
+        statevector = self.cluster.get_state()
         cluster_qubit_num = int(np.log2(len(statevector)))
         original_state = []
         for num in range(2**self.qubit_num):
@@ -108,3 +108,7 @@ class QuantumCircuit:
             new_index = int(index + "0" * (cluster_qubit_num - self.qubit_num), 2)
             original_state.append(statevector[new_index])
         return original_state
+
+    def get_execution_time(self):
+        execution_time = self.cluster.get_execution_time()
+        return execution_time
