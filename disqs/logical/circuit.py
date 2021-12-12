@@ -60,6 +60,12 @@ class QuantumCircuit:
         self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
         self.gate_list.append(QuantumGate("RZ", target_index, theta=theta / 2))
 
+    def cphase(self, control_index, target_index, theta):
+        self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
+        self.gate_list.append(QuantumGate("PHASE", target_index, theta=theta / 2))
+        self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
+        self.gate_list.append(QuantumGate("PHASE", target_index, theta=theta / 2))
+
     def measure(self, index):
         self.gate_list.append(QuantumGate("Measure", index))
 
