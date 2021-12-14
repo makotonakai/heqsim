@@ -164,11 +164,11 @@ def measure(state, index, lock):
     # Calculate measurement probability of the measured qubit
     for key in list(state_dict.keys()):
         if key[index] == "0":
-            measure_prob["0"] += state_dict[key]**2
+            measure_prob["0"] += abs(state_dict[key])**2
         else:
-            measure_prob["1"] += state_dict[key]**2
+            measure_prob["1"] += abs(state_dict[key])**2
 
-    # Perform measurement
+    # # Perform measurement
     measure_result = np.random.choice(2, 1, p=list(measure_prob.values()))[0]
 
     # Pairs of each of the updated states & its probability amplitude
@@ -184,9 +184,8 @@ def measure(state, index, lock):
     # Update each of the probability amplitudes
     prob_list = []
     for key in list(new_state_dict.keys()):
-        prob = new_state_dict[key]**2
+        prob = abs(new_state_dict[key])**2
         prob_list.append(prob)
-
     for key in list(new_state_dict.keys()):
         new_state_dict[key] *= np.sqrt(1 / sum(prob_list))
 

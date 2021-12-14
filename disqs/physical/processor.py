@@ -91,14 +91,13 @@ class PhysicalProcessor(Thread):
                     h(bell_pair, 0, 0, None)
                     cnot(bell_pair, 0, 1, 0, None)
                     self.state.add_state(bell_pair)
+                    new_qubit_num = self.state.get_qubit_num()
 
                     self.lock.release()
 
                     # Apply CNOT between the sender and the given bell pair
-                    cnot(self.state, gate.index, qubit_num, self.execution_time, self.lock)
-
-                    # Get which qubit to measure
                     control_index = self.remote_cnot_manager.get_control_index(gate.remote_cnot_id)
+                    cnot(self.state, gate.index, control_index, self.execution_time, self.lock)
 
                     # Perform the first measurement
                     first_bit = measure(self.state, control_index, self.lock)
@@ -115,7 +114,7 @@ class PhysicalProcessor(Thread):
                         # Apply a Z gate to the control qubit
                         z(self.state, gate.index, self.execution_time, self.lock)
 
-                # The receiver side
+                    # The receiver side
                 elif gate.role == "target":
 
                     # Get the measurement result of the 1st measurement

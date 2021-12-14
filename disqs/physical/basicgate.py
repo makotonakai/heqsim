@@ -179,11 +179,11 @@ def phase_(n, index, theta):
         np.array : the matrix of an Z gate
     """
     matrix = 1
-    rz = np.array([[1, 0],
-                  [0, np.exp(1j * theta)]])
+    phase = np.array([[1, 0],
+                      [0, np.exp(1j * theta)]])
     for i in range(n):
         if i == index:
-            matrix = np.kron(matrix, rz)
+            matrix = np.kron(matrix, phase)
         else:
             matrix = np.kron(matrix, Imat)
 
