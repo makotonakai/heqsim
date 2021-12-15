@@ -43,10 +43,7 @@ qc.h(0)
 qc.h(1)
 qc.h(2)
 
-qc.execute(network=network)
+qc.execute(network=network, is_optimized=True)
 
 execution_time = qc.get_execution_time()
 print("Time:", execution_time)
-
-index_dict = qc.get_index_dict()
-print("Index dict:", index_dict)

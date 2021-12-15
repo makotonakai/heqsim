@@ -49,13 +49,11 @@ class AllocationOptimizer:
         return max(cost_list)
 
     def move(self, Q):
-        processor1 = random.randint(0, len(Q.keys()) - 1)
-        processor2 = random.randint(0, len(Q.keys()) - 1)
 
-        qubit1_index = random.randint(0, len(Q[processor1]) - 1)
-        qubit2_index = random.randint(0, len(Q[processor2]) - 1)
+        qubit1_index = random.randint(0, len(Q[0]) - 1)
+        qubit2_index = random.randint(0, len(Q[1]) - 1)
 
-        Q[processor1][qubit1_index], Q[processor2][qubit2_index] = Q[processor2][qubit2_index], Q[processor1][qubit1_index]
+        Q[0][qubit1_index], Q[1][qubit2_index] = Q[1][qubit2_index], Q[0][qubit1_index]
         return Q
 
     def accept_prob(self, cur_eng, new_eng, temp):
