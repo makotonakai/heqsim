@@ -43,29 +43,29 @@ class QuantumCircuit:
         self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
 
     def crx(self, control_index, target_index, theta):
-        self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
-        self.gate_list.append(QuantumGate("RX", target_index, theta=theta / 2))
-        self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
-        self.gate_list.append(QuantumGate("RX", target_index, theta=theta / 2))
+        self.cnot(control_index, target_index)
+        self.rx(target_index, theta=theta / 2)
+        self.cnot(control_index, target_index)
+        self.rx(target_index, theta=theta / 2)
 
     def cry(self, control_index, target_index, theta):
-        self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
-        self.gate_list.append(QuantumGate("RY", target_index, theta=theta / 2))
-        self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
-        self.gate_list.append(QuantumGate("RY", target_index, theta=theta / 2))
+        self.cnot(control_index, target_index)
+        self.ry(target_index, theta=theta / 2)
+        self.cnot(control_index, target_index)
+        self.ry(target_index, theta=theta / 2)
 
     def crz(self, control_index, target_index, theta):
-        self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
-        self.gate_list.append(QuantumGate("RZ", target_index, theta=theta / 2))
-        self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
-        self.gate_list.append(QuantumGate("RZ", target_index, theta=theta / 2))
+        self.cnot(control_index, target_index)
+        self.rz(target_index, theta=theta / 2)
+        self.cnot(control_index, target_index)
+        self.rz(target_index, theta=theta / 2)
 
     def cphase(self, control_index, target_index, theta):
-        self.gate_list.append(QuantumGate("PHASE", control_index, theta=theta / 2))
-        self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
-        self.gate_list.append(QuantumGate("PHASE", target_index, theta=-theta / 2))
-        self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
-        self.gate_list.append(QuantumGate("PHASE", target_index, theta=theta / 2))
+        self.phase(control_index, theta=theta / 2)
+        self.cnot(control_index, target_index)
+        self.phase(target_index, theta=-theta / 2)
+        self.cnot(control_index, target_index)
+        self.phase(target_index, theta=theta / 2)
 
     def measure(self, index):
         self.gate_list.append(QuantumGate("Measure", index))
