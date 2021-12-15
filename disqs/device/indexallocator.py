@@ -17,23 +17,22 @@ class IndexAllocator:
         self.index_dict = {processor.id: [] for processor in self.processor_list}
 
         index_list = [num for num in range(self.qubit_num)]
-        for qubit_i in index_list:
-            processor_i = qubit_i % len(self.processor_list)
-            qubits = self.qubit_dict[processor_i]
-            if qubits != 0:
-                self.index_dict[processor_i].append(qubit_i)
-                self.qubit_dict[processor_i] -= 1
-            else:
-                del self.qubit_dict[processor_i]
-                processor_i = (qubit_i + 1) % len(self.processor_list)
-                self.index_dict[processor_i].append(qubit_i)
-                self.qubit_dict[processor_i] -= 1
+        random.shuffle(index_list)
 
-        if allocation_mode == "optimized":
-            opt = AllocationOptimizer(network, gate_list)
-            self.index_dict = opt.optimize(self.index_dict)
+        start = 0
+        end = 0
+        for processor_id in range(len(self.processor_list)):
+            end += self.qubit_dict[processor_id]
+            index = index_list[start:end]
+            self.index_dict[processor_id] = index
+            start = end
+        print("Index dict:", self.index_dict)
 
-        self.set_index_dict_to_cluster()
+        # if allocation_mode == "optimized":
+        #     opt = AllocationOptimizer(network, gate_list)
+        #     self.index_dict = opt.optimize(self.index_dict)
+
+        # self.set_index_dict_to_cluster()
 
     def get_result(self):
         return self.index_dict
