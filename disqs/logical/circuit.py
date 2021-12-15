@@ -27,6 +27,18 @@ class QuantumCircuit:
     def h(self, index):
         self.gate_list.append(QuantumGate("H", index))
 
+    def s(self, index):
+        self.gate_list.append(QuantumGate("PHASE", index, theta=np.pi / 2))
+
+    def sdag(self, index):
+        self.gate_list.append(QuantumGate("PHASE", index, theta=-np.pi / 2))
+
+    def t(self, index):
+        self.gate_list.append(QuantumGate("PHASE", index, theta=np.pi / 4))
+
+    def tdag(self, index):
+        self.gate_list.append(QuantumGate("PHASE", index, theta=-np.pi / 4))
+
     def rx(self, index, theta):
         self.gate_list.append(QuantumGate("RX", index, theta=theta))
 
