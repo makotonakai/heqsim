@@ -1,4 +1,5 @@
 from disqs.device.allocationoptimizer import AllocationOptimizer
+import random
 
 
 class IndexAllocator:
@@ -15,7 +16,8 @@ class IndexAllocator:
         self.qubit_dict = {processor.id: processor.qubit_num for processor in self.processor_list}
         self.index_dict = {processor.id: [] for processor in self.processor_list}
 
-        for qubit_i in range(self.qubit_num):
+        index_list = [num for num in range(self.qubit_num)]
+        for qubit_i in index_list:
             processor_i = qubit_i % len(self.processor_list)
             qubits = self.qubit_dict[processor_i]
             if qubits != 0:

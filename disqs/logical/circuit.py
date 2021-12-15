@@ -93,7 +93,7 @@ class QuantumCircuit:
     def set_network_to_cluster(self, network):
         self.cluster.network = network
 
-    def execute(self, network=None, allocation_mode="random"):
+    def execute(self, network=None, allocation_mode="optimized"):
         network.set_node_id()
         self.allocate_indices(network, allocation_mode)
         self.allocate_gates(network)
