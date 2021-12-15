@@ -79,6 +79,24 @@ class QuantumCircuit:
         self.cnot(control_index, target_index)
         self.phase(target_index, theta=theta / 2)
 
+    def ccnot(self, control1_index, control2_index, target_index):
+        self.h(target_index)
+        self.cnot(control2_index, target_index)
+        self.tdag(target_index)
+        self.cnot(control1_index, target_index)
+        self.t(target_index)
+        self.cnot(control2_index, target_index)
+        self.tdag(target_index)
+        self.cnot(control1_index, target_index)
+        self.tdag(control2_index)
+        self.t(target_index)
+        self.cnot(control1_index, control2_index)
+        self.h(target_index)
+        self.tdag(control2_index)
+        self.cnot(control1_index, control2_index)
+        self.t(control1_index)
+        self.s(control2_index)
+
     def measure(self, index):
         self.gate_list.append(QuantumGate("Measure", index))
 
@@ -92,8 +110,8 @@ class QuantumCircuit:
         self.index_allocator.execute(network, self.gate_list, allocation_mode)
 
     def get_index_dict(self):
-        index_dict = self.index_allocator.get_result()
-        return index_dict
+        self.index_dict = self.index_allocator.get_result()
+        return self.index_dict
 
     def allocate_gates(self, network):
         index_dict = self.get_index_dict()
@@ -125,3 +143,6 @@ class QuantumCircuit:
     def get_execution_time(self):
         execution_time = self.cluster.get_execution_time()
         return execution_time
+
+    def get_gate_dict(self):
+        return self.index_dict
