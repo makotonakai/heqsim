@@ -4,6 +4,6 @@ authors:
   - family-names: Makoto
     given-names: Nakai
     orcid: https://orcid.org/0000-0003-0485-5092
-title: "My Research Software"
+title: "heqsim: Heterogeneous Quantum Computing Simulator"
 version: 0.0.1
 date-released: 2022-04-01
