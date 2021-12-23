@@ -1,4 +1,4 @@
-from disqs.device.allocationoptimizer import AllocationOptimizer
+from heqsim.device.allocationoptimizer import AllocationOptimizer
 import random
 
 

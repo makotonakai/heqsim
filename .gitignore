@@ -1,6 +1,6 @@
-disqs/__pycache__/
-disqs/logical/__pycache__/
-disqs/device/__pycache__/
-disqs/physical/__pycache__/
+heqsim/__pycache__/
+heqsim/logical/__pycache__/
+heqsim/device/__pycache__/
+heqsim/physical/__pycache__/
 test/__pycache__
 .DS_store

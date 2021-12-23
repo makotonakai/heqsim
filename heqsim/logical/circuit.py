@@ -1,7 +1,7 @@
-from disqs.logical.gate import QuantumGate
-from disqs.device.cluster import QuantumCluster
-from disqs.device.indexallocator import IndexAllocator
-from disqs.device.gateallocator import GateAllocator
+from heqsim.logical.gate import QuantumGate
+from heqsim.device.cluster import QuantumCluster
+from heqsim.device.indexallocator import IndexAllocator
+from heqsim.device.gateallocator import GateAllocator
 import numpy as np
 
 

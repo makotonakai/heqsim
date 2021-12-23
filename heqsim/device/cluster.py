@@ -1,7 +1,7 @@
-from disqs.physical.processor import PhysicalProcessor
-from disqs.physical.state import QuantumState
-from disqs.device.link import Link
-from disqs.device.bellpairmanager import BellPairManager
+from heqsim.physical.processor import PhysicalProcessor
+from heqsim.physical.state import QuantumState
+from heqsim.device.link import Link
+from heqsim.device.bellpairmanager import BellPairManager
 import threading
 import time
 import os

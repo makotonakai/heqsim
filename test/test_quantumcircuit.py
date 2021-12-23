@@ -1,5 +1,5 @@
-from disqs.logical.circuit import QuantumCircuit
-from disqs.logical.gate import QuantumGate
+from heqsim.logical.circuit import QuantumCircuit
+from heqsim.logical.gate import QuantumGate
 import unittest
 
 

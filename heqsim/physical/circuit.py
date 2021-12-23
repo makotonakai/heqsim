@@ -1,6 +1,6 @@
 
-from disqs.physical.gate import px_, py_, pz_, ph_, pcx_
-from disqs.physical.state import PhysicalState
+from heqsim.physical.gate import px_, py_, pz_, ph_, pcx_
+from heqsim.physical.state import PhysicalState
 import numpy as np
 
 

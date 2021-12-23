@@ -1,6 +1,6 @@
-from disqs.physical.state import QuantumState
-from disqs.physical.gate import x, y, z, h, cnot, measure, rx, ry, rz, phase
-from disqs.device.link import Link
+from heqsim.physical.state import QuantumState
+from heqsim.physical.gate import x, y, z, h, cnot, measure, rx, ry, rz, phase
+from heqsim.device.link import Link
 from threading import Thread
 import numpy as np
 import queue

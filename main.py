@@ -1,6 +1,6 @@
-from disqs.logical.circuit import QuantumCircuit
-from disqs.logical.processor import QuantumProcessor
-from disqs.logical.network import Network
+from heqsim.logical.circuit import QuantumCircuit
+from heqsim.logical.processor import QuantumProcessor
+from heqsim.logical.network import Network
 import numpy as np
 
 
