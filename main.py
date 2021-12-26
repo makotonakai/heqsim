@@ -30,7 +30,7 @@ qc.x(0)
 
 qc.execute(network=network)
 
-result = qc.result()
+result = qc.get_result()
 print("Result:", result)
 
 execution_time = qc.get_execution_time()
