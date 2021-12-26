@@ -1,13 +1,13 @@
-from heqsim.physical.state import QuantumState
-from heqsim.physical.gate import x, y, z, h, cnot, measure, rx, ry, rz, phase
-from heqsim.device.link import Link
+from heqsim.hardware.state import QuantumState
+from heqsim.hardware.gate import x, y, z, h, cnot, measure, rx, ry, rz, phase
+from heqsim.middleware.link import Link
 from threading import Thread
 import numpy as np
 import queue
 import time
 
 
-class PhysicalProcessor(Thread):
+class hardwareProcessor(Thread):
 
     def __init__(self, param):
         Thread.__init__(self)

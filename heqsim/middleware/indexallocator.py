@@ -1,4 +1,4 @@
-from heqsim.device.allocationoptimizer import AllocationOptimizer
+from heqsim.middleware.allocationoptimizer import AllocationOptimizer
 import random
 
 

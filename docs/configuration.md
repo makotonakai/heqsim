@@ -1,5 +1,5 @@
 # How to configure this simulator
-You can specify relevant parameters in the heqsim/device/config.ini
+You can specify relevant parameters in the heqsim/middleware/config.ini
 
 | Parameter name | Type  |              Explanation               |
 | :------------: | :---: | :------------------------------------: |

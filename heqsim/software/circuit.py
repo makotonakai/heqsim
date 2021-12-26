@@ -1,7 +1,7 @@
-from heqsim.logical.gate import QuantumGate
-from heqsim.device.cluster import QuantumCluster
-from heqsim.device.indexallocator import IndexAllocator
-from heqsim.device.gateallocator import GateAllocator
+from heqsim.software.gate import QuantumGate
+from heqsim.middleware.cluster import QuantumCluster
+from heqsim.middleware.indexallocator import IndexAllocator
+from heqsim.middleware.gateallocator import GateAllocator
 import numpy as np
 
 

@@ -1,5 +1,5 @@
-from heqsim.logical.circuit import QuantumCircuit
-from heqsim.logical.gate import QuantumGate
+from heqsim.software.circuit import QuantumCircuit
+from heqsim.software.gate import QuantumGate
 import unittest
 
 

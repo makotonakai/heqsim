@@ -1,4 +1,4 @@
-from heqsim.logical.gate import QuantumGate
+from heqsim.software.gate import QuantumGate
 import networkx as nx
 
 

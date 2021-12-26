@@ -1,6 +1,6 @@
-from heqsim.logical.circuit import QuantumCircuit
-from heqsim.logical.processor import QuantumProcessor
-from heqsim.logical.network import Network
+from heqsim.software.circuit import QuantumCircuit
+from heqsim.software.processor import QuantumProcessor
+from heqsim.software.network import Network
 import numpy as np
 
 

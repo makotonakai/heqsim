@@ -1,4 +1,4 @@
-from heqsim.physical.basicgate import x_, y_, z_, h_, cnot_, rx_, ry_, rz_, phase_
+from heqsim.hardware.basicgate import x_, y_, z_, h_, cnot_, rx_, ry_, rz_, phase_
 import numpy as np
 import time
 
