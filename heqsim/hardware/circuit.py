@@ -1,10 +1,10 @@
 
 from heqsim.hardware.gate import px_, py_, pz_, ph_, pcx_
-from heqsim.hardware.state import hardwareState
+from heqsim.hardware.state import QuantumState
 import numpy as np
 
 
-class hardwareCircuit:
+class QuantumCircuit:
     """A class for quantum circuit"""
 
     def __init__(self, n):
@@ -14,7 +14,7 @@ class hardwareCircuit:
             n (int): number of qubits on a quantum circuit
         """
         self.qubit_num = n
-        self.state = hardwareState(self.qubit_num).get_statevector()
+        self.state = QuantumState(self.qubit_num).get_statevector()
 
     def px(self, index):
         """Applying an X gate

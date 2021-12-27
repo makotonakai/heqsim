@@ -1,4 +1,4 @@
-from heqsim.hardware.processor import hardwareProcessor
+from heqsim.hardware.processor import QuantumProcessor
 from heqsim.hardware.state import QuantumState
 from heqsim.middleware.link import Link
 from heqsim.middleware.bellpairmanager import BellPairManager
@@ -20,7 +20,7 @@ class QuantumCluster:
         self.hardware_processor_list = []
         for processor in processor_list:
             processor_info = processor.get_info()
-            hardware_processor = hardwareProcessor(processor_info)
+            hardware_processor = QuantumProcessor(processor_info)
             self.hardware_processor_list.append(hardware_processor)
 
     def prepare_quantum_state(self):

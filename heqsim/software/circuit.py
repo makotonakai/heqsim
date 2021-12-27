@@ -130,7 +130,7 @@ class QuantumCircuit:
         self.set_network_to_cluster(network)
         self.run_cluster()
 
-    def result(self):
+    def get_result(self):
         statevector = self.cluster.get_state()
         cluster_qubit_num = int(np.log2(len(statevector)))
         original_state = []
