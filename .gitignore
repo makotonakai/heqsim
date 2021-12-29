@@ -1,6 +1,6 @@
 heqsim/__pycache__/
-heqsim/software/__pycache__/
-heqsim/middleware/__pycache__/
-heqsim/hardware/__pycache__/
+heqsim/heqsim/software/__pycache__/
+heqsim/heqsim/middleware/__pycache__/
+heqsim/heqsim/hardware/__pycache__/
 test/__pycache__
 .DS_store
