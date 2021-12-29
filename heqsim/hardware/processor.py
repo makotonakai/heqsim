@@ -8,8 +8,23 @@ import time
 
 
 class QuantumProcessor(Thread):
+    """A class which emulates a physical quantum processor
+
+    Args:
+        Thread (threading.Thread): A thread used for parallel execution of a quantum circuit
+    """
 
     def __init__(self, param):
+        """Create a quantum processor
+
+        Args:
+            param (dict): a directory which contains
+                            {
+                                "id": processor id,
+                                "qubit_num": number of qubits in a quantum processor,
+                                "execution time": execution time of a single quantum gate in a quantum processor
+                            }
+        """
         Thread.__init__(self)
         self.id = param["id"]
         self.qubit_num = param["qubit_num"]

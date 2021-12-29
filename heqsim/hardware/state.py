@@ -22,7 +22,11 @@ class QuantumState:
             self.vector = np.kron(self.vector, zero_ket)
 
     def add_state(self, new_state):
+        """Add a new quantum state
 
+        Args:
+            new_state (QuantumState): A new statevector to add
+        """
         new_qubit_num = new_state.qubit_num
         self.qubit_num += new_qubit_num
 

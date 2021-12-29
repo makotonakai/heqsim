@@ -4,6 +4,12 @@ import time
 
 
 def apply_x(state, index):
+    """Apply an X state to a given quantum state
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that an X gate is applied to
+    """
     state_vector = state.vector
     qubit_num = state.qubit_num
     matrix = x_(qubit_num, index)
@@ -11,6 +17,12 @@ def apply_x(state, index):
 
 
 def apply_y(state, index):
+    """Apply a Y state to a given quantum state
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that an Y gate is applied to
+    """
     state_vector = state.vector
     qubit_num = state.qubit_num
     matrix = y_(qubit_num, index)
@@ -18,6 +30,12 @@ def apply_y(state, index):
 
 
 def apply_z(state, index):
+    """Apply a Z state to a given quantum state
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that a Z gate is applied to
+    """
     state_vector = state.vector
     qubit_num = state.qubit_num
     matrix = z_(qubit_num, index)
@@ -25,6 +43,12 @@ def apply_z(state, index):
 
 
 def apply_h(state, index):
+    """Apply an H state to a given quantum state
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that an H gate is applied to
+    """
     state_vector = state.vector
     qubit_num = state.qubit_num
     matrix = h_(qubit_num, index)
@@ -32,6 +56,12 @@ def apply_h(state, index):
 
 
 def apply_cnot(state, control_index, target_index):
+    """Apply an CNOT state to a given quantum state on a local quantum processor
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that a CNOT gate is applied to
+    """
     state_vector = state.vector
     qubit_num = state.qubit_num
     matrix = cnot_(qubit_num, control_index, target_index)
@@ -39,6 +69,13 @@ def apply_cnot(state, control_index, target_index):
 
 
 def apply_rx(state, index, theta):
+    """Apply an Rx state to a given quantum state
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that an Rx gate is applied to
+        theta (float): a rotation angle
+    """
     state_vector = state.vector
     qubit_num = state.qubit_num
     matrix = rx_(qubit_num, index, theta)
@@ -46,6 +83,13 @@ def apply_rx(state, index, theta):
 
 
 def apply_ry(state, index, theta):
+    """Apply an Ry state to a given quantum state
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that an Ry gate is applied to
+        theta (float): a rotation angle
+    """
     state_vector = state.vector
     qubit_num = state.qubit_num
     matrix = ry_(qubit_num, index, theta)
@@ -53,6 +97,13 @@ def apply_ry(state, index, theta):
 
 
 def apply_rz(state, index, theta):
+    """Apply an Rz state to a given quantum state
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that an Rz gate is applied to
+        theta (float): a rotation angle
+    """
     state_vector = state.vector
     qubit_num = state.qubit_num
     matrix = rz_(qubit_num, index, theta)
@@ -60,6 +111,12 @@ def apply_rz(state, index, theta):
 
 
 def apply_phase(state, index, theta):
+    """Apply a phase state to a given quantum state
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that a phase gate is applied to
+    """
     state_vector = state.vector
     qubit_num = state.qubit_num
     matrix = phase_(qubit_num, index, theta)
@@ -67,6 +124,14 @@ def apply_phase(state, index, theta):
 
 
 def x(state, index, sleep_time, lock):
+    """Execute an X gate
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that a phase gate is applied to
+        sleep_time (float): how long it takes to execute this X gate
+        lock (threading.Lock): lock to take before executing this X gate
+    """
     if lock is not None:
         lock.acquire()
     apply_x(state, index)
@@ -76,6 +141,14 @@ def x(state, index, sleep_time, lock):
 
 
 def y(state, index, sleep_time, lock):
+    """Execute an Y gate
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that a phase gate is applied to
+        sleep_time (float): how long it takes to execute this Y gate
+        lock (threading.Lock): lock to take before executing this Y gate
+    """
     if lock is not None:
         lock.acquire()
     apply_y(state, index)
@@ -85,6 +158,14 @@ def y(state, index, sleep_time, lock):
 
 
 def z(state, index, sleep_time, lock):
+    """Execute an Z gate
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that a phase gate is applied to
+        sleep_time (float): how long it takes to execute this Z gate
+        lock (threading.Lock): lock to take before executing this Z gate
+    """
     if lock is not None:
         lock.acquire()
     apply_z(state, index)
@@ -94,6 +175,14 @@ def z(state, index, sleep_time, lock):
 
 
 def h(state, index, sleep_time, lock):
+    """Execute an H gate
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that a phase gate is applied to
+        sleep_time (float): how long it takes to execute this H gate
+        lock (threading.Lock): lock to take before executing this H gate
+    """
     if lock is not None:
         lock.acquire()
     apply_h(state, index)
@@ -103,6 +192,14 @@ def h(state, index, sleep_time, lock):
 
 
 def cnot(state, control_index, target_index, sleep_time, lock):
+    """Execute an CNOT gate on a quantum processor
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that a phase gate is applied to
+        sleep_time (float): how long it takes to execute this CNOT gate
+        lock (threading.Lock): lock to take before executing this CNOT gate
+    """
     if lock is not None:
         lock.acquire()
     apply_cnot(state, control_index, target_index)
@@ -112,6 +209,15 @@ def cnot(state, control_index, target_index, sleep_time, lock):
 
 
 def rx(state, index, theta, sleep_time, lock):
+    """Execute an Rx gate
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that a phase gate is applied to
+        theta (float): rotation angle of this Rx gate
+        sleep_time (float): how long it takes to execute this Rx gate
+        lock (threading.Lock): lock to take before executing this Rx gate
+    """
     if lock is not None:
         lock.acquire()
     apply_rx(state, index, theta)
@@ -121,6 +227,15 @@ def rx(state, index, theta, sleep_time, lock):
 
 
 def ry(state, index, theta, sleep_time, lock):
+    """Execute an Ry gate
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that a phase gate is applied to
+        theta (float): rotation angle of this Ry gate
+        sleep_time (float): how long it takes to execute this Ry gate
+        lock (threading.Lock): lock to take before executing this Ry gate
+    """
     if lock is not None:
         lock.acquire()
     apply_ry(state, index, theta)
@@ -130,6 +245,15 @@ def ry(state, index, theta, sleep_time, lock):
 
 
 def rz(state, index, theta, sleep_time, lock):
+    """Execute an Rz gate
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that a phase gate is applied to
+        theta (float): rotation angle of this Rz gate
+        sleep_time (float): how long it takes to execute this Rz gate
+        lock (threading.Lock): lock to take before executing this Rz gate
+    """
     if lock is not None:
         lock.acquire()
     apply_rz(state, index, theta)
@@ -139,6 +263,15 @@ def rz(state, index, theta, sleep_time, lock):
 
 
 def phase(state, index, theta, sleep_time, lock):
+    """Execute an phase gate
+
+    Args:
+        state (QuantumState): quantum state
+        index (int): index of the qubit that a phase gate is applied to
+        theta (float): rotation angle of this phase gate
+        sleep_time (float): how long it takes to execute this phase gate
+        lock (threading.Lock): lock to take before executing this phase gate
+    """
     if lock is not None:
         lock.acquire()
     apply_phase(state, index, theta)
@@ -151,6 +284,7 @@ def measure(state, index, lock):
     """Measure a qubit
     Args:
         index (int): the index of a qubit that users measure
+        lock (threading.Lock): lock to take before executing this phase gate
     """
     # Measurement probability of the measured qubit
     measure_prob = {"0": 0, "1": 0}
