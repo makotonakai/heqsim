@@ -18,7 +18,7 @@ class QuantumProcessor(Thread):
         """Create a quantum processor
 
         Args:
-            param (dict): a directory which contains
+            param (dict): A directory which contains
                             {
                                 "id": processor id,
                                 "qubit_num": number of qubits in a quantum processor,

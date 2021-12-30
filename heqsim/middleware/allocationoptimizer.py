@@ -25,7 +25,7 @@ class AllocationOptimizer:
         self.ET = [processor.execution_time for processor in self.processors]
         self.D = self.network.generate_distance_matrix()
 
-    def calc_eng(self, Q):
+    def calc_eng(self, index_dict):
         """Calculate energy in the simulated annealing
 
         Args:
@@ -40,21 +40,21 @@ class AllocationOptimizer:
 
         for processor_id in range(self.processor_num):
             for gate in self.gate_list:
-                if gate.name != "CNOT" and gate.index in Q[processor_id]:
+                if gate.name != "CNOT" and gate.index in index_dict[processor_id]:
                     gate_cost_list[processor_id] += self.ET[processor_id]
 
         for processor_id in range(self.processor_num):
             for gate in self.gate_list:
                 if gate.name == "CNOT":
-                    if gate.index in Q[processor_id] and gate.target_index in Q[processor_id]:
+                    if gate.index in index_dict[processor_id] and gate.target_index in index_dict[processor_id]:
                         comm_cost_list[processor_id] += 0
-                    elif gate.index in Q[processor_id]:
+                    elif gate.index in index_dict[processor_id]:
                         for the_other_processor_id in range(self.processor_num):
-                            if gate.target_index in Q[the_other_processor_id]:
+                            if gate.target_index in index_dict[the_other_processor_id]:
                                 comm_cost_list[processor_id] += self.D[processor_id][the_other_processor_id]
-                    elif gate.target_index in Q[processor_id]:
+                    elif gate.target_index in index_dict[processor_id]:
                         for the_other_processor_id in range(self.processor_num):
-                            if gate.index in Q[the_other_processor_id]:
+                            if gate.index in index_dict[the_other_processor_id]:
                                 comm_cost_list[processor_id] += self.D[processor_id][the_other_processor_id]
 
         for processor_id in range(self.processor_num):
@@ -62,7 +62,7 @@ class AllocationOptimizer:
 
         return max(cost_list)
 
-    def move(self, Q):
+    def move(self, index_dict):
         """Find a neighboring qubit allocation
 
         Args:
@@ -71,11 +71,11 @@ class AllocationOptimizer:
         Returns:
             dict: The new result of the qubit allocation
         """
-        qubit1_index = random.randint(0, len(Q[0]) - 1)
-        qubit2_index = random.randint(0, len(Q[1]) - 1)
+        qubit1_index = random.randint(0, len(index_dict[0]) - 1)
+        qubit2_index = random.randint(0, len(index_dict[1]) - 1)
 
-        Q[0][qubit1_index], Q[1][qubit2_index] = Q[1][qubit2_index], Q[0][qubit1_index]
-        return Q
+        index_dict[0][qubit1_index], index_dict[1][qubit2_index] = index_dict[1][qubit2_index], index_dict[0][qubit1_index]
+        return index_dict
 
     def accept_prob(self, cur_eng, new_eng, temp):
         """Calculate the accept probability of the current qubit allocation
@@ -93,7 +93,7 @@ class AllocationOptimizer:
         else:
             return math.exp(-(new_eng - cur_eng) / temp)
 
-    def optimize(self, Q):
+    def optimize(self, index_dict):
         """Optimize the index allocation process
 
         Args:
@@ -102,7 +102,7 @@ class AllocationOptimizer:
         Returns:
             dict: The result of the optimized index allocation
         """
-        state = Q
+        state = index_dict
         T = 100
 
         for iter_ in range(self.iter_num):

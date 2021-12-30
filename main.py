@@ -27,6 +27,7 @@ network.add_link(p1, p2)
 qn = 2
 qc = QuantumCircuit(qn)
 qc.x(0)
+qc.x(1)
 
 qc.execute(network=network)
 
