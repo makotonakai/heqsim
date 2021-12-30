@@ -122,8 +122,4 @@ class GateAllocator:
                             target_id = target_processor.id
                             self.gate_dict[target_id].append(remote_cnot_target)
 
-        # for key in list(self.gate_dict.keys()):
-        #     print("{}:".format(key))
-        #     print(len([gate.name for gate in self.gate_dict[key]]))
-
         self.set_gate_dict_to_cluster(self.gate_dict)
