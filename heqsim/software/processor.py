@@ -6,8 +6,8 @@ class QuantumProcessor:
         """Define a quantum processor
 
         Args:
-            qubit_num (int, optional): number of qubits. Defaults to 1.
-            execution_time (float, optional): execution time of each quantum gate. Defaults to 0.1.
+            qubit_num (int, optional): The number of qubits. Defaults to 1.
+            execution_time (float, optional): The execution time of each quantum gate. Defaults to 0.1.
         """
         self.id = 0
         self.qubit_num = qubit_num
@@ -17,7 +17,7 @@ class QuantumProcessor:
         """Set a processor id to this quantum processor
 
         Args:
-            id_ (int): processor id
+            id_ (int): A processor id
         """
         self.id = id_
 
@@ -25,7 +25,7 @@ class QuantumProcessor:
         """Return an details about properties of this quantum processor
 
         Returns:
-            dict: dict that contains details of this quantum processor
+            dict: A dict that contains details of this quantum processor
         """
         info = {
             "id": self.id,

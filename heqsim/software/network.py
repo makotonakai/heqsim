@@ -13,8 +13,8 @@ class Network:
         """Add a new link to this network
 
         Args:
-            node1 (QuantumProcessor): one quantum processor
-            node2 (QuantumProcessor): the other quantum processor
+            node1 (QuantumProcessor): One quantum processor
+            node2 (QuantumProcessor): The other quantum processor
         """
         self.graph.add_edge(node1, node2)
 
@@ -22,7 +22,7 @@ class Network:
         """Return quantum processor with a specific id
 
         Args:
-            id_ (int): a quantum processor id
+            id_ (int): A quantum processor id
 
         Returns:
             QuantumProcessor: the specified quantum processor
@@ -39,7 +39,7 @@ class Network:
         """Return the list of quantum processors
 
         Returns:
-            list: list of quantum processors
+            list: The list of quantum processors
         """
         return list(self.graph.nodes)
 
@@ -47,11 +47,11 @@ class Network:
         """Return the id of a specific link
 
         Args:
-            source (QuantumProcessor): one quantum processor
-            target (QuantumProcessor): the other quantum processor
+            source (QuantumProcessor): One quantum processor
+            target (QuantumProcessor): The other quantum processor
 
         Returns:
-            int: a link id
+            int: A link id
         """
         link_list = self.get_link_list()
         if (source, target) in link_list:
@@ -63,7 +63,7 @@ class Network:
         """Return the list of links in this network
 
         Returns:
-            list: list of links
+            list: The list of links
         """
         return list(self.graph.edges)
 
@@ -71,7 +71,7 @@ class Network:
         """Return the number of links in this network
 
         Returns:
-            [type]: number of links
+            [type]: the number of links
         """
         return self.graph.number_of_edges()
 
@@ -85,6 +85,6 @@ class Network:
         """Create a distance matrix in this network
 
         Returns:
-            numpy.array: distance matrix
+            numpy.array: The distance matrix in the total network
         """
         return nx.floyd_warshall_numpy(self.graph)

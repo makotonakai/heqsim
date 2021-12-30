@@ -12,7 +12,7 @@ class QuantumCircuit:
         """Create a quantum circuit
 
         Args:
-            qubit_num (int): number of qubits in the quantum circuit
+            qubit_num (int): A number of qubits in the quantum circuit
         """
         self.qubit_num = qubit_num
         self.gate_list = []
@@ -25,7 +25,7 @@ class QuantumCircuit:
         """Add an X gate to this quantum circuit
 
         Args:
-            index (int): index of the qubit that this X gate is applied to
+            index (int): The index of the qubit that this X gate is applied to
         """
         self.gate_list.append(QuantumGate("X", index))
 
@@ -33,7 +33,7 @@ class QuantumCircuit:
         """Add an Y gate to this quantum circuit
 
         Args:
-            index (int): index of the qubit that this Y gate is applied to
+            index (int): The index of the qubit that this Y gate is applied to
         """
         self.gate_list.append(QuantumGate("Y", index))
 
@@ -41,7 +41,7 @@ class QuantumCircuit:
         """Add an Z gate to this quantum circuit
 
         Args:
-            index (int): index of the qubit that this Z gate is applied to
+            index (int): The index of the qubit that this Z gate is applied to
         """
         self.gate_list.append(QuantumGate("Z", index))
 
@@ -49,7 +49,7 @@ class QuantumCircuit:
         """Add an H gate to this quantum circuit
 
         Args:
-            index (int): index of the qubit that this H gate is applied to
+            index (int): The index of the qubit that this H gate is applied to
         """
         self.gate_list.append(QuantumGate("H", index))
 
@@ -57,7 +57,7 @@ class QuantumCircuit:
         """Add an S gate to this quantum circuit
 
         Args:
-            index (int): index of the qubit that this S gate is applied to
+            index (int): The index of the qubit that this S gate is applied to
         """
         self.gate_list.append(QuantumGate("PHASE", index, theta=np.pi / 2))
 
@@ -65,7 +65,7 @@ class QuantumCircuit:
         """Add an S† gate to this quantum circuit
 
         Args:
-            index (int): index of the qubit that this S† gate is applied to
+            index (int): The index of the qubit that this S† gate is applied to
         """
         self.gate_list.append(QuantumGate("PHASE", index, theta=-np.pi / 2))
 
@@ -73,7 +73,7 @@ class QuantumCircuit:
         """Add an T gate to this quantum circuit
 
         Args:
-            index (int): index of the qubit that this T gate is applied to
+            index (int): The index of the qubit that this T gate is applied to
         """
         self.gate_list.append(QuantumGate("PHASE", index, theta=np.pi / 4))
 
@@ -81,7 +81,7 @@ class QuantumCircuit:
         """Add an T† gate to this quantum circuit
 
         Args:
-            index (int): index of the qubit that this T† gate is applied to
+            index (int): The index of the qubit that this T† gate is applied to
         """
         self.gate_list.append(QuantumGate("PHASE", index, theta=-np.pi / 4))
 
@@ -89,8 +89,8 @@ class QuantumCircuit:
         """Add an Rx gate to this quantum circuit
 
         Args:
-            index (int): index of the qubit that this Rx gate is applied to
-            theta (float): rotation angle
+            index (int): The index of the qubit that this Rx gate is applied to
+            theta (float): The rotation angle of this Rx gate
         """
         self.gate_list.append(QuantumGate("RX", index, theta=theta))
 
@@ -98,8 +98,8 @@ class QuantumCircuit:
         """Add an Ry gate to this quantum circuit
 
         Args:
-            index (int): index of the qubit that this Ry gate is applied to
-            theta (float): rotation angle
+            index (int): The index of the qubit that this Ry gate is applied to
+            theta (float): The rotation angle of this Ry gate
         """
         self.gate_list.append(QuantumGate("RY", index, theta=theta))
 
@@ -107,8 +107,8 @@ class QuantumCircuit:
         """Add an Rz gate to this quantum circuit
 
         Args:
-            index (int): index of the qubit that this Rz gate is applied to
-            theta (float): rotation angle
+            index (int): The index of the qubit that this Rz gate is applied to
+            theta (float): The rotation angle of this Rz gate
         """
         self.gate_list.append(QuantumGate("RZ", index, theta=theta))
 
@@ -116,8 +116,8 @@ class QuantumCircuit:
         """Add an phase gate to this quantum circuit
 
         Args:
-            index (int): index of the qubit that this phase gate is applied to
-            theta (float): rotation angle
+            index (int): The index of the qubit that this phase gate is applied to
+            theta (float): The rotation angle of this phase gate
         """
         self.gate_list.append(QuantumGate("PHASE", index, theta=theta))
 
@@ -125,8 +125,8 @@ class QuantumCircuit:
         """Add a CNOT gate to this quantum circuit
 
         Args:
-            control_index (int): control index of this CNOT gate
-            target_index (int): target index of this CNOT gate
+            control_index (int): The control index of this CNOT gate
+            target_index (int): The target index of this CNOT gate
         """
         self.gate_list.append(QuantumGate("CNOT", control_index, target_index))
 
@@ -134,9 +134,9 @@ class QuantumCircuit:
         """Add a crx gate to this quantum circuit
 
         Args:
-            control_index (int): control index of this crx gate
-            target_index (int): target index of this crx gate
-            theta (float): rotation angle
+            control_index (int): The control index of this crx gate
+            target_index (int): The target index of this crx gate
+            theta (float): The rotation angle of this crx gate
         """
         self.cnot(control_index, target_index)
         self.rx(target_index, theta=theta / 2)
@@ -147,9 +147,9 @@ class QuantumCircuit:
         """Add a cry gate to this quantum circuit
 
         Args:
-            control_index (int): control index of this cry gate
-            target_index (int): target index of this cry gate
-            theta (float): rotation angle
+            control_index (int): The control index of this cry gate
+            target_index (int): The target index of this cry gate
+            theta (float): The rotation angle of this cry gate
         """
         self.cnot(control_index, target_index)
         self.ry(target_index, theta=theta / 2)
@@ -160,9 +160,9 @@ class QuantumCircuit:
         """Add a crz gate to this quantum circuit
 
         Args:
-            control_index (int): control index of this crz gate
-            target_index (int): target index of this crz gate
-            theta (float): rotation angle
+            control_index (int): The control index of this crz gate
+            target_index (int): The target index of this crz gate
+            theta (float): The rotation angle of this crz gate
         """
         self.cnot(control_index, target_index)
         self.rz(target_index, theta=theta / 2)
@@ -173,9 +173,9 @@ class QuantumCircuit:
         """Add a cphase gate to this quantum circuit
 
         Args:
-            control_index (int): control index of this cphase gate
-            target_index (int): target index of this cphase gate
-            theta (float): rotation angle
+            control_index (int): The control index of this cphase gate
+            target_index (int): The target index of this cphase gate
+            theta (float): The rotation angle of this cphase gate
         """
         self.phase(control_index, theta=theta / 2)
         self.cnot(control_index, target_index)
@@ -187,9 +187,9 @@ class QuantumCircuit:
         """Add a ccnot gate to this quantum circuit
 
         Args:
-            control1_index (int): first control index of this crx gate
-            control2_index (int): second control index of this crx gate
-            target_index (int): target index of this crx gate
+            control1_index (int): The first control index of this crx gate
+            control2_index (int): The second control index of this crx gate
+            target_index (int): The target index of this crx gate
         """
         self.h(target_index)
         self.cnot(control2_index, target_index)
@@ -212,7 +212,7 @@ class QuantumCircuit:
         """Add a measurement operation to this quantum circuit
 
         Args:
-            index (int): index of the measured qubit
+            index (int): The index of the measured qubit
         """
         self.gate_list.append(QuantumGate("Measure", index))
 
@@ -228,7 +228,7 @@ class QuantumCircuit:
         """Execute index allocation
 
         Args:
-            network (Network): network that quantum processors are connected with
+            network (Network): A network that quantum processors are connected with
             is_optimized (bool): whether the allocation is optimized
         """
         self.index_allocator.execute(network, self.gate_list, is_optimized)
@@ -237,7 +237,7 @@ class QuantumCircuit:
         """Return the result of index allocation
 
         Returns:
-            dict: a dict that maps each processor id to qubit indices of allocated indices on each processor
+            dict: A dict that maps each processor id to qubit indices of allocated indices on each processor
                 e.g. {0: [1, 2, 3]} 
                 This means that qubit 1, 2 and 3 are allocated to the physical processor 0
         """
@@ -248,7 +248,7 @@ class QuantumCircuit:
         """Execute gate allocation
 
         Args:
-            network (Network): network that quantum processors are connected with
+            network (Network): A network that quantum processors are connected with
         """
         index_dict = self.get_index_dict()
         self.gate_allocator.execute(index_dict, network)
@@ -261,7 +261,7 @@ class QuantumCircuit:
         """Apply the given network to the cluster of physical quantum processors
 
         Args:
-            network (Network): network that quantum processors are connected with
+            network (Network): A network that quantum processors are connected with
         """
         self.cluster.network = network
 
@@ -269,7 +269,7 @@ class QuantumCircuit:
         """Execute this quantum circuit
 
         Args:
-            network (Network, optional): network that quantum processors are connected with. Defaults to None.
+            network (Network, optional): A network that quantum processors are connected with. Defaults to None.
             is_optimized (bool, optional): whether index alocation is optimized. Defaults to False.
         """
         network.set_node_id()
@@ -282,7 +282,7 @@ class QuantumCircuit:
         """Retrieve the output of this quantum circuit from the cluster of physical quantum processors
 
         Returns:
-            numpy.array: the statevector of this quantum state
+            numpy.array: The statevector of this quantum state
         """
         statevector = self.cluster.get_state()
         cluster_qubit_num = int(np.log2(len(statevector)))
@@ -297,7 +297,7 @@ class QuantumCircuit:
         """Retrieve the total execution time from the cluster of physical quantum processors
 
         Returns:
-            float: total execution time of this quantum circuit
+            float: The total execution time of this quantum circuit
         """
         execution_time = self.cluster.get_execution_time()
         return execution_time
@@ -305,6 +305,6 @@ class QuantumCircuit:
     def get_gate_dict(self):
         """Return the result of index allocation
         Returns:
-            dict: dict that maps processor id to qubit indices of allocated qubits on each quantum processor
+            dict: A dict that maps processor id to qubit indices of allocated qubits on each quantum processor
         """
         return self.index_dict

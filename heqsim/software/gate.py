@@ -6,10 +6,10 @@ class QuantumGate:
         """Detail of a quantum gate
 
         Args:
-            name (str): name of this quantum gate
-            index (int): qubit index that this gate is applied to
-            target_index (int, optional): index of target qubit of a controlled quantum gate. Defaults to None.
-            theta (float, optional): rotation angle of a rotation quatum gate. Defaults to None.
+            name (str): The name of this quantum gate
+            index (int): The qubit index that this gate is applied to
+            target_index (int, optional): The index of target qubit of a controlled quantum gate. Defaults to None.
+            theta (float, optional): The rotation angle of a rotation quatum gate. Defaults to None.
         """
         self.name = name
         self.index = index
@@ -20,7 +20,7 @@ class QuantumGate:
         """Add a remote CNOT id to this remote CNOT gate
 
         Args:
-            remote_cnot_id (int): new remote CNOT gate id
+            remote_cnot_id (int): A new remote CNOT gate id
         """
         self.remote_cnot_id = remote_cnot_id
 
@@ -28,7 +28,7 @@ class QuantumGate:
         """Add link id to this remote CNOT gate (specify the link where this remote CNOT gate is going to communicate)
 
         Args:
-            link_id (int): new link id
+            link_id (int): A new link id
         """
         self.link_id = link_id
 
