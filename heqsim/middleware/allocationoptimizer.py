@@ -87,10 +87,6 @@ class AllocationOptimizer:
         receiver_processor_id = random.choice(processor_id_list)
         index_dict[receiver_processor_id].append(sender_qubit_index)
 
-        # qubit1_index = random.randint(0, len(index_dict[0]) - 1)
-        # qubit2_index = random.randint(0, len(index_dict[1]) - 1)
-
-        # index_dict[0][qubit1_index], index_dict[1][qubit2_index] = index_dict[1][qubit2_index], index_dict[0][qubit1_index]
         return index_dict
 
     def has_more_qubits(self, index_dict):
