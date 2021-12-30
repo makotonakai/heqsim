@@ -238,7 +238,7 @@ class QuantumCircuit:
 
         Returns:
             dict: A dict that maps each processor id to qubit indices of allocated indices on each processor
-                e.g. {0: [1, 2, 3]} 
+                e.g. {0: [1, 2, 3]}
                 This means that qubit 1, 2 and 3 are allocated to the physical processor 0
         """
         self.index_dict = self.index_allocator.get_result()

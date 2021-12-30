@@ -9,7 +9,7 @@ def x_(nqubits, index):
         nqubits (int): The number of qubits on a quantum circuit
         index (int): The index of a qubit that a gate is applied
     Returns:
-        np.array : The matrix of an X gate
+        ndarray : The matrix of an X gate
     """
     matrix = 1
     X = np.array([[0, 1], [1, 0]])
@@ -28,7 +28,7 @@ def y_(nqubits, index):
         nqubits (int): The number of qubits on a quantum circuit
         index (int): The index of a qubit that a gate is applied
     Returns:
-        np.array : The matrix of an Y gate
+        ndarray : The matrix of an Y gate
     """
     matrix = 1
     Y = np.array([[0, -1j], [1j, 0]])
@@ -47,7 +47,7 @@ def z_(nqubits, index):
         nqubits (int): The number of qubits on a quantum circuit
         index (int): The index of a qubit that a gate is applied
     Returns:
-        np.array : The matrix of an Z gate
+        ndarray : The matrix of an Z gate
     """
     matrix = 1
     Z = np.array([[1, 0], [0, -1]])
@@ -66,7 +66,7 @@ def h_(nqubits, index):
         nqubits (int): The number of qubits on a quantum circuit
         index (int): The index of a qubit that a gate is applied
     Returns:
-        np.array : The matrix of an H gate
+        ndarray : The matrix of an H gate
     """
     matrix = 1
     H = np.array([[1 / np.sqrt(2), 1 / np.sqrt(2)],
@@ -87,7 +87,7 @@ def cnot_(nqubits, control_index, target_index):
         control_index (int): The index of a controlled qubit
         target_index (int): The index of a target qubit
     Returns:
-        np.array : The matrix of an X gate
+        ndarray : The matrix of an X gate
     """
     cx = np.zeros((2**nqubits, 2**nqubits))
     control_bin_list = [format(num, 'b').zfill(nqubits) for num in range(2**nqubits)]
@@ -116,7 +116,7 @@ def rx_(nqubits, index, theta):
         nqubits (int): The number of qubits on a quantum circuit
         index (int): The index of a qubit that a gate is applied
     Returns:
-        np.array : The matrix of an Z gate
+        ndarray : The matrix of an Z gate
     """
     matrix = 1
     rx = np.array([[np.cos(theta / 2), -1j * np.sin(theta / 2)],
@@ -136,7 +136,7 @@ def ry_(nqubits, index, theta):
         nqubits (int): The number of qubits on a quantum circuit
         index (int): The index of a qubit that a gate is applied
     Returns:
-        np.array : The matrix of an Z gate
+        ndarray : The matrix of an Z gate
     """
     matrix = 1
     ry = np.array([[np.cos(theta / 2), -np.sin(theta / 2)],
@@ -156,7 +156,7 @@ def rz_(nqubits, index, theta):
         nqubits (int): The number of qubits on a quantum circuit
         index (int): The index of a qubit that a gate is applied
     Returns:
-        np.array : The matrix of an Z gate
+        ndarray : The matrix of an Z gate
     """
     matrix = 1
     rz = np.array([[np.exp(-1j * theta / 2), 0],
@@ -176,7 +176,7 @@ def phase_(nqubits, index, theta):
         nqubits (int): The number of qubits on a quantum circuit
         index (int): The index of a qubit that a gate is applied
     Returns:
-        np.array : The matrix of an Z gate
+        ndarray : The matrix of an Z gate
     """
     matrix = 1
     phase = np.array([[1, 0],

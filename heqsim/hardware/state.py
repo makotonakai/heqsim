@@ -37,7 +37,7 @@ class QuantumState:
         """return a statevector
 
         Returns:
-            np.array: The statevector
+            ndarray: The statevector
         """
         return self.vector
 
