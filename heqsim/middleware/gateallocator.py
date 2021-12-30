@@ -3,12 +3,29 @@ import networkx as nx
 
 
 class GateAllocator:
+    """A class for a module that allocate quantum gates in the program to each processor"""
+
     def __init__(self, gate_list, cluster):
+        """Create a gate allocator
+
+        Args:
+            gate_list (list): list of quantum gates
+            cluster (Cluster): cluster of physical quantum processors
+        """
         self.gate_list = gate_list
         self.cluster = cluster
         self.remote_cnot_id = 0
 
     def get_processor_id_from_index_dict(self, index, index_dict):
+        """Return a processor id that a particular qubit is allocated
+
+        Args:
+            index (int): qubit index
+            index_dict (dict): dict that maps a processor id to a list of indices of allocated qubits
+
+        Returns:
+            int: a processor id that a particular qubit is allocated
+        """
         processor_id = None
         for processor in list(index_dict.keys()):
             if index in index_dict[processor]:
@@ -16,10 +33,20 @@ class GateAllocator:
         return processor_id
 
     def set_gate_dict_to_cluster(self, gate_dict):
+        """Set a gate dict to the cluster
+
+        Args:
+            gate_dict (dict): dict that maps a processor id to a list of the allocated quantum gates
+        """
         self.cluster.set_gate_dict(gate_dict)
 
     def execute(self, index_dict, network):
+        """
 
+        Args:
+            index_dict (dict): dict that maps a processor id to a list of the indices of allocated qubits
+            network (Network): network that connects quantum processors
+        """
         self.processor_list = network.get_processor_list()
         self.gate_dict = {processor.id: [] for processor in self.processor_list}
 
