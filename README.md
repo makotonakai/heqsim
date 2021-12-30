@@ -9,7 +9,7 @@
  - Reduction of the total execution time
 
 Currently, the following features are under development
-- Physical noise on each physical quantum processor (short-term goal)
+- Noise on each physical quantum processor (short-term goal)
 - Fault-tolerant quantum computing (long-term goal)
 
 ## Installation
