@@ -7,20 +7,20 @@ import numpy as np
 class QuantumCircuit:
     """A class for quantum circuit"""
 
-    def __init__(self, n):
+    def __init__(self, nqubits):
         """Create a quantum circuit on a hardware processor
 
         Args:
-            n (int): number of qubits on a quantum circuit
+            nqubits (int): The number of qubits on a quantum circuit
         """
-        self.qubit_num = n
+        self.qubit_num = nqubits
         self.state = QuantumState(self.qubit_num).get_statevector()
 
     def px(self, index):
         """Applying an X gate
 
         Args:
-            index (int): the index of a qubit that users are going to apply this gate
+            index (int): The index of a qubit that users are going to apply this gate
         """
         xmatrix = px_(self.qubit_num, index)
         self.state = np.dot(xmatrix, self.state)
@@ -29,7 +29,7 @@ class QuantumCircuit:
         """Applying an Y gate
 
         Args:
-            index (int): the index of a qubit that users are going to apply this gate
+            index (int): The index of a qubit that users are going to apply this gate
         """
         ymatrix = py_(self.qubit_num, index)
         self.state = np.dot(ymatrix, self.state)
@@ -38,7 +38,7 @@ class QuantumCircuit:
         """Applying an Z gate
 
         Args:
-            index (int): the index of a qubit that users are going to apply this gate
+            index (int): The index of a qubit that users are going to apply this gate
         """
         zmatrix = pz_(self.qubit_num, index)
         self.state = np.dot(zmatrix, self.state)
@@ -47,7 +47,7 @@ class QuantumCircuit:
         """Applying an H gate
 
         Args:
-            index (int): the index of a qubit that users are going to apply this gate
+            index (int): The index of a qubit that users are going to apply this gate
         """
         hmatrix = ph_(self.qubit_num, index)
         self.state = np.dot(hmatrix, self.state)
@@ -56,7 +56,7 @@ class QuantumCircuit:
         """Applying a CNOT gate
 
         Args:
-            index (int): the index of a qubit that users are going to apply this gate
+            index (int): The index of a qubit that users are going to apply this gate
         """
         cxmatrix = pcx_(self.qubit_num, control_index, target_index)
         self.state = np.dot(cxmatrix, self.state)
@@ -65,7 +65,7 @@ class QuantumCircuit:
         """Measure a qubit
 
         Args:
-            index (int): the index of a qubit that users measure
+            index (int): The index of a qubit that users measure
         """
 
         # Measurement probability of the measured qubit

@@ -10,7 +10,7 @@ class BellPairManager:
         """Add information about a new Bell pair
 
         Args:
-            remote_cnot_info (dict): information about a new Bell pair
+            remote_cnot_info (dict): The information about a new Bell pair
                                     e.g.
                                     {
                                         "id": a remote cnot id,
@@ -25,7 +25,7 @@ class BellPairManager:
         """Return the content of this remote CNOT manager
 
         Returns:
-            dict: dict that maps a remote CNOT id to qubit indices involved in that remote CNOT
+            dict: A dict that maps a remote CNOT id to qubit indices involved in that remote CNOT
         """
         return self.remote_cnot_manager
 
@@ -33,10 +33,10 @@ class BellPairManager:
         """Return the index of the control qubit in the particular remote CNOT
 
         Args:
-            remote_cnot_id (int): a remote CNOT id
+            remote_cnot_id (int): A remote CNOT id
 
         Returns:
-            int: the index of the control qubit in the particular remote CNO
+            int: The index of the control qubit in the particular remote CNO
         """
         index_list = self.remote_cnot_manager[remote_cnot_id]
         control_index = index_list[0]
@@ -47,10 +47,10 @@ class BellPairManager:
         """Return the index of the target qubit in the particular remote CNOT
 
         Args:
-            remote_cnot_id (int): a remote CNOT id
+            remote_cnot_id (int): A remote CNOT id
 
         Returns:
-            int: the index of the target qubit in the particular remote CNO
+            int: The index of the target qubit in the particular remote CNO
         """
         index_list = self.remote_cnot_manager[remote_cnot_id]
         target_index = index_list[0]
@@ -61,7 +61,7 @@ class BellPairManager:
         """Remove the given index from the remote CNOT manager
 
         Args:
-            index (int): qubit index to remove
+            index (int): The qubit index to remove
         """
         key = -1
         for key_ in list(self.remote_cnot_manager.keys()):

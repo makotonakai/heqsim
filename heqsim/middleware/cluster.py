@@ -43,7 +43,7 @@ class QuantumCluster:
         """Return a quantum state
 
         Returns:
-            ndarray: statevector of the total quantum state
+            ndarray: The statevector of the total quantum state
         """
         return self.quantum_state.vector
 
@@ -51,7 +51,7 @@ class QuantumCluster:
         """Return the total execution time
 
         Returns:
-            float: total execution time (seconds)
+            float: The total execution time (seconds)
         """
         return self.execution_time
 
@@ -59,7 +59,7 @@ class QuantumCluster:
         """Set the given index dict to this cluster
 
         Args:
-            index_dict (dict): dict that maps a processor id to the list of indices of allocated qubits
+            index_dict (dict): A dict that maps a processor id to the list of indices of allocated qubits
         """
         self.index_dict = index_dict
 
@@ -67,7 +67,7 @@ class QuantumCluster:
         """Set the given gate dict to this cluster
 
         Args:
-            gate_dict (dict): dict that maps a processor id to the list of allocated quantum gates
+            gate_dict (dict): A dict that maps a processor id to the list of allocated quantum gates
         """
         self.gate_dict = gate_dict
 
@@ -75,7 +75,7 @@ class QuantumCluster:
         """Set the given network to this cluster
 
         Args:
-            network (Network): network that connects quantum processors
+            network (Network): A network that connects quantum processors
         """
         self.network = network
 
@@ -83,8 +83,8 @@ class QuantumCluster:
         """Set a particular quantum state to a particular physical quantum processor
 
         Args:
-            processor (QuantumProcessor): physical quantum processor
-            state (QuantumState): quantum state
+            processor (QuantumProcessor): A physical quantum processor
+            state (QuantumState): A quantum state
         """
         processor.state = state
 
@@ -92,8 +92,8 @@ class QuantumCluster:
         """Set a particular quantum state to a particular physical quantum processor
 
         Args:
-            processor (QuantumProcessor): physical quantum processor
-            state (QuantumState): quantum state
+            processor (QuantumProcessor): A physical quantum processor
+            state (QuantumState): A quantum state
         """
         processor.gate_list = gate_list
 
@@ -101,8 +101,8 @@ class QuantumCluster:
         """Set a particular quantum state to a particular physical quantum processor
 
         Args:
-            processor (QuantumProcessor): physical quantum processor
-            state (QuantumState): quantum state
+            processor (QuantumProcessor): A physical quantum processor
+            state (QuantumState): A quantum state
         """
         processor.link_list = link_list
 
@@ -110,8 +110,8 @@ class QuantumCluster:
         """Set a particular quantum state to a particular physical quantum processor
 
         Args:
-            processor (QuantumProcessor): physical quantum processor
-            state (QuantumState): quantum state
+            processor (QuantumProcessor): A physical quantum processor
+            state (QuantumState): A quantum state
         """
         processor.lock = lock
 
@@ -119,8 +119,8 @@ class QuantumCluster:
         """Set a particular quantum state to a particular physical quantum processor
 
         Args:
-            processor (QuantumProcessor): physical quantum processor
-            state (QuantumState): quantum state
+            processor (QuantumProcessor): A physical quantum processor
+            state (QuantumState): A quantum state
         """
         processor.remote_cnot_manager = remote_cnot_manager
 

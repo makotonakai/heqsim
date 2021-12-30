@@ -10,9 +10,9 @@ class AllocationOptimizer:
         """Create an index allocation optimizer
 
         Args:
-            network (Network): network that connects physical quantum processors
-            gate_list (list): list of quantum gates
-            iter_num (int, optional): number of iterations. Defaults to 1000.
+            network (Network): A network that connects physical quantum processors
+            gate_list (list): A list of quantum gates
+            iter_num (int, optional): A number of iterations. Defaults to 1000.
         """
         self.network = network
         self.gate_list = gate_list
@@ -29,10 +29,10 @@ class AllocationOptimizer:
         """Calculate energy in the simulated annealing
 
         Args:
-            Q (dict): dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
+            Q (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
 
         Returns:
-            float: the value of cost function
+            float: The value of cost function
         """
         gate_cost_list = [0 for processor in self.processors]
         comm_cost_list = [0 for processor in self.processors]
@@ -66,10 +66,10 @@ class AllocationOptimizer:
         """Find a neighboring qubit allocation
 
         Args:
-            Q (dict): dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
+            Q (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
 
         Returns:
-            dict: new result of the qubit allocation
+            dict: The new result of the qubit allocation
         """
         qubit1_index = random.randint(0, len(Q[0]) - 1)
         qubit2_index = random.randint(0, len(Q[1]) - 1)
@@ -81,12 +81,12 @@ class AllocationOptimizer:
         """Calculate the accept probability of the current qubit allocation
 
         Args:
-            cur_eng (float): current energy value
-            new_eng (float): next energy value
-            temp (int): temperature value
+            cur_eng (float): The current energy value
+            new_eng (float): The next energy value
+            temp (int): The temperature value
 
         Returns:
-            float: acceptance probability value
+            float: The value of this acceptance probability
         """
         if new_eng < cur_eng:
             return 1
@@ -97,10 +97,10 @@ class AllocationOptimizer:
         """Optimize the index allocation process
 
         Args:
-            Q (dict): dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
+            Q (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
 
         Returns:
-            dict: result of the optimization of index allocation
+            dict: The result of the optimized index allocation
         """
         state = Q
         T = 100

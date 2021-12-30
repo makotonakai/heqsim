@@ -9,7 +9,7 @@ class QuantumState:
         """Define a quantum state
 
         Args:
-            qubit_num (int): number of qubits
+            qubit_num (int): The number of qubits
         """
         self.qubit_num = qubit_num
         self.vector = 1
@@ -37,7 +37,7 @@ class QuantumState:
         """return a statevector
 
         Returns:
-            np.array: the statevector
+            np.array: The statevector
         """
         return self.vector
 
@@ -45,6 +45,6 @@ class QuantumState:
         """return the number of qubits
 
         Returns:
-            int: the number of qubits
+            int: The number of qubits
         """
         return self.qubit_num

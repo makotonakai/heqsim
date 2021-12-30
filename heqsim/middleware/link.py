@@ -15,7 +15,7 @@ class Link:
         """Send a request to another quantum processor
 
         Args:
-            request (int): processor id of the sender(quantum processor)
+            request (int): The processor id of the sender (quantum processor)
         """
         self.request_link.put(request, block=False)
 
@@ -23,7 +23,7 @@ class Link:
         """Get a request from another quantum processor
 
         Returns:
-            int: processor id of the sender
+            int: The processor id of the sender
         """
         request = self.request_link.get()
         return request
@@ -45,7 +45,7 @@ class Link:
         """Send 1st measurement result to the receiver
 
         Args:
-            message (int): measurement result of the 1st qubit
+            message (int): The measurement result of the 1st qubit
         """
         self.control_message_link.put(message)
 
@@ -53,7 +53,7 @@ class Link:
         """Get 1st measurement result from the sender
 
         Returns:
-            int: measurement result of the 1st qubit
+            int: The measurement result of the 1st qubit
         """
         message = self.control_message_link.get()
         return message
@@ -62,7 +62,7 @@ class Link:
         """Send 2nd measurement result to the sender
 
         Args:
-            message (int): measurement result of the 2nd qubit
+            message (int): The measurement result of the 2nd qubit
         """
         self.target_message_link.put(message)
 
@@ -70,7 +70,7 @@ class Link:
         """Receive 2nd measurement result from the receiver
 
         Returns:
-            message: measurement result of the 2nd qubit
+            message: The measurement result of the 2nd qubit
         """
         message = self.target_message_link.get()
         return message

@@ -9,8 +9,8 @@ class GateAllocator:
         """Create a gate allocator
 
         Args:
-            gate_list (list): list of quantum gates
-            cluster (Cluster): cluster of physical quantum processors
+            gate_list (list): A list of quantum gates
+            cluster (Cluster): A cluster of physical quantum processors
         """
         self.gate_list = gate_list
         self.cluster = cluster
@@ -20,11 +20,11 @@ class GateAllocator:
         """Return a processor id that a particular qubit is allocated
 
         Args:
-            index (int): qubit index
-            index_dict (dict): dict that maps a processor id to a list of indices of allocated qubits
+            index (int): A qubit index
+            index_dict (dict): A dict that maps a processor id to a list of indices of allocated qubits
 
         Returns:
-            int: a processor id that a particular qubit is allocated
+            int: A processor id that a particular qubit is allocated
         """
         processor_id = None
         for processor in list(index_dict.keys()):
@@ -36,7 +36,7 @@ class GateAllocator:
         """Set a gate dict to the cluster
 
         Args:
-            gate_dict (dict): dict that maps a processor id to a list of the allocated quantum gates
+            gate_dict (dict): A dict that maps a processor id to a list of the allocated quantum gates
         """
         self.cluster.set_gate_dict(gate_dict)
 
@@ -44,8 +44,8 @@ class GateAllocator:
         """
 
         Args:
-            index_dict (dict): dict that maps a processor id to a list of the indices of allocated qubits
-            network (Network): network that connects quantum processors
+            index_dict (dict): A dict that maps a processor id to a list of the indices of allocated qubits
+            network (Network): A network that connects quantum processors
         """
         self.processor_list = network.get_processor_list()
         self.gate_dict = {processor.id: [] for processor in self.processor_list}

@@ -9,8 +9,8 @@ class IndexAllocator:
         """Create an index allocator
 
         Args:
-            qubit_num (int): total number of qubits in the program
-            cluster (Cluster): cluster of quantum processors
+            qubit_num (int): The total number of qubits in the program
+            cluster (Cluster): A cluster of quantum processors
         """
         self.qubit_num = qubit_num
         self.cluster = cluster
@@ -23,8 +23,8 @@ class IndexAllocator:
         """Execute index allocation
 
         Args:
-            network (Network): network that connects quantum processors
-            gate_list (list): list of quantum gates
+            network (Network): A network that connects quantum processors
+            gate_list (list): A list of quantum gates
             is_optimized (bool): whether index allocation process is optimized
         """
         self.processor_list = network.get_processor_list()
