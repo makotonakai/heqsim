@@ -20,16 +20,17 @@ class AllocationOptimizer:
 
         self.processors = list(self.network.graph.nodes)
         self.processor_num = len(self.processors)
-        self.qubit_num = [processor.qubit_num for processor in self.processors]
+        self.qubit_num = {processor.id: processor.qubit_num for processor in self.processors}
 
         self.ET = [processor.execution_time for processor in self.processors]
         self.D = self.network.generate_distance_matrix()
+        self.penalty_val = 100
 
     def calc_eng(self, index_dict):
         """Calculate energy in the simulated annealing
 
         Args:
-            index_dict (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
+            index_dict (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processor
 
         Returns:
             float: The value of cost function
@@ -60,22 +61,52 @@ class AllocationOptimizer:
         for processor_id in range(self.processor_num):
             cost_list[processor_id] = gate_cost_list[processor_id] + comm_cost_list[processor_id]
 
-        return max(cost_list)
+        has_more_qubits = self.has_more_qubits(index_dict)
+        energy = max(cost_list) + has_more_qubits * self.penalty_val
+        return energy
 
     def move(self, index_dict):
         """Find a neighboring qubit allocation
 
         Args:
-            index_dict (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
+            index_dict (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processor
 
         Returns:
             dict: The new result of the qubit allocation
         """
-        qubit1_index = random.randint(0, len(index_dict[0]) - 1)
-        qubit2_index = random.randint(0, len(index_dict[1]) - 1)
+        processor_id_list = list(index_dict.keys())
 
-        index_dict[0][qubit1_index], index_dict[1][qubit2_index] = index_dict[1][qubit2_index], index_dict[0][qubit1_index]
+        while True:
+            sender_processor_id = random.choice(processor_id_list)
+            if len(index_dict[sender_processor_id]) != 0:
+                sender_qubit_index = random.choice(index_dict[sender_processor_id])
+                index_dict[sender_processor_id].remove(sender_qubit_index)
+                break
+
+        processor_id_list.remove(sender_processor_id)
+        receiver_processor_id = random.choice(processor_id_list)
+        index_dict[receiver_processor_id].append(sender_qubit_index)
+
+        # qubit1_index = random.randint(0, len(index_dict[0]) - 1)
+        # qubit2_index = random.randint(0, len(index_dict[1]) - 1)
+
+        # index_dict[0][qubit1_index], index_dict[1][qubit2_index] = index_dict[1][qubit2_index], index_dict[0][qubit1_index]
         return index_dict
+
+    def has_more_qubits(self, index_dict):
+        """Check if any quantum processors have more qubits than its physical capacity
+
+        Args:
+            index_dict (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processor
+
+        Returns:
+            int: if any quantum processors have more qubits than its physical capacity (yes = 1, no = 0)
+        """
+        compare_qubit_num = [len(index_dict[processor_id]) <= self.qubit_num[processor_id] for processor_id in list(index_dict.keys())]
+        if False in compare_qubit_num:
+            return 1
+        else:
+            return 0
 
     def accept_prob(self, cur_eng, new_eng, temp):
         """Calculate the accept probability of the current qubit allocation
@@ -97,7 +128,7 @@ class AllocationOptimizer:
         """Optimize the index allocation process
 
         Args:
-            index_dict (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
+            index_dict (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processor
 
         Returns:
             dict: The result of the optimized index allocation
