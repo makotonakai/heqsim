@@ -29,7 +29,7 @@ class AllocationOptimizer:
         """Calculate energy in the simulated annealing
 
         Args:
-            Q (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
+            index_dict (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
 
         Returns:
             float: The value of cost function
@@ -66,7 +66,7 @@ class AllocationOptimizer:
         """Find a neighboring qubit allocation
 
         Args:
-            Q (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
+            index_dict (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
 
         Returns:
             dict: The new result of the qubit allocation
@@ -97,7 +97,7 @@ class AllocationOptimizer:
         """Optimize the index allocation process
 
         Args:
-            Q (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
+            index_dict (dict): A dict that maps processor ids to list of indices of allocated qubits in each physical quantum processors
 
         Returns:
             dict: The result of the optimized index allocation
