@@ -1,14 +1,13 @@
 # HeqSim (Heterogeneous Quantum Computing Simulator)
 
 ## About
- This Python library allows you to perform the simulation of heterogeneous quantum computing 
- in terms of 
+ This Python library allows you to perform the simulation of distributed quantum computing with 
  - Different number of qubits on each quantum processor
  - Different execution time on each quantum processor
  - Arbitrary network topology
  - Reduction of the total execution time
 
-Currently, the following features are under development
+The following features are going to be added for future release
 - Physical noise on each quantum processor (short-term goal)
 - Fault-tolerant quantum computing (long-term goal)
 
