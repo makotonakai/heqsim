@@ -36,15 +36,6 @@ class QuantumCluster:
         self.total_qubit_num += self.network.get_link_num() * 2
         self.quantum_state = QuantumState(self.total_qubit_num)
 
-    def get_total_qubit_num(self):
-        """Return the total number of qubits on the physical quantum circuit
-
-        Returns:
-            int: The total number of qubits on the physical quantum circuit
-        """
-        self.prepare_quantum_state()
-        return self.total_qubit_num
-
     def prepare_link_list(self):
         """Create a link list"""
         link_num = self.get_link_num()

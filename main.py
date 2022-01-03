@@ -43,9 +43,6 @@ qc.h(0)
 qc.h(1)
 qc.h(2)
 
-total_qubit_num = qc.get_total_qubit_num(network)
-print("Total qubit number: ", total_qubit_num)
-
 # qc.execute(network=network, is_optimized=True)
 
 # # result = qc.get_result()
