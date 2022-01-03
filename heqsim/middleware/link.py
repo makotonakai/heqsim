@@ -8,8 +8,8 @@ class Link:
         """Create a new link"""
         self.request_link = Queue(maxsize=1)
         self.ack_link = Queue(maxsize=1)
-        self.control_message_link = Queue(maxsize=1)
-        self.target_message_link = Queue(maxsize=1)
+        self.control_message_link = Queue(maxsize=2)
+        self.target_message_link = Queue(maxsize=2)
 
     def send_request(self, request):
         """Send a request to another quantum processor
