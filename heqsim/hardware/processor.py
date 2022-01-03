@@ -73,6 +73,11 @@ class QuantumProcessor(Thread):
             elif gate.name == "PHASE":
                 phase(self.state, gate.index, gate.theta, self.execution_time, self.lock)
 
+            elif gate.name == "SWAP":
+                cnot(self.gate.index, gate.target_index, self.execution_time, self.lock)
+                cnot(self.gate.target_index, gate.index, self.execution_time, self.lock)
+                cnot(self.gate.index, gate.target_index, self.execution_time, self.lock)
+
             # Remote CNOT gate
             elif gate.name == "RemoteCNOT":
 
