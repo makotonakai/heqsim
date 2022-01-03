@@ -43,6 +43,14 @@ class Network:
         """
         return list(self.graph.nodes)
 
+    def get_processor_num(self):
+        """Return the number of quantum processors
+
+        Returns:
+            int: The number of quantum processors
+        """
+        return len(self.get_processor_list())
+
     def get_link_id(self, source, target):
         """Return the id of a specific link
 

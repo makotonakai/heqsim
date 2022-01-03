@@ -18,8 +18,8 @@ def qft(qc):
     qft_helper(qc, qc.qubit_num, 0, qc.qubit_num - 1)
 
 
-p1 = QuantumProcessor(qubit_num=4, execution_time=0.1)
-p2 = QuantumProcessor(qubit_num=4, execution_time=0.5)
+p1 = QuantumProcessor(qubit_num=1, execution_time=0.1)
+p2 = QuantumProcessor(qubit_num=1, execution_time=0.5)
 
 network = Network()
 network.add_link(p1, p2)
@@ -43,10 +43,13 @@ qc.h(0)
 qc.h(1)
 qc.h(2)
 
-qc.execute(network=network, is_optimized=True)
+total_qubit_num = qc.get_total_qubit_num(network)
+print("Total qubit number: ", total_qubit_num)
 
-# result = qc.get_result()
-# print("Result:", result)
+# qc.execute(network=network, is_optimized=True)
 
-execution_time = qc.get_execution_time()
-print("Time:", execution_time)
+# # result = qc.get_result()
+# # print("Result:", result)
+
+# execution_time = qc.get_execution_time()
+# print("Time:", execution_time)

@@ -32,11 +32,22 @@ class QuantumCluster:
         processor_list = self.network.get_processor_list()
         for processor in processor_list:
             self.total_qubit_num += processor.qubit_num
+        self.total_qubit_num += self.network.get_processor_num()
+        self.total_qubit_num += self.network.get_link_num() * 2
         self.quantum_state = QuantumState(self.total_qubit_num)
+
+    def get_total_qubit_num(self):
+        """Return the total number of qubits on the physical quantum circuit
+
+        Returns:
+            int: The total number of qubits on the physical quantum circuit
+        """
+        self.prepare_quantum_state()
+        return self.total_qubit_num
 
     def prepare_link_list(self):
         """Create a link list"""
-        link_num = self.network.get_link_num()
+        link_num = self.get_link_num()
         self.link_list = [Link() for _ in range(link_num)]
 
     def get_state(self):

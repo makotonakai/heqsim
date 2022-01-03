@@ -308,3 +308,12 @@ class QuantumCircuit:
             dict: A dict that maps processor id to qubit indices of allocated qubits on each quantum processor
         """
         return self.index_dict
+
+    def get_total_qubit_num(self, network, is_optimized=False):
+        """Return the number of physical qubits in total
+
+        Returns:
+            int: The number of physical qubits in total
+        """
+        self.set_network_to_cluster(network)
+        return self.cluster.get_total_qubit_num()
