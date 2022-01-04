@@ -73,6 +73,9 @@ class QubitIndexManager:
             index (int): The index of qubit indices of the indices list you choose
                         e.g.  the 2nd element (index) of {"processor": {0:[0, 1, 2]}} is 1
         """
+        # Delete 1 qubit from the total qubit number
+        self.qubit_num -= 1
+
         # Get what index you have to delete
         index_to_delete = self.dict[kind][id_][index]
 
