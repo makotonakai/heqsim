@@ -80,32 +80,32 @@ class QubitIndexManager:
         for kind_key in list(self.dict.keys()):
 
             # For all the processor / communication / link ids
-             for id_key in list(self.dict[kind_key].keys()):
+            for id_key in list(self.dict[kind_key].keys()):
 
-                  # For all the indices in the indices list in the particular processor, communication qubits / communication links
-                  for qubit_index in self.dict[kind_key][id_key]:
+                # For all the indices in the indices list in the particular processor, communication qubits / communication links
+                for qubit_index in self.dict[kind_key][id_key]:
 
-                       # If this index is same as the one you're looking for
-                       if qubit_index == index_to_delete:
+                    # If this index is same as the one you're looking for
+                    if qubit_index == index_to_delete:
 
-                            # Get the element index in the particular indices list
-                            index_ = self.dict[kind_key][id_key].index(qubit_index)
+                        # Get the element index in the particular indices list
+                        index_ = self.dict[kind_key][id_key].index(qubit_index)
 
-                            # Get the length of the particular indices list
-                            len_index_list = len(self.dict[kind_key][id_key])
+                        # Get the length of the particular indices list
+                        len_index_list = len(self.dict[kind_key][id_key])
 
-                            # Remove the particular index you are looking for
-                            self.dict[kind_key][id_key].remove(index_to_delete)
+                        # Remove the particular index you are looking for
+                        self.dict[kind_key][id_key].remove(index_to_delete)
 
-                            # If that is not the last index in the particular index
-                            if index_ != len_index_list - 1:
+                        # If that is not the last index in the particular index
+                        if index_ != len_index_list - 1:
 
-                                # Substract 1 from the next elements in the same list
-                                self.dict[kind_key][id_key][index_] -= 1
-
-                        # If this index is larger than the index you have to delete
-                        elif qubit_index > index_to_delete:
-
-                            # Substract 1 from this index
-                            index_ = self.dict[kind_key][id_key].index(qubit_index)
+                            # Substract 1 from the next elements in the same list
                             self.dict[kind_key][id_key][index_] -= 1
+
+                    # If this index is larger than the index you have to delete
+                    elif qubit_index > index_to_delete:
+
+                        # Substract 1 from this index
+                        index_ = self.dict[kind_key][id_key].index(qubit_index)
+                        self.dict[kind_key][id_key][index_] -= 1
