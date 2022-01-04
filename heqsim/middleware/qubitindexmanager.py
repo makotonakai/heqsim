@@ -64,6 +64,17 @@ class QubitIndexManager:
             self.dict["link"][link_id] = qubit_index_list[start:end]
             start = end
 
+    def add_index(self, kind, id_):
+        """Add a new qubit index
+
+        Args:
+            kind (str)): "processor" or "communication" or "link"
+            id_ (int): The id for a particular processor / communication qubit (or quantum device) / communication link
+        """
+        new_qubit_index = self.qubit_num
+        self.dict[kind][id_].append(self.qubit_num)
+        self.qubit_num += 1
+
     def delete_index(self, kind, id_, index):
         """Delete a particular index from the content of this qubit index manager
 
