@@ -68,7 +68,7 @@ class QubitIndexManager:
         """Add a new qubit index
 
         Args:
-            kind (str)): "processor" or "communication" or "link"
+            kind (str)): "processor", "communication" or "link"
             id_ (int): The id for a particular processor / communication qubit (or quantum device) / communication link
         """
         new_qubit_index = self.qubit_num
@@ -79,7 +79,7 @@ class QubitIndexManager:
         """Delete a particular index from the content of this qubit index manager
 
         Args:
-            kind (str): "processor" or "communication" or "link"
+            kind (str): "processor", "communication" or "link"
             id_ (int): The id for a particular processor / communication qubit (or quantum device) / communication link
             index (int): The index of qubit indices of the indices list you choose
                         e.g.  the 2nd element (index) of {"processor": {0:[0, 1, 2]}} is 1
