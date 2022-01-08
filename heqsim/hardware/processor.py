@@ -34,7 +34,7 @@ class QuantumProcessor(Thread):
         self.gate_list = None
         self.link_list = None
         self.lock = None
-        self.bell_pair_manager = None
+        self.qubit_index_manager = None
 
     def run(self):
         """ the method to run the quantum circuit """
