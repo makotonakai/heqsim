@@ -209,6 +209,26 @@ def cnot(state, control_index, target_index, execution_time, lock):
         time.sleep(execution_time)
 
 
+def swap(state, control_index, target_index, execution_time, lock):
+    """Execute an CNOT gate on a quantum processor
+
+    Args:
+        state (QuantumState): A quantum state
+        control_index (int): The index of the control qubit
+        target_index (int): The index of the target qubit
+        execution_time (float): The execution time of this CNOT gate
+        lock (threading.Lock): A lock to take before executing this CNOT gate
+    """
+    if lock is not None:
+        lock.acquire()
+    apply_cnot(state, control_index, target_index)
+    apply_cnot(state, target_index, control_index)
+    apply_cnot(state, control_index, target_index)
+    if lock is not None:
+        lock.release()
+        time.sleep(execution_time)
+
+
 def rx(state, index, theta, execution_time, lock):
     """Execute an Rx gate
 
