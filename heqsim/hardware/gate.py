@@ -196,7 +196,8 @@ def cnot(state, control_index, target_index, execution_time, lock):
 
     Args:
         state (QuantumState): A quantum state
-        index (int): The index of the qubit that a phase gate is applied to
+        control_index (int): The index of the control qubit
+        target_index (int): The index of the target qubit
         execution_time (float): The execution time of this CNOT gate
         lock (threading.Lock): A lock to take before executing this CNOT gate
     """
