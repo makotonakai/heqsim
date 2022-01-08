@@ -1,7 +1,7 @@
 from heqsim.hardware.processor import QuantumProcessor
 from heqsim.hardware.state import QuantumState
 from heqsim.middleware.link import Link
-from heqsim.middleware.bellpairmanager import BellPairManager
+from heqsim.middleware.qubitindexmanager import QubitIndexManager
 import threading
 import time
 import os
@@ -38,7 +38,7 @@ class QuantumCluster:
 
     def prepare_link_list(self):
         """Create a link list"""
-        link_num = self.get_link_num()
+        link_num = self.network.get_link_num()
         self.link_list = [Link() for _ in range(link_num)]
 
     def get_state(self):
@@ -117,14 +117,14 @@ class QuantumCluster:
         """
         processor.lock = lock
 
-    def set_remote_cnot_manager_to_processor(self, processor, remote_cnot_manager):
+    def set_qubit_index_manager_to_processor(self, processor, qubit_index_manager):
         """Set a particular quantum state to a particular physical quantum processor
 
         Args:
             processor (QuantumProcessor): A physical quantum processor
             state (QuantumState): A quantum state
         """
-        processor.remote_cnot_manager = remote_cnot_manager
+        processor.qubit_index_manager = qubit_index_manager
 
     def run(self):
         """Execute the simulation of distributed quantum computing"""
@@ -133,21 +133,28 @@ class QuantumCluster:
         self.prepare_link_list()
 
         lock = threading.Lock()
-        remote_cnot_manager = BellPairManager()
+        qubit_index_manager = QubitIndexManager(self.hardware_processor_list, self.network)
+        qubit_index_manager.setup()
 
         for processor in self.hardware_processor_list:
             self.set_quantum_state_to_processor(processor, self.quantum_state)
             self.set_gate_list_to_processor(processor, self.gate_dict[processor.id])
             self.set_link_list_to_processor(processor, self.link_list)
             self.set_lock_to_processor(processor, lock)
-            self.set_remote_cnot_manager_to_processor(processor, remote_cnot_manager)
+            self.set_qubit_index_manager_to_processor(processor, qubit_index_manager)
 
-        time_start = time.time()
-        for processor in self.hardware_processor_list:
-            processor.start()
+        for processor_id in list(self.gate_dict.keys()):
+            gate_list = self.gate_dict[processor_id]
+            for gate in gate_list:
+                if gate.name == "RemoteCNOT" and gate.role == "control":
+                    print("Link ID: ", gate.link_id)
 
-        for processor in self.hardware_processor_list:
-            processor.join()
-        time_end = time.time()
+        # time_start = time.time()
+        # for processor in self.hardware_processor_list:
+        #     processor.start()
 
-        self.execution_time = time_end - time_start
+        # for processor in self.hardware_processor_list:
+        #     processor.join()
+        # time_end = time.time()
+
+        # self.execution_time = time_end - time_start

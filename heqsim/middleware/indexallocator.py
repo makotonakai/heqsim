@@ -32,7 +32,7 @@ class IndexAllocator:
         self.index_dict = {processor.id: [] for processor in self.processor_list}
 
         index_list = [num for num in range(self.qubit_num)]
-        random.shuffle(index_list)
+        # random.shuffle(index_list)
 
         start = 0
         end = 0

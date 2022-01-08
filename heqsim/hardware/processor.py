@@ -73,11 +73,6 @@ class QuantumProcessor(Thread):
             elif gate.name == "PHASE":
                 phase(self.state, gate.index, gate.theta, self.execution_time, self.lock)
 
-            elif gate.name == "SWAP":
-                cnot(self.gate.index, gate.target_index, self.execution_time, self.lock)
-                cnot(self.gate.target_index, gate.index, self.execution_time, self.lock)
-                cnot(self.gate.index, gate.target_index, self.execution_time, self.lock)
-
             # Remote CNOT gate
             elif gate.name == "RemoteCNOT":
 
@@ -104,7 +99,7 @@ class QuantumProcessor(Thread):
                     remote_cnot_info["id"] = gate.remote_cnot_id
 
                     # Submit the info of a remote cnot to the Bell pair manager
-                    self.remote_cnot_manager.add_new_info(remote_cnot_info)
+                    self.qubit_index_manager.add_new_info(remote_cnot_info)
 
                     # Add bell pair
                     bell_pair = QuantumState(2)
@@ -116,7 +111,7 @@ class QuantumProcessor(Thread):
                     self.lock.release()
 
                     # Apply CNOT between the sender and the given bell pair
-                    control_index = self.remote_cnot_manager.get_control_index(gate.remote_cnot_id)
+                    control_index = self.qubit_index_manager.get_control_index(gate.remote_cnot_id)
                     cnot(self.state, gate.index, control_index, self.execution_time, self.lock)
 
                     # Perform the first measurement
@@ -153,7 +148,7 @@ class QuantumProcessor(Thread):
                     h(self.state, self.state.qubit_num - 1, self.execution_time, self.lock)
 
                     # Get which qubit to measure
-                    target_index = self.remote_cnot_manager.get_target_index(gate.remote_cnot_id)
+                    target_index = self.qubit_index_manager.get_target_index(gate.remote_cnot_id)
 
                     # Get the measurement result of the 1st measurement
                     second_bit = measure(self.state, target_index, self.lock)

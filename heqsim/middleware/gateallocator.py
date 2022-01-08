@@ -80,19 +80,14 @@ class GateAllocator:
 
                         path = nx.shortest_path(network.graph, source=source, target=target)
                         id_path = [processor.id for processor in path]
-
-                        index_list = [index_dict[id_][0] for id_ in id_path]
-                        index_list[0] = gate.index
-                        index_list[-1] = gate.target_index
+                        id_path_reversed = list(reversed(id_path))
+                        id_full_path = [id_path, id_path_reversed]
 
                         control_target_list = []
-                        for index in range(len(index_list) - 1):
-                            control = index_list[index]
-                            target = index_list[index + 1]
-                            control_target = [control, target]
-                            control_target_list.append(control_target)
-
-                        control_target_list += list(reversed(control_target_list[:-1]))
+                        for id_path in id_full_path:
+                            for id_ in range(len(id_path) - 1):
+                                control_target = id_path[id_:id_ + 2]
+                                control_target_list.append(control_target)
 
                         for control_target in control_target_list:
 

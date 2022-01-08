@@ -19,34 +19,20 @@ def qft(qc):
 
 
 p1 = QuantumProcessor(qubit_num=1, execution_time=0.1)
-p2 = QuantumProcessor(qubit_num=1, execution_time=0.5)
+p2 = QuantumProcessor(qubit_num=1, execution_time=0.2)
 
 network = Network()
 network.add_link(p1, p2)
 
-qn = 6
+qn = 2
 qc = QuantumCircuit(qn)
-qc.h(0)
-qc.h(1)
-qc.h(2)
-qc.cnot(2, 4)
-qc.x(3)
-qc.cnot(2, 3)
-qc.ccnot(0, 1, 3)
-qc.x(0)
-qc.x(0)
-qc.ccnot(0, 1, 3)
-qc.x(0)
-qc.x(1)
-qc.x(3)
-qc.h(0)
-qc.h(1)
-qc.h(2)
+qc.cnot(0, 1)
 
-# qc.execute(network=network, is_optimized=True)
 
-# # result = qc.get_result()
-# # print("Result:", result)
+qc.execute(network=network)
+
+# result = qc.get_result()
+# print("Result:", result)
 
 # execution_time = qc.get_execution_time()
 # print("Time:", execution_time)
