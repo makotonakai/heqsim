@@ -15,6 +15,9 @@ class QuantumGate:
         self.index = index
         self.target_index = target_index
         self.theta = theta
+        self.remote_cnot_id = None
+        self.link_id = None
+        self.role = None
 
     def set_remote_cnot_id(self, remote_cnot_id):
         """Add a remote CNOT id to this remote CNOT gate

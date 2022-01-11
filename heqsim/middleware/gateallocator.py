@@ -81,40 +81,74 @@ class GateAllocator:
                         path = nx.shortest_path(network.graph, source=source, target=target)
                         id_path = [processor.id for processor in path]
                         id_path_reversed = list(reversed(id_path))
-                        id_full_path = [id_path, id_path_reversed]
+                        id_full_path = [id_path, "CNOT", id_path_reversed]
 
-                        control_target_list = []
+                        control_target_link_list = []
                         for id_path in id_full_path:
-                            for id_ in range(len(id_path) - 1):
-                                control_target = id_path[id_:id_ + 2]
-                                control_target_list.append(control_target)
+                            if id_path == "CNOT":
+                                control_target_link_list.append("CNOT")
+                            else:
+                                for id_ in range(len(id_path) - 1):
 
-                        for control_target in control_target_list:
+                                    [control, target] = id_path[id_:id_ + 2]
 
-                            [control, target] = control_target
-                            [remote_cnot_control, remote_cnot_target] = [QuantumGate("RemoteCNOT", control, target) for _ in range(2)]
+                                    control_id_ = self.get_processor_id_from_index_dict(control, index_dict)
+                                    target_id_ = self.get_processor_id_from_index_dict(target, index_dict)
 
-                            remote_cnot_control.set_role("control")
-                            remote_cnot_target.set_role("target")
+                                    control_processor = network.get_processor(control_id_)
+                                    target_processor = network.get_processor(target_id_)
 
-                            control_id = self.get_processor_id_from_index_dict(control, index_dict)
-                            target_id = self.get_processor_id_from_index_dict(target, index_dict)
+                                    link = network.get_link_id(control_processor, target_processor)
+                                    control_target_link = [control, target, link]
 
-                            control_processor = network.get_processor(control_id)
-                            target_processor = network.get_processor(target_id)
+                                    control_target_link_list.append(control_target_link)
 
-                            remote_cnot_control.set_remote_cnot_id(self.remote_cnot_id)
-                            remote_cnot_target.set_remote_cnot_id(self.remote_cnot_id)
-                            self.remote_cnot_id += 1
+                        first_swap_gate = QuantumGate("SWAP", gate.index)
+                        first_swap_gate.set_role("first")
+                        self.gate_dict[source_id].append(first_swap_gate)
 
-                            link_id = network.get_link_id(control_processor, target_processor)
-                            remote_cnot_control.set_link_id(link_id)
-                            remote_cnot_target.set_link_id(link_id)
+                        for control_target_link in control_target_link_list:
 
-                            control_id = control_processor.id
-                            self.gate_dict[control_id].append(remote_cnot_control)
+                            if control_target_link == "CNOT":
+                                cnot_gate = QuantumGate("CNOT", None, gate.target_index)
+                                cnot_gate.set_role("remote")
+                                self.gate_dict[target_id].append(cnot_gate)
+                            else:
+                                [control, target, link] = control_target_link
+                                [remote_cnot_control, remote_cnot_target] = [QuantumGate("RemoteCNOT", control, target) for _ in range(2)]
 
-                            target_id = target_processor.id
-                            self.gate_dict[target_id].append(remote_cnot_target)
+                                remote_cnot_control.set_role(["control", "forth"])
+                                remote_cnot_target.set_role(["target", "forth"])
+
+                                control_id_ = self.get_processor_id_from_index_dict(control, index_dict)
+                                target_id_ = self.get_processor_id_from_index_dict(target, index_dict)
+
+                                control_processor = network.get_processor(control_id_)
+                                target_processor = network.get_processor(target_id_)
+
+                                remote_cnot_control.set_remote_cnot_id(self.remote_cnot_id)
+                                remote_cnot_target.set_remote_cnot_id(self.remote_cnot_id)
+                                self.remote_cnot_id += 1
+
+                                link_id = network.get_link_id(control_processor, target_processor)
+                                remote_cnot_control.set_link_id(link_id)
+                                remote_cnot_target.set_link_id(link_id)
+
+                                control_id = control_processor.id
+                                self.gate_dict[control_id].append(remote_cnot_control)
+
+                                target_id = target_processor.id
+                                self.gate_dict[target_id].append(remote_cnot_target)
+
+                                if target == gate.index:
+                                    swap_gate = QuantumGate("SWAP", gate.index)
+                                    swap_gate.set_role("last")
+                                    swap_gate.set_link_id(link)
+                                    self.gate_dict[source_id].append(swap_gate)
+                                else:
+                                    swap_gate = QuantumGate("SWAP", None)
+                                    swap_gate.set_role("intermit")
+                                    swap_gate.set_link_id(link)
+                                    self.gate_dict[target_id].append(swap_gate)
 
         self.set_gate_dict_to_cluster(self.gate_dict)

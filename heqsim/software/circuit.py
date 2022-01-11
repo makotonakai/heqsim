@@ -285,6 +285,7 @@ class QuantumCircuit:
             numpy.array: The statevector of this quantum state
         """
         statevector = self.cluster.get_state()
+        # return statevector
         cluster_qubit_num = int(np.log2(len(statevector)))
         original_state = []
         for num in range(2**self.qubit_num):

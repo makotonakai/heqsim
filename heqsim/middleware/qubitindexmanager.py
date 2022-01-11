@@ -12,7 +12,7 @@ class QubitIndexManager:
         self.network = network
         self.qubit_num = 0
         self.dict = {
-            "processor": {},
+            "data": {},
             "communication": {},
             "link": {}
         }
@@ -50,7 +50,7 @@ class QubitIndexManager:
         end = 0
         for processor in self.processor_list:
             end += processor.qubit_num
-            self.dict["processor"][processor.id] = qubit_index_list[start:end]
+            self.dict["data"][processor.id] = qubit_index_list[start:end]
             start = end
 
         for processor in self.processor_list:
@@ -71,8 +71,8 @@ class QubitIndexManager:
             kind (str)): "processor", "communication" or "link"
             id_ (int): The id for a particular processor / communication qubit (or quantum device) / communication link
         """
-        new_qubit_index = self.qubit_num
-        self.dict[kind][id_].append(self.qubit_num)
+        new_qubit_index = self.qubit_num - 2
+        self.dict[kind][id_].append(new_qubit_index)
         self.qubit_num += 1
 
     def delete_index(self, kind, id_, index):

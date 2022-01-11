@@ -26,13 +26,13 @@ network.add_link(p1, p2)
 
 qn = 2
 qc = QuantumCircuit(qn)
+qc.x(0)
 qc.cnot(0, 1)
-
 
 qc.execute(network=network)
 
-# result = qc.get_result()
-# print("Result:", result)
+result = qc.get_result()
+print("Result:", result)
 
-# execution_time = qc.get_execution_time()
-# print("Time:", execution_time)
+execution_time = qc.get_execution_time()
+print("Time:", execution_time)

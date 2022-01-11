@@ -137,7 +137,7 @@ def x(state, index, execution_time, lock):
     apply_x(state, index)
     if lock is not None:
         lock.release()
-        time.sleep(execution_time)
+    time.sleep(execution_time)
 
 
 def y(state, index, execution_time, lock):
@@ -154,7 +154,7 @@ def y(state, index, execution_time, lock):
     apply_y(state, index)
     if lock is not None:
         lock.release()
-        time.sleep(execution_time)
+    time.sleep(execution_time)
 
 
 def z(state, index, execution_time, lock):
@@ -171,7 +171,7 @@ def z(state, index, execution_time, lock):
     apply_z(state, index)
     if lock is not None:
         lock.release()
-        time.sleep(execution_time)
+    time.sleep(execution_time)
 
 
 def h(state, index, execution_time, lock):
@@ -188,7 +188,7 @@ def h(state, index, execution_time, lock):
     apply_h(state, index)
     if lock is not None:
         lock.release()
-        time.sleep(execution_time)
+    time.sleep(execution_time)
 
 
 def cnot(state, control_index, target_index, execution_time, lock):
@@ -206,7 +206,7 @@ def cnot(state, control_index, target_index, execution_time, lock):
     apply_cnot(state, control_index, target_index)
     if lock is not None:
         lock.release()
-        time.sleep(execution_time)
+    time.sleep(execution_time)
 
 
 def swap(state, control_index, target_index, execution_time, lock):
@@ -226,7 +226,7 @@ def swap(state, control_index, target_index, execution_time, lock):
     apply_cnot(state, control_index, target_index)
     if lock is not None:
         lock.release()
-        time.sleep(execution_time)
+    time.sleep(execution_time)
 
 
 def rx(state, index, theta, execution_time, lock):
@@ -244,7 +244,7 @@ def rx(state, index, theta, execution_time, lock):
     apply_rx(state, index, theta)
     if lock is not None:
         lock.release()
-        time.sleep(execution_time)
+    time.sleep(execution_time)
 
 
 def ry(state, index, theta, execution_time, lock):
@@ -262,7 +262,7 @@ def ry(state, index, theta, execution_time, lock):
     apply_ry(state, index, theta)
     if lock is not None:
         lock.release()
-        time.sleep(execution_time)
+    time.sleep(execution_time)
 
 
 def rz(state, index, theta, execution_time, lock):
@@ -280,7 +280,7 @@ def rz(state, index, theta, execution_time, lock):
     apply_rz(state, index, theta)
     if lock is not None:
         lock.release()
-        time.sleep(execution_time)
+    time.sleep(execution_time)
 
 
 def phase(state, index, theta, execution_time, lock):
@@ -298,7 +298,7 @@ def phase(state, index, theta, execution_time, lock):
     apply_phase(state, index, theta)
     if lock is not None:
         lock.release()
-        time.sleep(execution_time)
+    time.sleep(execution_time)
 
 
 def measure(state, index, lock):

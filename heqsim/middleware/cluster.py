@@ -143,18 +143,23 @@ class QuantumCluster:
             self.set_lock_to_processor(processor, lock)
             self.set_qubit_index_manager_to_processor(processor, qubit_index_manager)
 
-        for processor_id in list(self.gate_dict.keys()):
-            gate_list = self.gate_dict[processor_id]
-            for gate in gate_list:
-                if gate.name == "RemoteCNOT" and gate.role == "control":
-                    print("Link ID: ", gate.link_id)
+        # for processor_id in list(self.gate_dict.keys()):
+        #     gate_list = self.gate_dict[processor_id]
+        #     print("Processor id: ", processor_id)
+        #     for gate in gate_list:
+        #         print("Name: ", gate.name)
+        #         print("Index: ", gate.index)
+        #         print("Target index: ", gate.target_index)
+        #         if gate.role is not None:
+        #             print("Role: ", gate.role)
+        #         print()
 
-        # time_start = time.time()
-        # for processor in self.hardware_processor_list:
-        #     processor.start()
+        time_start = time.time()
+        for processor in self.hardware_processor_list:
+            processor.start()
 
-        # for processor in self.hardware_processor_list:
-        #     processor.join()
-        # time_end = time.time()
+        for processor in self.hardware_processor_list:
+            processor.join()
+        time_end = time.time()
 
-        # self.execution_time = time_end - time_start
+        self.execution_time = time_end - time_start
