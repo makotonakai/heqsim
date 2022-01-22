@@ -1,7 +1,7 @@
 from heqsim.hardware.processor import QuantumProcessor
 from heqsim.hardware.state import QuantumState
 from heqsim.middleware.link import Link
-from heqsim.middleware.qubitindexmanager import QubitIndexManager
+from heqsim.middleware.connectionmanager import ConnectionManager
 import threading
 import time
 import os
@@ -15,31 +15,39 @@ class QuantumCluster:
         self.index_dict = {}
         self.gate_dict = {}
         self.execution_time = 0
+
         self.network = None
 
-    def prepare_hardware_processor_list(self):
+    def create_physical_processor_list(self):
         """Create a list of physical quantum processors"""
+        physical_processor_list = []
         processor_list = self.network.get_processor_list()
-        self.hardware_processor_list = []
         for processor in processor_list:
             processor_info = processor.get_info()
-            hardware_processor = QuantumProcessor(processor_info)
-            self.hardware_processor_list.append(hardware_processor)
+            physical_processor = QuantumProcessor(processor_info)
+            physical_processor_list.append(physical_processor)
+        return physical_processor_list
 
-    def prepare_quantum_state(self):
+    def create_quantum_state(self):
         """Create a quantum state"""
-        self.total_qubit_num = 0
         processor_list = self.network.get_processor_list()
+        total_qubit_num = 0
         for processor in processor_list:
-            self.total_qubit_num += processor.qubit_num
-        self.total_qubit_num += self.network.get_processor_num()
-        self.total_qubit_num += self.network.get_link_num() * 2
-        self.quantum_state = QuantumState(self.total_qubit_num)
+            total_qubit_num += (processor.qubit_num + 2)
+        return QuantumState(total_qubit_num)
 
-    def prepare_link_list(self):
+    def create_link_list(self):
         """Create a link list"""
         link_num = self.network.get_link_num()
-        self.link_list = [Link() for _ in range(link_num)]
+        link_list = [Link() for _ in range(link_num)]
+        return link_list
+
+    def create_connection_manager(self):
+        """Create a connection manager"""
+        processor_list = self.network.get_processor_list()
+        connection_manager = ConnectionManager(processor_list)
+        connection_manager.initialize()
+        return connection_manager
 
     def get_state(self):
         """Return a quantum state
@@ -95,7 +103,7 @@ class QuantumCluster:
 
         Args:
             processor (QuantumProcessor): A physical quantum processor
-            state (QuantumState): A quantum state
+            gate_list (list): The list of quantum gates
         """
         processor.gate_list = gate_list
 
@@ -104,7 +112,7 @@ class QuantumCluster:
 
         Args:
             processor (QuantumProcessor): A physical quantum processor
-            state (QuantumState): A quantum state
+            link_list (list): The list of communication links
         """
         processor.link_list = link_list
 
@@ -117,31 +125,30 @@ class QuantumCluster:
         """
         processor.lock = lock
 
-    def set_qubit_index_manager_to_processor(self, processor, qubit_index_manager):
+    def set_connection_manager_to_processor(self, processor, connection_manager):
         """Set a particular quantum state to a particular physical quantum processor
 
         Args:
             processor (QuantumProcessor): A physical quantum processor
-            state (QuantumState): A quantum state
+             (QuantumState): A quantum state
         """
-        processor.qubit_index_manager = qubit_index_manager
+        processor.connection_manager = connection_manager
 
     def run(self):
         """Execute the simulation of distributed quantum computing"""
-        self.prepare_hardware_processor_list()
-        self.prepare_quantum_state()
-        self.prepare_link_list()
 
-        lock = threading.Lock()
-        qubit_index_manager = QubitIndexManager(self.hardware_processor_list, self.network)
-        qubit_index_manager.setup()
+        self.physical_processor_list = self.create_physical_processor_list()
+        self.quantum_state = self.create_quantum_state()
+        self.link_list = self.create_link_list()
+        self.connection_manager = self.create_connection_manager()
+        self.lock = threading.Lock()
 
-        for processor in self.hardware_processor_list:
+        for processor in self.physical_processor_list:
             self.set_quantum_state_to_processor(processor, self.quantum_state)
             self.set_gate_list_to_processor(processor, self.gate_dict[processor.id])
             self.set_link_list_to_processor(processor, self.link_list)
-            self.set_lock_to_processor(processor, lock)
-            self.set_qubit_index_manager_to_processor(processor, qubit_index_manager)
+            self.set_lock_to_processor(processor, self.lock)
+            self.set_connection_manager_to_processor(processor, self.connection_manager)
 
         # for processor_id in list(self.gate_dict.keys()):
         #     gate_list = self.gate_dict[processor_id]
@@ -149,16 +156,14 @@ class QuantumCluster:
         #     for gate in gate_list:
         #         print("Name: ", gate.name)
         #         print("Index: ", gate.index)
-        #         print("Target index: ", gate.target_index)
-        #         if gate.role is not None:
-        #             print("Role: ", gate.role)
+        #         print("Link ID: ", gate.link_id)
         #         print()
 
         time_start = time.time()
-        for processor in self.hardware_processor_list:
+        for processor in self.physical_processor_list:
             processor.start()
 
-        for processor in self.hardware_processor_list:
+        for processor in self.physical_processor_list:
             processor.join()
         time_end = time.time()
 

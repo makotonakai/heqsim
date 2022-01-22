@@ -2,7 +2,7 @@
 class QuantumGate:
     """Software interface of a quantum gate"""
 
-    def __init__(self, name, index, target_index=None, theta=None):
+    def __init__(self, name, index=None, target_index=None, theta=None, link_id=None, role=None):
         """Detail of a quantum gate
 
         Args:
@@ -15,9 +15,8 @@ class QuantumGate:
         self.index = index
         self.target_index = target_index
         self.theta = theta
-        self.remote_cnot_id = None
-        self.link_id = None
-        self.role = None
+        self.link_id = link_id
+        self.role = role
 
     def set_remote_cnot_id(self, remote_cnot_id):
         """Add a remote CNOT id to this remote CNOT gate

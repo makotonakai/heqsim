@@ -301,12 +301,16 @@ def phase(state, index, theta, execution_time, lock):
     time.sleep(execution_time)
 
 
-def measure(state, index, lock):
+def measure(state, index, execution_time, lock):
     """Measure a qubit
     Args:
         index (int): The index of a qubit that users measure
         lock (threading.Lock): A lock to take before executing this phase gate
     """
+
+    if lock is not None:
+        lock.acquire()
+
     # Measurement probability of the measured qubit
     measure_prob = {"0": 0, "1": 0}
 
@@ -346,5 +350,10 @@ def measure(state, index, lock):
 
     state.vector = np.array(list(new_state_dict.values()))
     state.qubit_num -= 1
+
+    if lock is not None:
+        lock.release()
+
+    time.sleep(execution_time)
 
     return measure_result

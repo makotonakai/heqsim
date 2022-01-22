@@ -27,16 +27,16 @@ class QuantumProcessor(Thread):
         """
         Thread.__init__(self)
         self.id = param["id"]
-        self.qubit_num = param["qubit_num"]
+        self.qubit_num = param["qubit_num"] + 2
         self.execution_time = param["execution_time"]
 
         self.state = None
         self.gate_list = None
+
         self.link_list = None
+        self.comm_qubit_manager = None
+        self.bell_pair_manager = None
         self.lock = None
-        self.qubit_index_manager = None
-        self.swap_num = 0
-        self.tele_num = 0
 
     def run(self):
         """ the method to run the quantum circuit """
@@ -61,119 +61,141 @@ class QuantumProcessor(Thread):
 
             # Local CNOT gate
             elif gate.name == "CNOT":
-                if gate.role == "remote":
-                    self.lock.acquire()
-                    comm_index = self.qubit_index_manager.dict["communication"][self.id][0]
-                    cnot(self.state, comm_index, gate.target_index, self.execution_time, None)
-                    self.lock.release()
-                else:
-                    cnot(self.state, gate.index, gate.target_index, self.execution_time, self.lock)
+                cnot(self.state, gate.index, gate.target_index, self.execution_time, self.lock)
 
+            # Rx gate
             elif gate.name == "RX":
                 rx(self.state, gate.index, gate.theta, self.execution_time, self.lock)
 
+            # Ry gate
             elif gate.name == "RY":
                 ry(self.state, gate.index, gate.theta, self.execution_time, self.lock)
 
+            # Rz gate
             elif gate.name == "RZ":
                 rz(self.state, gate.index, gate.theta, self.execution_time, self.lock)
 
+            # Phase gate
             elif gate.name == "PHASE":
                 phase(self.state, gate.index, gate.theta, self.execution_time, self.lock)
 
+            # SWAP gate
             elif gate.name == "SWAP":
+                swap(self.state, gate.index, gate.target_index, self.execution_time, self.lock)
 
-                if gate.role == "first":
-                    self.lock.acquire()
-                    comm_qubit_idx = self.qubit_index_manager.dict["communication"][self.id][0]
-                    swap(self.state, gate.index, comm_qubit_idx, self.execution_time, None)
-                    self.lock.release()
+            # Create an entanglement between two quantum processors
+            elif gate.name == "ENTANGLE":
 
-                elif gate.role == "intermit":
-                    self.lock.acquire()
-                    comm_qubit_idx = self.qubit_index_manager.dict["communication"][self.id][0]
-                    link_qubit_idx = self.qubit_index_manager.dict["link"][gate.link_id][0]
-                    swap(self.state, comm_qubit_idx, link_qubit_idx, self.execution_time, None)
-                    self.lock.release()
+                self.lock.acquire()
 
-                elif gate.role == "last":
-                    self.lock.acquire()
-                    comm_qubit_idx = self.qubit_index_manager.dict["link"][gate.link_id][0]
-                    swap(self.state, gate.index, comm_qubit_idx, self.execution_time, None)
-                    self.lock.release()
+                link = self.link_list[gate.link_id]
+
+                if link.classical_link.empty():
+
+                    conn_manager = self.connection_manager
+                    conn_dict = conn_manager.get_dict()
+                    link.send_classical_message("entangle")
+
+                    if gate.role == "control":
+                        control_index = conn_dict[self.id][1]
+                        target_index = conn_dict[self.id + 1][0]
+                        h(self.state, control_index, self.execution_time, None)
+                        cnot(self.state, control_index, target_index, self.execution_time, None)
+
+                    else:
+                        control_index = conn_dict[self.id][0]
+                        target_index = conn_dict[self.id - 1][1]
+                        h(self.state, control_index, self.execution_time, None)
+                        cnot(self.state, control_index, target_index, self.execution_time, None)
 
                 else:
-                    swap(self.state, gate.index, gate.target_index, self.execution_time, self.lock)
+                    message = link.get_classical_message()
 
-            # Remote CNOT gate
-            elif gate.name == "RemoteCNOT":
+                self.lock.release()
 
-                # Choose a link to use for communication
-                connection = self.link_list[gate.link_id]
+            # Perform bell measurement
+            elif gate.name == "BELL_MEASUREMENT":
+                pass
 
-                try:
-                    connection.send_request(gate.link_id)
-                    ack = connection.get_ack()
-                except queue.Full:
-                    request = connection.get_request()
-                    connection.send_ack()
+            # Send a measurement result
+            elif gate.name == "SEND":
+                self.lock.acquire()
+                link = self.link_list[gate.link_id]
+                if gate.role == "control":
+                    link.send_control_message(self.measurement_result)
+                else:
+                    link.send_target_message(self.measurement_result)
+                self.lock.release()
 
-                if "control" in gate.role:
+            # Receive a measurement result
+            elif gate.name == "GET":
 
-                    # quantum teleportation
+                link = self.link_list[gate.link_id]
+                if gate.role == "control":
+                    measurement_result = link.get_control_message()
+                else:
+                    measurement_result = link.get_target_message()
+                self.measurement_result = measurement_result
 
-                    self.lock.acquire()
-                    first_idx = self.qubit_index_manager.dict["communication"][self.id][0]
-                    if "forth" in gate.role:
-                        second_idx = self.qubit_index_manager.dict["link"][gate.link_id][0]
-                    elif "back" in gate.role:
-                        second_idx = self.qubit_index_manager.dict["link"][gate.link_id][1]
+            # Apply operations before sending the measurement result on the control processor
+            elif gate.name == "FORWARD_CONTROL":
 
-                    if "forth" in gate.role:
-                        target_idx = self.qubit_index_manager.dict["link"][gate.link_id][1]
-                    elif "back" in gate.role:
-                        target_idx = self.qubit_index_manager.dict["link"][gate.link_id][0]
+                self.lock.acquire()
 
-                    h(self.state, second_idx, self.execution_time, None)
-                    cnot(self.state, second_idx, target_idx, self.execution_time, None)
+                conn_manager = self.connection_manager
+                conn_dict = conn_manager.get_dict()
 
-                    cnot(self.state, first_idx, second_idx, self.execution_time, None)
-                    h(self.state, first_idx, self.execution_time, None)
+                target_index = conn_dict[self.id][1]
+                cnot(self.state, gate.index, target_index, self.execution_time, None)
 
-                    first_bit = measure(self.state, first_idx, None)
-                    self.qubit_index_manager.delete_index("communication", self.id, 0)
+                measurement_result = measure(self.state, target_index, self.execution_time, None)
+                self.measurement_result = measurement_result
 
-                    second_idx = self.qubit_index_manager.dict["link"][gate.link_id][0]
-                    second_bit = measure(self.state, second_idx, None)
-                    self.qubit_index_manager.delete_index("link", gate.link_id, 0)
+                qubit = QuantumState(1)
+                self.state.add_state(qubit)
 
-                    connection.send_control_message(first_bit)
-                    connection.send_control_message(second_bit)
+                self.connection_manager.remove_qubit(self.id, 1)
+                self.connection_manager.add_qubit(self.id, 1)
 
-                    self.lock.release()
+                link = self.link_list[gate.link_id]
+                link.send_control_message(self.measurement_result)
 
-                    target = connection.get_target_message()
-                    new_qubit = QuantumState(1)
-                    self.state.add_state(new_qubit)
-                    self.qubit_index_manager.add_index("communication", self.id)
+                self.lock.release()
 
-                    connection.send_control_message("hoge")
+            # Apply operations after receiving the measurement result from the control processor
+            elif gate.name == "FORWARD_TARGET":
 
-                elif "target" in gate.role:
+                self.lock.acquire()
+                conn_manager = self.connection_manager
+                conn_dict = conn_manager.get_dict()
 
-                    first_bit = connection.get_control_message()
-                    second_bit = connection.get_control_message()
-                    target_idx = self.qubit_index_manager.dict["link"][gate.link_id][0]
+                control_index = conn_dict[self.id][0]
+                if self.measurement_result == 1:
+                    x(self.state, control_index, self.execution_time, None)
+                cnot(self.state, control_index, gate.target_index, self.execution_time, None)
+                h(self.state, control_index, self.execution_time, None)
 
-                    if second_bit == 1:
-                        x(self.state, target_idx, self.execution_time, self.lock)
+                measurement_result = measure(self.state, control_index, self.execution_time, None)
+                self.measurement_result = measurement_result
 
-                    if first_bit == 1:
-                        z(self.state, target_idx, self.execution_time, self.lock)
+                qubit = QuantumState(1)
+                self.state.add_state(qubit)
 
-                    new_qubit = QuantumState(1)
-                    self.state.add_state(new_qubit)
-                    self.qubit_index_manager.add_index("link", gate.link_id)
+                self.connection_manager.remove_qubit(self.id, 0)
+                self.connection_manager.add_qubit(self.id, 0)
 
-                    connection.send_target_message("target")
-                    control = connection.get_control_message()
+                link = self.link_list[gate.link_id]
+                link.send_target_message(self.measurement_result)
+
+                self.lock.release()
+
+            # Apply operations before the sending back to the measurement result to the control processor
+            elif gate.name == "BACKWARD_CONTROL":
+                pass
+
+            # Apply operations after the receiving the measurement result from the target processor
+            elif gate.name == "BACKWARD_TARGET":
+                self.lock.acquire()
+                if self.measurement_result == 1:
+                    z(self.state, gate.index, self.execution_time, None)
+                self.lock.release()

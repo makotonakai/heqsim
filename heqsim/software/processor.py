@@ -21,6 +21,14 @@ class QuantumProcessor:
         """
         self.id = id_
 
+    def get_id(self):
+        """Return the id of this quantum processor
+
+        Returns:
+            int: The id of this quantum processor
+        """
+        return self.id
+
     def get_info(self):
         """Return an details about properties of this quantum processor
 

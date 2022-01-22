@@ -6,10 +6,9 @@ class Link:
 
     def __init__(self):
         """Create a new link"""
-        self.request_link = Queue(maxsize=1)
-        self.ack_link = Queue(maxsize=1)
-        self.control_message_link = Queue(maxsize=2)
-        self.target_message_link = Queue(maxsize=2)
+        self.classical_link = Queue(maxsize=1)
+        self.control_link = Queue(maxsize=1)
+        self.target_link = Queue(maxsize=1)
 
     def send_request(self, request):
         """Send a request to another quantum processor
@@ -41,21 +40,38 @@ class Link:
         ack = self.ack_link.get()
         return ack
 
-    def send_control_message(self, message):
+    def send_classical_message(self, message):
         """Send 1st measurement result to the receiver
 
         Args:
             message (int): The measurement result of the 1st qubit
         """
-        self.control_message_link.put(message)
+        self.classical_link.put(message)
 
-    def get_control_message(self):
+    def get_classical_message(self):
         """Get 1st measurement result from the sender
 
         Returns:
             int: The measurement result of the 1st qubit
         """
-        message = self.control_message_link.get()
+        message = self.classical_link.get()
+        return message
+
+    def send_control_message(self, message):
+        """Send 2nd measurement result to the sender
+
+        Args:
+            message (int): The measurement result of the 2nd qubit
+        """
+        self.control_link.put(message)
+
+    def get_control_message(self):
+        """Receive 2nd measurement result from the receiver
+
+        Returns:
+            message: The measurement result of the 2nd qubit
+        """
+        message = self.control_link.get()
         return message
 
     def send_target_message(self, message):
@@ -64,7 +80,7 @@ class Link:
         Args:
             message (int): The measurement result of the 2nd qubit
         """
-        self.target_message_link.put(message)
+        self.target_link.put(message)
 
     def get_target_message(self):
         """Receive 2nd measurement result from the receiver
@@ -72,5 +88,5 @@ class Link:
         Returns:
             message: The measurement result of the 2nd qubit
         """
-        message = self.target_message_link.get()
+        message = self.target_link.get()
         return message

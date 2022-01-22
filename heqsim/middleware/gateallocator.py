@@ -1,11 +1,12 @@
 from heqsim.software.gate import QuantumGate
+from heqsim.software.network import Network
 import networkx as nx
 
 
 class GateAllocator:
     """A class for a module that allocate quantum gates in the program to each processor"""
 
-    def __init__(self, gate_list, cluster):
+    def __init__(self, gate_list, cluster, network):
         """Create a gate allocator
 
         Args:
@@ -14,7 +15,15 @@ class GateAllocator:
         """
         self.gate_list = gate_list
         self.cluster = cluster
-        self.remote_cnot_id = 0
+        self.network = network
+
+    def set_network(self, network):
+        """Set a new network to this gate allocator
+
+        Args:
+            network (Network): A network that connects quantum processors
+        """
+        self.network = network
 
     def get_processor_id_from_index_dict(self, index, index_dict):
         """Return a processor id that a particular qubit is allocated
@@ -40,14 +49,68 @@ class GateAllocator:
         """
         self.cluster.set_gate_dict(gate_dict)
 
-    def execute(self, index_dict, network):
+    def is_neighboring(self, source_processor, target_processor):
+        """Return whether the two given processors are neighbors
+
+        Args:
+            source_processor (QuantumProcessor): The source processor
+            target_processor (QuantumProcessor): The target processor
+
+        Returns:
+            bool: Whether the two given processors are neighbors
+        """
+        path = nx.shortest_path(self.network.graph, source_processor, target_processor)
+        if len(path) == 2:
+            return True
+        else:
+            return False
+
+    def make_connection(self, source_processor, target_processor):
+        """Create a quantum connection between two quantum processors
+
+        Args:
+            source_processor (QuantumProcessor): The "sender" processor of a remote CNOT gate
+            target_processor (QuantumProcessor): The "receiver" processor of a remote CNOT gate
+        """
+
+        if self.is_neighboring(source_processor, target_processor):
+
+            source_id = source_processor.get_id()
+            target_id = target_processor.get_id()
+            link_id = self.network.get_link_id(source_processor, target_processor)
+
+            self.gate_dict[source_id].append(QuantumGate("ENTANGLE", link_id=link_id, role="control"))
+            self.gate_dict[target_id].append(QuantumGate("ENTANGLE", link_id=link_id, role="target"))
+
+        else:
+            path = nx.shortest_path(self.network.graph, source_processor, target_processor)
+            middle_processor = path[-2]
+
+            self.make_connection(source_processor, middle_processor)
+            self.make_connection(middle_processor, target_processor)
+            self.entanglement_swapping(source_processor, middle_processor, target_processor)
+
+    def entanglement_swapping(self, source_processor, middle_processor, target_processor):
+        """Perform the entanglement swapping
+
+        Args:
+            source_processor (QuantumProcessor): Source processor
+            middle_processor (QuantumProcessor): The quantum processor that performs this entanglement swapping
+            target_processor (QuantumProcessor): Target processor
+        """
+        middle_id = middle_processor.get_id()
+        control_link_id = self.network.get_link_id(source_processor, middle_processor)
+        target_link_id = self.network.get_link_id(middle_processor, target_processor)
+        self.gate_dict[middle_id].append(QuantumGate("BELL_MEASURE", None, link_id=[control_link_id, target_link_id]))
+
+    def execute(self, index_dict):
         """
 
         Args:
             index_dict (dict): A dict that maps a processor id to a list of the indices of allocated qubits
             network (Network): A network that connects quantum processors
         """
-        self.processor_list = network.get_processor_list()
+        self.processor_list = self.network.get_processor_list()
         self.gate_dict = {processor.id: [] for processor in self.processor_list}
 
         for gate in self.gate_list:
@@ -66,7 +129,6 @@ class GateAllocator:
                     self.gate_dict[processor_id].append(gate)
 
                 # Remote CNOT gates
-
                 else:
 
                     # Add remote cnot to the controlled processor
@@ -75,80 +137,64 @@ class GateAllocator:
                         source_id = self.get_processor_id_from_index_dict(gate.index, index_dict)
                         target_id = self.get_processor_id_from_index_dict(gate.target_index, index_dict)
 
-                        source = network.get_processor(source_id)
-                        target = network.get_processor(target_id)
+                        source = self.network.get_processor(source_id)
+                        target = self.network.get_processor(target_id)
 
-                        path = nx.shortest_path(network.graph, source=source, target=target)
-                        id_path = [processor.id for processor in path]
-                        id_path_reversed = list(reversed(id_path))
-                        id_full_path = [id_path, "CNOT", id_path_reversed]
+                        self.make_connection(source, target)
 
-                        control_target_link_list = []
-                        for id_path in id_full_path:
-                            if id_path == "CNOT":
-                                control_target_link_list.append("CNOT")
+                        # Forward path
+                        processor_path = nx.shortest_path(self.network.graph, source, target)
+                        link_id_path = []
+                        for index in range(len(processor_path) - 1):
+                            source_ = processor_path[index]
+                            target_ = processor_path[index + 1]
+                            link_id = self.network.get_link_id(source_, target_)
+                            link_id_path.append(link_id)
+
+                        for index in range(len(processor_path)):
+                            processor = processor_path[index]
+                            if processor.id == source_id:
+                                link_id = link_id_path[0]
+                                self.gate_dict[source_id].append(QuantumGate("FORWARD_CONTROL", gate.index, link_id=link_id))
+
+                            elif processor.id == target_id:
+                                link_id = link_id_path[-1]
+                                self.gate_dict[target_id].append(QuantumGate("GET", link_id=link_id, role="control"))
+                                self.gate_dict[target_id].append(QuantumGate("FORWARD_TARGET", target_index=gate.target_index, link_id=link_id))
+
                             else:
-                                for id_ in range(len(id_path) - 1):
+                                control_link_id = link_id_path[index - 1]
+                                self.gate_dict[processor.id].append(QuantumGate("GET", link_id=control_link_id, role="control"))
 
-                                    [control, target] = id_path[id_:id_ + 2]
+                                target_link_id = link_id_path[index]
+                                self.gate_dict[processor.id].append(QuantumGate("SEND", link_id=target_link_id, role="control"))
 
-                                    control_id_ = self.get_processor_id_from_index_dict(control, index_dict)
-                                    target_id_ = self.get_processor_id_from_index_dict(target, index_dict)
+                        # Reverse path
+                        reverse_processor_path = nx.shortest_path(self.network.graph, target, source)
+                        reverse_link_id_path = []
 
-                                    control_processor = network.get_processor(control_id_)
-                                    target_processor = network.get_processor(target_id_)
+                        for index in range(len(reverse_processor_path) - 1):
+                            source_ = reverse_processor_path[index]
+                            target_ = reverse_processor_path[index + 1]
+                            link_id = self.network.get_link_id(source_, target_)
+                            reverse_link_id_path.append(link_id)
 
-                                    link = network.get_link_id(control_processor, target_processor)
-                                    control_target_link = [control, target, link]
+                        for index in range(len(reverse_processor_path)):
+                            processor = reverse_processor_path[index]
+                            if processor.id == target_id:
+                                link_id = reverse_link_id_path[0]
+                                self.gate_dict[target_id].append(QuantumGate("BACKWARD_CONTROL", link_id=link_id))
 
-                                    control_target_link_list.append(control_target_link)
+                            elif processor.id == source_id:
+                                link_id = reverse_link_id_path[-1]
+                                self.gate_dict[source_id].append(QuantumGate("GET", link_id=link_id, role="target"))
+                                self.gate_dict[source_id].append(QuantumGate("BACKWARD_TARGET", index=gate.index, link_id=link_id))
 
-                        first_swap_gate = QuantumGate("SWAP", gate.index)
-                        first_swap_gate.set_role("first")
-                        self.gate_dict[source_id].append(first_swap_gate)
-
-                        for control_target_link in control_target_link_list:
-
-                            if control_target_link == "CNOT":
-                                cnot_gate = QuantumGate("CNOT", None, gate.target_index)
-                                cnot_gate.set_role("remote")
-                                self.gate_dict[target_id].append(cnot_gate)
                             else:
-                                [control, target, link] = control_target_link
-                                [remote_cnot_control, remote_cnot_target] = [QuantumGate("RemoteCNOT", control, target) for _ in range(2)]
+                                control_link_id = reverse_link_id_path[index - 1]
+                                self.gate_dict[processor.id].append(QuantumGate("GET", link_id=control_link_id, role="target"))
 
-                                remote_cnot_control.set_role(["control", "forth"])
-                                remote_cnot_target.set_role(["target", "forth"])
-
-                                control_id_ = self.get_processor_id_from_index_dict(control, index_dict)
-                                target_id_ = self.get_processor_id_from_index_dict(target, index_dict)
-
-                                control_processor = network.get_processor(control_id_)
-                                target_processor = network.get_processor(target_id_)
-
-                                remote_cnot_control.set_remote_cnot_id(self.remote_cnot_id)
-                                remote_cnot_target.set_remote_cnot_id(self.remote_cnot_id)
-                                self.remote_cnot_id += 1
-
-                                link_id = network.get_link_id(control_processor, target_processor)
-                                remote_cnot_control.set_link_id(link_id)
-                                remote_cnot_target.set_link_id(link_id)
-
-                                control_id = control_processor.id
-                                self.gate_dict[control_id].append(remote_cnot_control)
-
-                                target_id = target_processor.id
-                                self.gate_dict[target_id].append(remote_cnot_target)
-
-                                if target == gate.index:
-                                    swap_gate = QuantumGate("SWAP", gate.index)
-                                    swap_gate.set_role("last")
-                                    swap_gate.set_link_id(link)
-                                    self.gate_dict[source_id].append(swap_gate)
-                                else:
-                                    swap_gate = QuantumGate("SWAP", None)
-                                    swap_gate.set_role("intermit")
-                                    swap_gate.set_link_id(link)
-                                    self.gate_dict[target_id].append(swap_gate)
+                                target_link_id = reverse_link_id_path[index]
+                                self.gate_dict[processor.id].append(QuantumGate("SEND", link_id=target_link_id, role="target"))
 
         self.set_gate_dict_to_cluster(self.gate_dict)

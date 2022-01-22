@@ -222,7 +222,7 @@ class QuantumCircuit:
 
     def set_gate_allocator(self):
         """Define a software that allocates quantum gates to all physical quantum processors"""
-        self.gate_allocator = GateAllocator(self.gate_list, self.cluster)
+        self.gate_allocator = GateAllocator(self.gate_list, self.cluster, None)
 
     def allocate_indices(self, network, is_optimized):
         """Execute index allocation
@@ -251,7 +251,8 @@ class QuantumCircuit:
             network (Network): A network that quantum processors are connected with
         """
         index_dict = self.get_index_dict()
-        self.gate_allocator.execute(index_dict, network)
+        self.gate_allocator.set_network(network)
+        self.gate_allocator.execute(index_dict)
 
     def run_cluster(self):
         """Execute this quantum circuit on the cluster of physical quantum processors"""
@@ -285,14 +286,14 @@ class QuantumCircuit:
             numpy.array: The statevector of this quantum state
         """
         statevector = self.cluster.get_state()
-        # return statevector
-        cluster_qubit_num = int(np.log2(len(statevector)))
-        original_state = []
-        for num in range(2**self.qubit_num):
-            index = bin(num)[2:].zfill(self.qubit_num)
-            new_index = int(index + "0" * (cluster_qubit_num - self.qubit_num), 2)
-            original_state.append(statevector[new_index])
-        return original_state
+        return statevector
+        # cluster_qubit_num = int(np.log2(len(statevector)))
+        # original_state = []
+        # for num in range(2**self.qubit_num):
+        #     index = bin(num)[2:].zfill(self.qubit_num)
+        #     new_index = int(index + "0" * (cluster_qubit_num - self.qubit_num), 2)
+        #     original_state.append(statevector[new_index])
+        # return original_state
 
     def get_execution_time(self):
         """Retrieve the total execution time from the cluster of physical quantum processors
